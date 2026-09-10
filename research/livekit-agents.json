@@ -1,0 +1,29 @@
+[
+  {
+    "url": "https://livekit.com",
+    "name": "Build your first AI voice agent in Python: complete tutorial",
+    "snippet": "LiveKit Agents provides the framework and real - time audio transport layer. Latency and usage metrics: See real - time latency breakdowns and monitor your usage.",
+    "host_name": "livekit.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://docs.livekit.io",
+    "name": "Virtual avatar models overview",
+    "snippet": "To minimize latency , the avatar provider joins the LiveKit room directly as a secondary participant to publish synchronized audio and video to the room.",
+    "host_name": "docs.livekit.io",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com",
+    "name": "Provide Real-Time VideoAvatar Latency Information #4200",
+    "snippet": "Dec 8, 2025 — Include an optional timestamp for each audio frame and propagate it through the avatar pipeline so latency can be measured at the receiving end. Read more",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "Dec 8, 2025",
+    "favicon": ""
+  }
+]

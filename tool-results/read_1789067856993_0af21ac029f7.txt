@@ -1,0 +1,2002 @@
+     1→ULTIMATE BUILD PROMPT
+     2→
+     3→Premium AI Live Character Platform + Web + Android + iOS + AI Brain + GPU Worker Fleet + Full Admin Control Plane
+     4→
+     5→You are acting as the Principal Software Architect, Senior Full-Stack Engineer, AI Infrastructure Engineer, Mobile Engineer, WebRTC Engineer, DevOps Engineer, Cybersecurity Engineer, Product Designer, Accessibility Engineer, QA Engineer, and Technical Project Manager for this project.
+     6→
+     7→Your job is to transform the existing project into a real, production-capable AI live-character platform, not a mockup, prototype, demo, landing-page-only project, or collection of fake UI screens.
+     8→
+     9→The finished system must work as an independent web application and mobile application, with a real backend, real authentication, real AI orchestration, real worker infrastructure, real media processing, real storage, real administration, real security controls, and real deployment architecture.
+    10→
+    11→⸻
+    12→
+    13→1. ABSOLUTE RULES
+    14→
+    15→These rules override convenience.
+    16→
+    17→NEVER:
+    18→
+    19→* Invent functionality.
+    20→* Fake functionality.
+    21→* Create mock AI workers and pretend they are real.
+    22→* Create fake GPU status.
+    23→* Create fake processing percentages.
+    24→* Create fake user counts.
+    25→* Create fake reviews.
+    26→* Create fake testimonials.
+    27→* Create fake customer logos.
+    28→* Create fake partnerships.
+    29→* Create fake integrations.
+    30→* Create fake security claims.
+    31→* Create fake performance claims.
+    32→* Create fake AI activity.
+    33→* Create fake worker activity.
+    34→* Create fake analytics.
+    35→* Claim something works when it has not been tested.
+    36→* Guess API capabilities.
+    37→* Guess provider pricing.
+    38→* Guess provider limits.
+    39→* Guess model licensing.
+    40→* Guess commercial-use rights.
+    41→* Guess Nigerian availability.
+    42→* Hard-code secrets.
+    43→* Expose API keys.
+    44→* Give the AI Brain unrestricted shell access.
+    45→* Allow users to access another user’s data.
+    46→* Allow ordinary users to access admin functionality.
+    47→* Build around unsupported assumptions.
+    48→* Use placeholder content in production.
+    49→* Use lorem ipsum.
+    50→* Add unnecessary dependencies.
+    51→* Add technology merely because it is popular.
+    52→* Add infrastructure that cannot realistically run.
+    53→
+    54→If something cannot currently be implemented, say so clearly and design the correct fallback instead of faking it.
+    55→
+    56→⸻
+    57→
+    58→2. FIRST PHASE: AUDIT
+    59→
+    60→Before changing code, perform a complete audit of the existing project.
+    61→
+    62→Inspect:
+    63→
+    64→* repository structure
+    65→* package configuration
+    66→* frontend
+    67→* backend
+    68→* API routes
+    69→* database
+    70→* authentication
+    71→* authorization
+    72→* storage
+    73→* media processing
+    74→* AI integrations
+    75→* worker implementation
+    76→* environment variables
+    77→* deployment configuration
+    78→* mobile implementation
+    79→* WebRTC implementation
+    80→* existing Brain/orchestrator
+    81→* existing UI
+    82→* existing admin functionality
+    83→* existing analytics
+    84→* existing security controls
+    85→* existing legal pages
+    86→* accessibility
+    87→* third-party services
+    88→* dependencies
+    89→* build process
+    90→* deployment process
+    91→* error handling
+    92→* logging
+    93→* tests
+    94→* performance
+    95→
+    96→Do not assume existing code is correct.
+    97→
+    98→Identify:
+    99→
+   100→1. What already works.
+   101→2. What partially works.
+   102→3. What is broken.
+   103→4. What is simulated.
+   104→5. What is insecure.
+   105→6. What should be kept.
+   106→7. What should be replaced.
+   107→8. What should be refactored.
+   108→9. What is missing.
+   109→
+   110→Do not destroy working functionality unnecessarily.
+   111→
+   112→⸻
+   113→
+   114→3. RESEARCH BEFORE ARCHITECTURE
+   115→
+   116→Before selecting infrastructure, verify current official documentation.
+   117→
+   118→Research the current versions, limitations, pricing, free tiers, commercial-use restrictions, API capabilities, geographic availability, authentication requirements, and deployment requirements for every external service.
+   119→
+   120→Prioritize official documentation.
+   121→
+   122→Potential technologies may include:
+   123→
+   124→* Next.js
+   125→* TypeScript
+   126→* React
+   127→* React Native
+   128→* Expo
+   129→* Better Auth
+   130→* PostgreSQL
+   131→* Drizzle ORM
+   132→* Cloudflare R2
+   133→* Cloudflare Realtime
+   134→* LiveKit
+   135→* WebRTC
+   136→* FFmpeg
+   137→* Redis
+   138→* durable job queues
+   139→* Kaggle
+   140→* Hugging Face
+   141→* MiniMax H3
+   142→* PostHog
+   143→* Cloudflare
+   144→* Vercel
+   145→* Railway
+   146→* other appropriate infrastructure
+   147→
+   148→Do NOT automatically use all of them.
+   149→
+   150→Choose technologies based on:
+   151→
+   152→* reliability
+   153→* cost
+   154→* free-tier availability
+   155→* Nigeria accessibility
+   156→* performance
+   157→* security
+   158→* scalability
+   159→* operational complexity
+   160→* mobile compatibility
+   161→* WebRTC compatibility
+   162→* GPU compatibility
+   163→* commercial licensing
+   164→
+   165→Explain why each major technology is being selected.
+   166→
+   167→⸻
+   168→
+   169→4. ARCHITECTURE
+   170→
+   171→Use a clear three-plane architecture.
+   172→
+   173→CONTROL PLANE
+   174→
+   175→Responsible for:
+   176→
+   177→* authentication
+   178→* authorization
+   179→* users
+   180→* organizations
+   181→* roles
+   182→* permissions
+   183→* characters
+   184→* face assets
+   185→* voice assets
+   186→* projects
+   187→* sessions
+   188→* jobs
+   189→* credits
+   190→* billing
+   191→* consent
+   192→* privacy preferences
+   193→* audit logs
+   194→* moderation
+   195→* feature flags
+   196→* system configuration
+   197→* provider registry
+   198→* worker registry
+   199→* capability registry
+   200→* AI Brain
+   201→* administration
+   202→
+   203→MEDIA PLANE
+   204→
+   205→Responsible for:
+   206→
+   207→* camera
+   208→* microphone
+   209→* WebRTC
+   210→* live sessions
+   211→* media transport
+   212→* SFU
+   213→* transformed video
+   214→* transformed audio
+   215→* recordings
+   216→* live output
+   217→* output adapters
+   218→
+   219→Raw live video must NOT be routed through ordinary REST requests.
+   220→
+   221→COMPUTE PLANE
+   222→
+   223→Responsible for:
+   224→
+   225→* GPU workers
+   226→* AI models
+   227→* face processing
+   228→* voice processing
+   229→* avatar processing
+   230→* lip sync
+   231→* image generation
+   232→* video generation
+   233→* H3
+   234→* FFmpeg
+   235→* model loading
+   236→* worker health
+   237→* worker lifecycle
+   238→* compute allocation
+   239→
+   240→The three planes must remain logically separated.
+   241→
+   242→⸻
+   243→
+   244→5. AI BRAIN
+   245→
+   246→Build a real AI Brain/orchestrator.
+   247→
+   248→The Brain must understand:
+   249→
+   250→* user intent
+   251→* available capabilities
+   252→* available workers
+   253→* worker health
+   254→* GPU availability
+   255→* model compatibility
+   256→* job requirements
+   257→* session requirements
+   258→* cost
+   259→* latency
+   260→* priority
+   261→* user plan
+   262→* safety policy
+   263→* provider limitations
+   264→
+   265→The Brain must route tasks intelligently.
+   266→
+   267→Architecture:
+   268→
+   269→LLM
+   270→↓
+   271→Structured Tool Request
+   272→↓
+   273→Schema Validation
+   274→↓
+   275→Authorization
+   276→↓
+   277→Policy Engine
+   278→↓
+   279→Execution
+   280→↓
+   281→Result
+   282→↓
+   283→Audit Log
+   284→
+   285→The Brain must NOT have unrestricted shell access.
+   286→
+   287→The Brain must NOT be able to:
+   288→
+   289→* execute arbitrary shell commands
+   290→* modify security controls
+   291→* grant itself permissions
+   292→* access arbitrary secrets
+   293→* bypass authorization
+   294→* bypass billing
+   295→* delete arbitrary production data
+   296→* disable security systems
+   297→* modify admin permissions without authorization
+   298→
+   299→Every Brain action must use explicitly registered tools.
+   300→
+   301→Every tool must have:
+   302→
+   303→* name
+   304→* description
+   305→* schema
+   306→* permissions
+   307→* validation
+   308→* rate limits
+   309→* audit logging
+   310→* failure handling
+   311→
+   312→⸻
+   313→
+   314→6. GPU WORKER SYSTEM
+   315→
+   316→Create a provider-independent worker architecture.
+   317→
+   318→The platform should treat GPU providers as workers rather than hard-code the entire application around one provider.
+   319→
+   320→Worker protocol:
+   321→
+   322→REGISTER
+   323→HEARTBEAT
+   324→HEALTH
+   325→CAPABILITIES
+   326→RESERVE
+   327→ALLOCATE
+   328→LOAD_MODEL
+   329→START
+   330→STREAM
+   331→STATUS
+   332→STOP
+   333→RELEASE
+   334→DRAIN
+   335→SHUTDOWN
+   336→ERROR
+   337→RESULT
+   338→
+   339→Worker lifecycle:
+   340→
+   341→BOOT
+   342→↓
+   343→REGISTER
+   344→↓
+   345→HEALTH CHECK
+   346→↓
+   347→IDLE
+   348→↓
+   349→RESERVED
+   350→↓
+   351→LOADING
+   352→↓
+   353→READY
+   354→↓
+   355→BUSY
+   356→↓
+   357→DRAINING
+   358→↓
+   359→IDLE
+   360→↓
+   361→SLEEP / SHUTDOWN
+   362→
+   363→Workers must automatically report:
+   364→
+   365→* provider
+   366→* worker ID
+   367→* GPU
+   368→* VRAM
+   369→* available memory
+   370→* model availability
+   371→* supported capabilities
+   372→* version
+   373→* health
+   374→* current load
+   375→* latency
+   376→* active jobs
+   377→* heartbeat
+   378→* region
+   379→* estimated cost
+   380→
+   381→⸻
+   382→
+   383→7. WORKER FAILURE RECOVERY
+   384→
+   385→If a worker stops responding:
+   386→
+   387→1. Detect heartbeat failure.
+   388→2. Mark worker unhealthy.
+   389→3. Stop assigning new work.
+   390→4. Determine whether the current job can be recovered.
+   391→5. Retry if safe.
+   392→6. Reassign when possible.
+   393→7. Record the incident.
+   394→8. Notify the session manager.
+   395→9. Restore the session where technically possible.
+   396→10. Never pretend the worker is still running.
+   397→
+   398→Use idempotency so retries do not duplicate jobs.
+   399→
+   400→⸻
+   401→
+   402→8. WORKER SELECTION
+   403→
+   404→The Brain must select workers based on:
+   405→
+   406→* capability
+   407→* GPU type
+   408→* VRAM
+   409→* model compatibility
+   410→* health
+   411→* load
+   412→* latency
+   413→* region
+   414→* plan
+   415→* queue
+   416→* cost
+   417→* availability
+   418→
+   419→Example:
+   420→
+   421→A live face-processing task should not be sent to a worker that only supports offline video generation.
+   422→
+   423→A video-generation task requiring H3 must only be sent to a worker that actually supports the required H3 capability.
+   424→
+   425→⸻
+   426→
+   427→9. H3
+   428→
+   429→Treat H3 as a model/capability, not as the architecture.
+   430→
+   431→Before production use:
+   432→
+   433→* verify the current official model/API
+   434→* verify current capabilities
+   435→* verify licensing
+   436→* verify commercial-use rights
+   437→* verify hardware requirements
+   438→* verify supported deployment methods
+   439→* verify whether real-time usage is actually supported
+   440→* verify provider restrictions
+   441→
+   442→Do not claim H3 provides a capability unless verified.
+   443→
+   444→⸻
+   445→
+   446→10. KAGGLE WORKERS
+   447→
+   448→Kaggle may be used as an experimental or development worker where technically and contractually appropriate.
+   449→
+   450→Do not make Kaggle the unquestioned production backbone.
+   451→
+   452→Verify:
+   453→
+   454→* current limits
+   455→* session duration
+   456→* GPU availability
+   457→* terms
+   458→* automation restrictions
+   459→* commercial-use restrictions
+   460→* API capabilities
+   461→
+   462→If Kaggle is unsuitable for production, design the worker abstraction so another provider can replace it without rebuilding the application.
+   463→
+   464→⸻
+   465→
+   466→11. LIVE VIDEO ARCHITECTURE
+   467→
+   468→Use WebRTC for real-time camera and microphone transport.
+   469→
+   470→Architecture:
+   471→
+   472→USER CAMERA
+   473→↓
+   474→WEBRTC
+   475→↓
+   476→MEDIA SESSION
+   477→↓
+   478→SFU / MEDIA TRANSPORT
+   479→↓
+   480→AI PROCESSING
+   481→↓
+   482→TRANSFORMED VIDEO/AUDIO
+   483→↓
+   484→CLIENT
+   485→
+   486→Do not push 30 FPS video frames through normal REST endpoints.
+   487→
+   488→Use appropriate WebRTC/SFU infrastructure.
+   489→
+   490→Potential solutions:
+   491→
+   492→* Cloudflare Realtime
+   493→* LiveKit
+   494→* another properly verified WebRTC infrastructure
+   495→
+   496→Choose one after research.
+   497→
+   498→⸻
+   499→
+   500→12. LIVE SESSION STATE
+   501→
+   502→Implement explicit session states:
+   503→
+   504→CREATED
+   505→VALIDATING
+   506→WAITING_FOR_WORKER
+   507→WORKER_ASSIGNED
+   508→LOADING
+   509→READY
+   510→LIVE
+   511→DEGRADED
+   512→RECOVERING
+   513→STOPPING
+   514→COMPLETED
+   515→FAILED
+   516→CANCELLED
+   517→EXPIRED
+   518→
+   519→The UI must reflect actual backend state.
+   520→
+   521→Never simulate the state.
+   522→
+   523→⸻
+   524→
+   525→13. JOB SYSTEM
+   526→
+   527→Every asynchronous task must have a job record.
+   528→
+   529→Job fields should include:
+   530→
+   531→* job ID
+   532→* user ID
+   533→* project ID
+   534→* session ID
+   535→* type
+   536→* status
+   537→* priority
+   538→* input references
+   539→* worker ID
+   540→* provider
+   541→* created time
+   542→* started time
+   543→* completed time
+   544→* failure information
+   545→* retry count
+   546→* result
+   547→* usage
+   548→* cost where available
+   549→
+   550→Use idempotency.
+   551→
+   552→Use durable processing.
+   553→
+   554→Use retries only when safe.
+   555→
+   556→⸻
+   557→
+   558→14. MEDIA STORAGE
+   559→
+   560→Use database storage for metadata.
+   561→
+   562→Use object storage for actual media.
+   563→
+   564→Recommended architecture:
+   565→
+   566→DATABASE
+   567→→ metadata
+   568→OBJECT STORAGE
+   569→→ images
+   570→→ videos
+   571→→ audio
+   572→→ generated assets
+   573→→ recordings
+   574→
+   575→Use:
+   576→
+   577→* presigned upload URLs
+   578→* short-lived download URLs
+   579→* ownership verification
+   580→* MIME validation
+   581→* file-size limits
+   582→* extension validation
+   583→* malware/security scanning where appropriate
+   584→* CORS configuration
+   585→* lifecycle rules
+   586→* retention rules
+   587→* deletion support
+   588→
+   589→Do not expose permanent public media URLs unnecessarily.
+   590→
+   591→⸻
+   592→
+   593→15. LIVE CHARACTER SYSTEM
+   594→
+   595→Users should be able to create/manage characters.
+   596→
+   597→A character may include:
+   598→
+   599→* name
+   600→* face
+   601→* appearance
+   602→* voice
+   603→* personality configuration
+   604→* style
+   605→* language
+   606→* consent information
+   607→* source assets
+   608→* creation date
+   609→* ownership
+   610→* status
+   611→
+   612→The system must support character consistency.
+   613→
+   614→If face/voice transformation is used, the platform must have a proper authorization/consent system.
+   615→
+   616→⸻
+   617→
+   618→16. FACE AND VOICE CONSENT
+   619→
+   620→Create explicit consent records.
+   621→
+   622→Store:
+   623→
+   624→* user
+   625→* asset
+   626→* purpose
+   627→* scope
+   628→* timestamp
+   629→* policy version
+   630→* authorization status
+   631→* withdrawal status
+   632→
+   633→Do not rely only on a generic Terms checkbox.
+   634→
+   635→Users must be able to withdraw authorization where applicable.
+   636→
+   637→Do not build the platform around unauthorized impersonation.
+   638→
+   639→⸻
+   640→
+   641→17. PHONE-TO-PHONE LIVE MODE
+   642→
+   643→Implement a practical mobile compatibility mode.
+   644→
+   645→Phone 1:
+   646→
+   647→PHONE CAMERA
+   648→↓
+   649→AI PROCESSING
+   650→↓
+   651→TRANSFORMED LIVE OUTPUT
+   652→↓
+   653→FULLSCREEN DISPLAY
+   654→
+   655→Phone 2:
+   656→
+   657→NORMAL PHONE CAMERA
+   658→↓
+   659→FILMS PHONE 1 SCREEN
+   660→↓
+   661→USER USES THEIR NORMAL SOCIAL APP
+   662→
+   663→This is a physical-camera adapter.
+   664→
+   665→Do NOT call this a native virtual camera.
+   666→
+   667→Do NOT claim that WhatsApp, Telegram, Instagram, TikTok, Facebook, or other apps will accept a virtual AI camera unless this has actually been verified on the target device/platform.
+   668→
+   669→Phone 1 fullscreen output should:
+   670→
+   671→* hide unnecessary UI
+   672→* keep screen awake
+   673→* preserve aspect ratio
+   674→* support portrait orientation
+   675→* optionally support mirror mode
+   676→* maintain stable framing
+   677→* show minimal status information
+   678→* support low-bandwidth mode
+   679→* recover from connection loss
+   680→
+   681→⸻
+   682→
+   683→18. SOCIAL PLATFORM COMPATIBILITY
+   684→
+   685→Treat each platform separately.
+   686→
+   687→Test where possible:
+   688→
+   689→* WhatsApp
+   690→* Telegram
+   691→* Instagram
+   692→* Facebook
+   693→* TikTok
+   694→* YouTube
+   695→* other relevant platforms
+   696→
+   697→Do not advertise unsupported integrations.
+   698→
+   699→If direct integration is impossible, explain the limitation and provide the phone-to-phone adapter.
+   700→
+   701→⸻
+   702→
+   703→19. OUTPUT ADAPTER ARCHITECTURE
+   704→
+   705→Create an adapter layer.
+   706→
+   707→Possible adapters:
+   708→
+   709→NATIVE_WEB
+   710→NATIVE_MOBILE
+   711→WEBRTC_LIVE
+   712→PHONE_TO_PHONE
+   713→OBS
+   714→RECORDING
+   715→RTMP
+   716→FUTURE_INTEGRATIONS
+   717→
+   718→Each adapter must have explicit capability declarations.
+   719→
+   720→⸻
+   721→
+   722→20. WEB APPLICATION
+   723→
+   724→Build a real modern web application.
+   725→
+   726→Recommended baseline:
+   727→
+   728→* Next.js
+   729→* TypeScript
+   730→* React
+   731→* server-side validation
+   732→* secure API architecture
+   733→
+   734→Do not over-engineer.
+   735→
+   736→The web application must include:
+   737→
+   738→* landing page
+   739→* authentication
+   740→* dashboard
+   741→* projects
+   742→* character studio
+   743→* live studio
+   744→* media library
+   745→* recordings
+   746→* settings
+   747→* account management
+   748→* consent management
+   749→* privacy controls
+   750→* billing/credits where applicable
+   751→* help/documentation
+   752→* legal pages
+   753→
+   754→⸻
+   755→
+   756→21. MOBILE APPLICATION
+   757→
+   758→Build a REAL mobile application.
+   759→
+   760→Preferred:
+   761→
+   762→* React Native
+   763→* Expo where appropriate
+   764→
+   765→Do NOT simply wrap the website in a WebView and call it a native app.
+   766→
+   767→Mobile must support:
+   768→
+   769→* camera permissions
+   770→* microphone permissions
+   771→* live sessions
+   772→* transformed preview
+   773→* character selection
+   774→* media upload
+   775→* media download
+   776→* session recovery
+   777→* network recovery
+   778→* low-bandwidth operation
+   779→* orientation handling
+   780→* fullscreen live output
+   781→* account management
+   782→* notifications where implemented
+   783→
+   784→Use platform-specific APIs where required.
+   785→
+   786→⸻
+   787→
+   788→22. PREMIUM UI/UX
+   789→
+   790→The visual design must feel premium, modern, intentional, and product-focused.
+   791→
+   792→Use:
+   793→
+   794→* sophisticated typography
+   795→* strong spacing
+   796→* carefully designed grids
+   797→* premium cards where appropriate
+   798→* subtle depth
+   799→* realistic 3D elements
+   800→* meaningful motion
+   801→* cinematic presentation
+   802→* polished interaction states
+   803→* excellent responsive behavior
+   804→
+   805→But avoid visual noise.
+   806→
+   807→⸻
+   808→
+   809→23. STRICT ANTI-AI-SLOP DESIGN RULES
+   810→
+   811→DO NOT use:
+   812→
+   813→* purple gradients everywhere
+   814→* generic blue/purple AI dashboards
+   815→* excessive glassmorphism
+   816→* random glowing blobs
+   817→* random floating AI robots
+   818→* random holograms
+   819→* random particles
+   820→* emoji icons
+   821→* giant generic AI faces
+   822→* fake futuristic interfaces
+   823→* excessive rounded pill buttons
+   824→* fake counters
+   825→* fake reviews
+   826→* fake testimonials
+   827→* fake logos
+   828→* fake metrics
+   829→* generic stock AI imagery
+   830→* AI-slop copy
+   831→* vague marketing claims
+   832→* cursor trails
+   833→* cursor animations
+   834→* unnecessary scroll-triggered animations
+   835→* excessive parallax
+   836→* excessive spinning objects
+   837→* animation for the sake of animation
+   838→
+   839→3D must communicate something real about the product.
+   840→
+   841→⸻
+   842→
+   843→24. 3D SYSTEM
+   844→
+   845→Use 3D where it genuinely improves the product.
+   846→
+   847→Possible applications:
+   848→
+   849→* character visualization
+   850→* live character preview
+   851→* camera framing
+   852→* product visualization
+   853→* interactive studio environment
+   854→* visual processing states
+   855→* character showcase
+   856→
+   857→Provide performance fallbacks.
+   858→
+   859→Desktop may use richer 3D.
+   860→
+   861→Mobile should use optimized assets.
+   862→
+   863→Provide reduced-motion behavior.
+   864→
+   865→Do not make the website slow just to make it look futuristic.
+   866→
+   867→⸻
+   868→
+   869→25. HERO SECTION
+   870→
+   871→The hero must clearly communicate what the product actually does.
+   872→
+   873→Do not use vague phrases like:
+   874→
+   875→“AI that changes everything.”
+   876→
+   877→Instead communicate the actual capability.
+   878→
+   879→The hero should show real product functionality.
+   880→
+   881→No fake counters.
+   882→
+   883→No fake live users.
+   884→
+   885→No fake processing claims.
+   886→
+   887→No fake testimonials.
+   888→
+   889→⸻
+   890→
+   891→26. ADMIN CONTROL PLANE
+   892→
+   893→Build a full administration system.
+   894→
+   895→The admin panel must NOT be a hidden backdoor.
+   896→
+   897→Use:
+   898→
+   899→* RBAC
+   900→* explicit permissions
+   901→* secure authentication
+   902→* MFA where appropriate
+   903→* audit logs
+   904→* session security
+   905→* least privilege
+   906→
+   907→Admin capabilities should include:
+   908→
+   909→USERS
+   910→
+   911→* view users
+   912→* search users
+   913→* suspend
+   914→* ban
+   915→* unban
+   916→* restore
+   917→* inspect account state
+   918→* inspect sessions
+   919→* manage roles
+   920→* view usage
+   921→* review reports
+   922→
+   923→CONTENT
+   924→
+   925→Manage:
+   926→
+   927→* characters
+   928→* photos
+   929→* videos
+   930→* audio
+   931→* fonts
+   932→* 3D assets
+   933→* templates
+   934→* system media
+   935→* generated content
+   936→
+   937→Include:
+   938→
+   939→* upload
+   940→* edit
+   941→* draft
+   942→* publish
+   943→* unpublish
+   944→* replace
+   945→* archive
+   946→* delete
+   947→* rollback
+   948→
+   949→SITE
+   950→
+   951→Control:
+   952→
+   953→* navigation
+   954→* homepage sections
+   955→* announcements
+   956→* feature flags
+   957→* maintenance mode
+   958→* enabled capabilities
+   959→* configuration
+   960→
+   961→AI BRAIN
+   962→
+   963→Admin controls for:
+   964→
+   965→* enabled tools
+   966→* model configuration
+   967→* routing rules
+   968→* capability registry
+   969→* worker selection policies
+   970→* provider availability
+   971→* safety policies
+   972→* rate limits
+   973→
+   974→Never allow the admin UI to expose raw secrets.
+   975→
+   976→WORKERS
+   977→
+   978→Admin must see:
+   979→
+   980→* provider
+   981→* worker
+   982→* GPU
+   983→* VRAM
+   984→* status
+   985→* health
+   986→* active jobs
+   987→* queue
+   988→* model
+   989→* capability
+   990→* heartbeat
+   991→* errors
+   992→* latency
+   993→
+   994→Controls:
+   995→
+   996→* enable
+   997→* disable
+   998→* drain
+   999→* restart where supported
+  1000→* remove
+  1001→* maintenance mode
+  1002→
+  1003→EMERGENCY CONTROLS
+  1004→
+  1005→Include controlled emergency functions such as:
+  1006→
+  1007→* disable specific capability
+  1008→* disable provider
+  1009→* stop new jobs
+  1010→* maintenance mode
+  1011→* disable uploads
+  1012→* disable live sessions
+  1013→* emergency moderation controls
+  1014→
+  1015→Everything must be audited.
+  1016→
+  1017→⸻
+  1018→
+  1019→27. USER ROLES
+  1020→
+  1021→At minimum:
+  1022→
+  1023→USER
+  1024→MODERATOR
+  1025→SUPPORT
+  1026→ADMIN
+  1027→SUPER_ADMIN
+  1028→
+  1029→Do not assume every admin should have every permission.
+  1030→
+  1031→Use granular permissions.
+  1032→
+  1033→⸻
+  1034→
+  1035→28. AUTHENTICATION
+  1036→
+  1037→Use secure authentication.
+  1038→
+  1039→Potential choice:
+  1040→
+  1041→Better Auth.
+  1042→
+  1043→Support where appropriate:
+  1044→
+  1045→* email/password
+  1046→* sessions
+  1047→* OAuth
+  1048→* passkeys
+  1049→* 2FA
+  1050→* organization access
+  1051→
+  1052→Production cookies should be secure HTTP-only cookies where applicable.
+  1053→
+  1054→Configure trusted origins correctly.
+  1055→
+  1056→Never store plaintext passwords.
+  1057→
+  1058→Never expose session secrets.
+  1059→
+  1060→⸻
+  1061→
+  1062→29. DATABASE
+  1063→
+  1064→Use PostgreSQL or another properly justified relational database.
+  1065→
+  1066→Suggested ORM:
+  1067→
+  1068→Drizzle.
+  1069→
+  1070→Design proper relationships for:
+  1071→
+  1072→* users
+  1073→* organizations
+  1074→* roles
+  1075→* permissions
+  1076→* sessions
+  1077→* characters
+  1078→* assets
+  1079→* projects
+  1080→* live sessions
+  1081→* jobs
+  1082→* workers
+  1083→* providers
+  1084→* capabilities
+  1085→* credits
+  1086→* billing
+  1087→* consent
+  1088→* reports
+  1089→* moderation
+  1090→* audit logs
+  1091→* feature flags
+  1092→
+  1093→Use migrations.
+  1094→
+  1095→Use indexes intentionally.
+  1096→
+  1097→Do not create an enormous database schema without purpose.
+  1098→
+  1099→⸻
+  1100→
+  1101→30. SECURITY
+  1102→
+  1103→Perform a serious security audit.
+  1104→
+  1105→Test for:
+  1106→
+  1107→* broken authentication
+  1108→* broken authorization
+  1109→* IDOR/BOLA
+  1110→* privilege escalation
+  1111→* SQL injection
+  1112→* XSS
+  1113→* CSRF
+  1114→* SSRF
+  1115→* command injection
+  1116→* path traversal
+  1117→* insecure uploads
+  1118→* malicious file handling
+  1119→* arbitrary FFmpeg execution
+  1120→* API abuse
+  1121→* rate-limit bypass
+  1122→* secret leakage
+  1123→* webhook spoofing
+  1124→* session hijacking
+  1125→* CORS problems
+  1126→* insecure cookies
+  1127→* exposed admin routes
+  1128→* insecure worker registration
+  1129→* worker impersonation
+  1130→* Brain tool abuse
+  1131→* prompt injection
+  1132→* resource exhaustion
+  1133→* job duplication
+  1134→* replay attacks
+  1135→* unauthorized media access
+  1136→
+  1137→Follow least privilege.
+  1138→
+  1139→Validate everything server-side.
+  1140→
+  1141→Do not trust frontend authorization.
+  1142→
+  1143→⸻
+  1144→
+  1145→31. WORKER SECURITY
+  1146→
+  1147→Workers must authenticate with the control plane.
+  1148→
+  1149→Do not allow any random machine to register itself as a trusted worker.
+  1150→
+  1151→Use:
+  1152→
+  1153→* worker credentials
+  1154→* signed requests where appropriate
+  1155→* rotating credentials
+  1156→* heartbeat authentication
+  1157→* capability validation
+  1158→* authorization
+  1159→* revocation
+  1160→* audit logs
+  1161→
+  1162→Never put production secrets inside public frontend code.
+  1163→
+  1164→⸻
+  1165→
+  1166→32. FFmpeg SECURITY
+  1167→
+  1168→Treat uploaded media as untrusted input.
+  1169→
+  1170→Never blindly execute arbitrary user-provided FFmpeg arguments.
+  1171→
+  1172→Use:
+  1173→
+  1174→* controlled commands
+  1175→* validated paths
+  1176→* sandboxing where possible
+  1177→* resource limits
+  1178→* timeout limits
+  1179→* file-size limits
+  1180→* codec restrictions where appropriate
+  1181→
+  1182→⸻
+  1183→
+  1184→33. MODERATION
+  1185→
+  1186→Implement abuse reporting.
+  1187→
+  1188→Users should be able to report:
+  1189→
+  1190→* impersonation
+  1191→* harassment
+  1192→* illegal content
+  1193→* unauthorized likeness
+  1194→* unauthorized voice
+  1195→* sexual/deepfake abuse
+  1196→* scams
+  1197→* fraud
+  1198→* copyright violations
+  1199→* other prohibited activity
+  1200→
+  1201→Admins must be able to:
+  1202→
+  1203→* review
+  1204→* suspend
+  1205→* ban
+  1206→* remove
+  1207→* restore
+  1208→* document decisions
+  1209→
+  1210→⸻
+  1211→
+  1212→34. ACCEPTABLE USE
+  1213→
+  1214→The platform must prohibit use for:
+  1215→
+  1216→* fraud
+  1217→* scams
+  1218→* identity theft
+  1219→* deceptive impersonation
+  1220→* unauthorized likeness use
+  1221→* unauthorized voice cloning
+  1222→* non-consensual sexual/deepfake content
+  1223→* harassment
+  1224→* extortion
+  1225→* criminal activity
+  1226→* platform abuse
+  1227→
+  1228→The system should technically enforce these rules where possible.
+  1229→
+  1230→⸻
+  1231→
+  1232→35. PRIVACY
+  1233→
+  1234→Create a real privacy/data map.
+  1235→
+  1236→For every data type document:
+  1237→
+  1238→* what is collected
+  1239→* why it is collected
+  1240→* how it is collected
+  1241→* legal basis where applicable
+  1242→* where it is stored
+  1243→* who processes it
+  1244→* retention period
+  1245→* who can access it
+  1246→* deletion method
+  1247→* export method
+  1248→
+  1249→Minimize data collection.
+  1250→
+  1251→Do not retain media forever by default.
+  1252→
+  1253→Implement account deletion.
+  1254→
+  1255→Implement appropriate data deletion/retention workflows.
+  1256→
+  1257→⸻
+  1258→
+  1259→36. NIGERIA DATA PROTECTION
+  1260→
+  1261→Because this service will be available in Nigeria, evaluate compliance with applicable Nigerian data-protection requirements.
+  1262→
+  1263→Review:
+  1264→
+  1265→* Nigeria Data Protection Act
+  1266→* NDPC guidance
+  1267→* consent
+  1268→* transparency
+  1269→* data minimization
+  1270→* retention
+  1271→* security
+  1272→* data-subject rights
+  1273→* processors
+  1274→* cross-border processing
+  1275→* biometric/voice-related data
+  1276→* high-risk processing
+  1277→* DPIA requirements where applicable
+  1278→
+  1279→Do not claim legal compliance simply because pages exist.
+  1280→
+  1281→Identify areas requiring professional legal review.
+  1282→
+  1283→⸻
+  1284→
+  1285→37. COOKIES AND TRACKING
+  1286→
+  1287→Audit:
+  1288→
+  1289→* cookies
+  1290→* localStorage
+  1291→* sessionStorage
+  1292→* IndexedDB
+  1293→* analytics
+  1294→* pixels
+  1295→* telemetry
+  1296→* session recording
+  1297→* third-party scripts
+  1298→* advertising technology
+  1299→
+  1300→Classify:
+  1301→
+  1302→NECESSARY
+  1303→PREFERENCES
+  1304→ANALYTICS
+  1305→MARKETING
+  1306→
+  1307→Non-essential tracking must not silently activate where consent is required.
+  1308→
+  1309→Cookie controls should provide appropriate choices such as:
+  1310→
+  1311→* Accept All
+  1312→* Reject Non-Essential
+  1313→* Manage Preferences
+  1314→
+  1315→Provide withdrawal/change controls.
+  1316→
+  1317→⸻
+  1318→
+  1319→38. ACCESSIBILITY
+  1320→
+  1321→Target WCAG 2.2 AA.
+  1322→
+  1323→Check:
+  1324→
+  1325→* contrast
+  1326→* keyboard navigation
+  1327→* focus indicators
+  1328→* screen readers
+  1329→* semantic HTML
+  1330→* labels
+  1331→* accessible forms
+  1332→* accessible errors
+  1333→* accessible dialogs
+  1334→* alt text
+  1335→* headings
+  1336→* responsive reflow
+  1337→* touch targets
+  1338→* reduced motion
+  1339→* loading states
+  1340→* status messages
+  1341→
+  1342→Never communicate meaning through color alone.
+  1343→
+  1344→⸻
+  1345→
+  1346→39. COPYRIGHT
+  1347→
+  1348→Create an asset licensing register.
+  1349→
+  1350→For every external asset record:
+  1351→
+  1352→* source
+  1353→* owner
+  1354→* license
+  1355→* commercial-use permission
+  1356→* attribution requirements
+  1357→* modification rights
+  1358→* redistribution rights
+  1359→* evidence
+  1360→
+  1361→Audit:
+  1362→
+  1363→* images
+  1364→* fonts
+  1365→* music
+  1366→* sound effects
+  1367→* video
+  1368→* 3D assets
+  1369→* icons
+  1370→* templates
+  1371→* screenshots
+  1372→* third-party code
+  1373→
+  1374→If licensing is unclear:
+  1375→
+  1376→REMOVE OR REPLACE THE ASSET.
+  1377→
+  1378→Do not assume “found online” means free to use.
+  1379→
+  1380→⸻
+  1381→
+  1382→40. LEGAL PAGES
+  1383→
+  1384→Create:
+  1385→
+  1386→/terms
+  1387→/privacy
+  1388→/cookies
+  1389→/refunds
+  1390→/acceptable-use
+  1391→/copyright
+  1392→/accessibility
+  1393→/voice-rights
+  1394→/abuse
+  1395→
+  1396→Legal pages must contain:
+  1397→
+  1398→* real operator/business information
+  1399→* effective date
+  1400→* last updated date
+  1401→* clear language
+  1402→* appropriate contact information
+  1403→* relevant rights/processes
+  1404→
+  1405→Do not invent legal entities, addresses, registration numbers, certifications, or lawyer approvals.
+  1406→
+  1407→Do not copy another company’s legal pages.
+  1408→
+  1409→Legal text should receive professional review where appropriate.
+  1410→
+  1411→⸻
+  1412→
+  1413→41. REFUNDS
+  1414→
+  1415→Refund policy must accurately match the actual billing system.
+  1416→
+  1417→Address where applicable:
+  1418→
+  1419→* subscriptions
+  1420→* renewals
+  1421→* cancellations
+  1422→* credits
+  1423→* unused credits
+  1424→* failed generations
+  1425→* duplicate charges
+  1426→* outages
+  1427→* refund process
+  1428→* applicable consumer rights
+  1429→
+  1430→Do not promise refunds that the actual payment system cannot support.
+  1431→
+  1432→⸻
+  1433→
+  1434→42. CONSUMER PROTECTION
+  1435→
+  1436→Review consumer-facing claims.
+  1437→
+  1438→Do not make unsupported claims such as:
+  1439→
+  1440→* fastest
+  1441→* best
+  1442→* instant
+  1443→* zero latency
+  1444→* unlimited
+  1445→* 100% private
+  1446→* completely secure
+  1447→* bank-grade
+  1448→* works everywhere
+  1449→* works on every phone
+  1450→* guaranteed
+  1451→* enterprise-grade
+  1452→
+  1453→Unless objectively supported.
+  1454→
+  1455→⸻
+  1456→
+  1457→43. ANALYTICS
+  1458→
+  1459→If PostHog or another analytics platform is used:
+  1460→
+  1461→* minimize collected data
+  1462→* document what is collected
+  1463→* classify tracking
+  1464→* obtain consent where required
+  1465→* avoid unnecessary session recording
+  1466→* provide privacy controls
+  1467→
+  1468→Never collect sensitive media unnecessarily for analytics.
+  1469→
+  1470→⸻
+  1471→
+  1472→44. COST CONTROL
+  1473→
+  1474→Everything should be free or open-source where genuinely possible.
+  1475→
+  1476→But do NOT claim:
+  1477→
+  1478→“Everything is free.”
+  1479→
+  1480→Instead identify:
+  1481→
+  1482→* free tier
+  1483→* paid tier
+  1484→* limits
+  1485→* payment requirement
+  1486→* likely cost
+  1487→* user-paid opportunities
+  1488→* optional infrastructure
+  1489→
+  1490→Prioritize:
+  1491→
+  1492→$0 upfront
+  1493→↓
+  1494→free tier
+  1495→↓
+  1496→pay-as-you-go
+  1497→↓
+  1498→user-funded usage
+  1499→↓
+  1500→paid infrastructure only when justified
+  1501→
+  1502→Never abuse free tiers.
+  1503→
+  1504→Never violate provider terms to avoid paying.
+  1505→
+  1506→⸻
+  1507→
+  1508→45. AI COMPUTE SLEEP SYSTEM
+  1509→
+  1510→Workers should not stay running unnecessarily.
+  1511→
+  1512→Implement:
+  1513→
+  1514→NO JOB
+  1515→↓
+  1516→IDLE
+  1517→↓
+  1518→TIMEOUT
+  1519→↓
+  1520→DRAIN
+  1521→↓
+  1522→SLEEP / SHUTDOWN
+  1523→
+  1524→When a new job arrives:
+  1525→
+  1526→JOB
+  1527→↓
+  1528→CAPABILITY CHECK
+  1529→↓
+  1530→WORKER WAKE
+  1531→↓
+  1532→HEALTH CHECK
+  1533→↓
+  1534→MODEL LOAD
+  1535→↓
+  1536→READY
+  1537→↓
+  1538→EXECUTE
+  1539→
+  1540→This reduces compute consumption.
+  1541→
+  1542→Do not promise instant startup if the infrastructure has cold-start latency.
+  1543→
+  1544→⸻
+  1545→
+  1546→46. MOBILE PERFORMANCE
+  1547→
+  1548→The mobile application must work on realistic devices.
+  1549→
+  1550→Optimize:
+  1551→
+  1552→* video resolution
+  1553→* bitrate
+  1554→* frame rate
+  1555→* memory
+  1556→* battery
+  1557→* network recovery
+  1558→* CPU usage
+  1559→* GPU usage
+  1560→* 3D assets
+  1561→* image sizes
+  1562→* background behavior
+  1563→
+  1564→Provide degraded modes when necessary.
+  1565→
+  1566→⸻
+  1567→
+  1568→47. LOW-BANDWIDTH MODE
+  1569→
+  1570→Create a low-bandwidth mode.
+  1571→
+  1572→Allow:
+  1573→
+  1574→* lower video resolution
+  1575→* lower bitrate
+  1576→* lower frame rate
+  1577→* reduced 3D
+  1578→* audio-first fallback
+  1579→* reconnection
+  1580→* session recovery
+  1581→
+  1582→The application should not simply crash because network quality changes.
+  1583→
+  1584→⸻
+  1585→
+  1586→48. REAL-TIME STATUS UI
+  1587→
+  1588→Users should see real operational status.
+  1589→
+  1590→Example:
+  1591→
+  1592→Connecting
+  1593→Checking session
+  1594→Finding compatible worker
+  1595→Worker assigned
+  1596→Loading model
+  1597→Preparing live session
+  1598→Live
+  1599→Network degraded
+  1600→Recovering
+  1601→Completed
+  1602→
+  1603→These messages must come from real backend/session state.
+  1604→
+  1605→Do not fake activity.
+  1606→
+  1607→⸻
+  1608→
+  1609→49. DOCUMENTATION
+  1610→
+  1611→Create in-app documentation.
+  1612→
+  1613→Explain:
+  1614→
+  1615→* how to create an account
+  1616→* how to create a character
+  1617→* how consent works
+  1618→* how to start a live session
+  1619→* how phone-to-phone mode works
+  1620→* how to use fullscreen output
+  1621→* how to use the web application
+  1622→* how to use Android
+  1623→* how to use iOS
+  1624→* limitations
+  1625→* supported platforms
+  1626→* troubleshooting
+  1627→* privacy controls
+  1628→* deletion
+  1629→* reporting abuse
+  1630→* copyright complaints
+  1631→* refunds
+  1632→
+  1633→Documentation must be understandable to normal users.
+  1634→
+  1635→⸻
+  1636→
+  1637→50. ADMIN DOCUMENTATION
+  1638→
+  1639→Create administrator documentation covering:
+  1640→
+  1641→* users
+  1642→* moderation
+  1643→* workers
+  1644→* providers
+  1645→* Brain
+  1646→* jobs
+  1647→* sessions
+  1648→* content
+  1649→* assets
+  1650→* feature flags
+  1651→* emergency controls
+  1652→* audit logs
+  1653→* security
+  1654→* incident recovery
+  1655→* backups
+  1656→* deployments
+  1657→
+  1658→⸻
+  1659→
+  1660→51. TESTING
+  1661→
+  1662→Perform:
+  1663→
+  1664→UNIT TESTS
+  1665→
+  1666→For:
+  1667→
+  1668→* Brain tools
+  1669→* validation
+  1670→* authorization
+  1671→* worker selection
+  1672→* session state
+  1673→* job state
+  1674→* consent
+  1675→* permissions
+  1676→* storage access
+  1677→
+  1678→INTEGRATION TESTS
+  1679→
+  1680→Test:
+  1681→
+  1682→* authentication
+  1683→* database
+  1684→* storage
+  1685→* worker registration
+  1686→* job execution
+  1687→* session creation
+  1688→* media processing
+  1689→* admin actions
+  1690→
+  1691→END-TO-END TESTS
+  1692→
+  1693→Test:
+  1694→
+  1695→SIGNUP
+  1696→↓
+  1697→LOGIN
+  1698→↓
+  1699→CREATE CHARACTER
+  1700→↓
+  1701→UPLOAD ASSET
+  1702→↓
+  1703→CONSENT
+  1704→↓
+  1705→START SESSION
+  1706→↓
+  1707→WORKER ASSIGNMENT
+  1708→↓
+  1709→PROCESSING
+  1710→↓
+  1711→LIVE OUTPUT
+  1712→↓
+  1713→STOP
+  1714→↓
+  1715→SAVE RESULT
+  1716→
+  1717→FAILURE TESTS
+  1718→
+  1719→Simulate:
+  1720→
+  1721→* worker failure
+  1722→* network failure
+  1723→* model failure
+  1724→* storage failure
+  1725→* API timeout
+  1726→* duplicate job
+  1727→* expired session
+  1728→* unauthorized access
+  1729→* invalid upload
+  1730→* revoked consent
+  1731→
+  1732→⸻
+  1733→
+  1734→52. SECURITY TESTING
+  1735→
+  1736→Attempt to break the application.
+  1737→
+  1738→Test:
+  1739→
+  1740→* user accessing another user
+  1741→* user accessing admin
+  1742→* modified IDs
+  1743→* modified roles
+  1744→* expired sessions
+  1745→* invalid JWT/session
+  1746→* malicious uploads
+  1747→* prompt injection
+  1748→* worker spoofing
+  1749→* API abuse
+  1750→* rate-limit bypass
+  1751→* direct object access
+  1752→* malicious filenames
+  1753→* command injection
+  1754→* SSRF
+  1755→* XSS
+  1756→* CSRF
+  1757→
+  1758→Fix every critical issue before release.
+  1759→
+  1760→⸻
+  1761→
+  1762→53. DEPLOYMENT
+  1763→
+  1764→The final architecture must be deployable.
+  1765→
+  1766→Document:
+  1767→
+  1768→* frontend deployment
+  1769→* backend deployment
+  1770→* database deployment
+  1771→* object storage
+  1772→* WebRTC/SFU
+  1773→* worker deployment
+  1774→* environment variables
+  1775→* secrets
+  1776→* migrations
+  1777→* monitoring
+  1778→* logging
+  1779→* backups
+  1780→* domain
+  1781→* HTTPS
+  1782→* DNS
+  1783→
+  1784→Do not create an architecture that only works on your development machine.
+  1785→
+  1786→⸻
+  1787→
+  1788→54. ENVIRONMENT VARIABLES
+  1789→
+  1790→Create a safe environment variable system.
+  1791→
+  1792→Separate:
+  1793→
+  1794→PUBLIC
+  1795→SERVER
+  1796→WORKER
+  1797→ADMIN
+  1798→PAYMENT
+  1799→AI
+  1800→STORAGE
+  1801→DATABASE
+  1802→
+  1803→Never expose server secrets to the client.
+  1804→
+  1805→Provide an .env.example.
+  1806→
+  1807→Never commit actual credentials.
+  1808→
+  1809→⸻
+  1810→
+  1811→55. ERROR HANDLING
+  1812→
+  1813→Every major subsystem must have proper errors.
+  1814→
+  1815→Users should see useful messages.
+  1816→
+  1817→Developers/admins should receive detailed logs.
+  1818→
+  1819→Do not expose:
+  1820→
+  1821→* database credentials
+  1822→* API keys
+  1823→* internal secrets
+  1824→* stack traces
+  1825→* private infrastructure information
+  1826→
+  1827→to normal users.
+  1828→
+  1829→⸻
+  1830→
+  1831→56. OBSERVABILITY
+  1832→
+  1833→Implement appropriate:
+  1834→
+  1835→* structured logs
+  1836→* metrics
+  1837→* health checks
+  1838→* worker health
+  1839→* job monitoring
+  1840→* session monitoring
+  1841→* error tracking
+  1842→* audit logs
+  1843→
+  1844→The admin panel should provide operational visibility.
+  1845→
+  1846→⸻
+  1847→
+  1848→57. BACKUPS AND RECOVERY
+  1849→
+  1850→Define:
+  1851→
+  1852→* database backup strategy
+  1853→* media retention
+  1854→* recovery process
+  1855→* worker recovery
+  1856→* job recovery
+  1857→* configuration recovery
+  1858→* incident logging
+  1859→
+  1860→Do not claim backups exist unless actually configured.
+  1861→
+  1862→⸻
+  1863→
+  1864→58. DOMAIN AND LAUNCH REQUIREMENTS
+  1865→
+  1866→Before declaring the project finished:
+  1867→
+  1868→* custom domain connected
+  1869→* HTTPS active
+  1870→* favicon added
+  1871→* metadata configured
+  1872→* Open Graph metadata configured
+  1873→* mobile responsive
+  1874→* production build passes
+  1875→* builder branding removed where permitted
+  1876→* no development banners
+  1877→* no placeholder text
+  1878→* no fake data
+  1879→* no broken links
+  1880→* no console errors that matter
+  1881→* no critical security issues
+  1882→* legal pages accessible
+  1883→
+  1884→⸻
+  1885→
+  1886→59. FINAL LEGAL/SECURITY/A11Y GATE
+  1887→
+  1888→Before launch perform a final audit covering:
+  1889→
+  1890→SECURITY
+  1891→
+  1892→* authentication
+  1893→* authorization
+  1894→* RBAC
+  1895→* sessions
+  1896→* cookies
+  1897→* CSRF
+  1898→* CORS
+  1899→* XSS
+  1900→* SQL injection
+  1901→* BOLA/IDOR
+  1902→* SSRF
+  1903→* uploads
+  1904→* worker authentication
+  1905→* Brain permissions
+  1906→* secrets
+  1907→* rate limits
+  1908→* webhooks
+  1909→* payments
+  1910→* FFmpeg
+  1911→
+  1912→PRIVACY
+  1913→
+  1914→* data inventory
+  1915→* consent
+  1916→* cookies
+  1917→* analytics
+  1918→* face data
+  1919→* voice data
+  1920→* retention
+  1921→* deletion
+  1922→* export
+  1923→* processors
+  1924→* third parties
+  1925→
+  1926→COPYRIGHT
+  1927→
+  1928→* images
+  1929→* fonts
+  1930→* audio
+  1931→* music
+  1932→* videos
+  1933→* 3D
+  1934→* code
+  1935→* third-party libraries
+  1936→
+  1937→ACCESSIBILITY
+  1938→
+  1939→* WCAG 2.2 AA
+  1940→* keyboard
+  1941→* screen readers
+  1942→* contrast
+  1943→* labels
+  1944→* focus
+  1945→* reduced motion
+  1946→* responsive reflow
+  1947→
+  1948→CONSUMER
+  1949→
+  1950→* prices
+  1951→* subscriptions
+  1952→* renewals
+  1953→* refunds
+  1954→* cancellation
+  1955→* credits
+  1956→* claims
+  1957→* terms
+  1958→
+  1959→⸻
+  1960→
+  1961→60. SOURCE OF TRUTH
+  1962→
+  1963→Create a central technical document containing:
+  1964→
+  1965→ARCHITECTURE.md
+  1966→
+  1967→It must document:
+  1968→
+  1969→* architecture
+  1970→* services
+  1971→* databases
+  1972→* APIs
+  1973→* worker protocol
+  1974→* session state
+  1975→* job state
+  1976→* Brain tools
+  1977→* security model
+  1978→* permissions
+  1979→* storage
+  1980→* media flow
+  1981→* mobile flow
+  1982→* deployment
+  1983→* environment variables
+  1984→* recovery
+  1985→* cost model
+  1986→* legal/compliance considerations
+  1987→
+  1988→Also create:
+  1989→
+  1990→SECURITY.md
+  1991→PRIVACY-DATA-MAP.md
+  1992→WORKER-PROTOCOL.md
+  1993→BRAIN-TOOLS.md
+  1994→DEPLOYMENT.md
+  1995→ADMIN-GUIDE.md
+  1996→USER-GUIDE.md
+  1997→
+  1998→⸻
+  1999→
+  2000→61. IMPLEMENTATION WORKFLOW
+
+[showing lines 1-2000 of 2356; use offset=2001 with limit to continue reading]

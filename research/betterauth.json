@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://www.reddit.com/r/nextjs/comments/1ivktp2/best_authentication_libraries_for_nextjs_app_2025",
+    "name": "Auth in Next.js in 2025 - do I really need a 3rd party? : r/nextjs",
+    "snippet": "3rd party auth libraries everyone is promoting. Clerk, Kinde, Firebase, Supabase, etc... if you want a library , use better - auth , dont give auth ...",
+    "host_name": "www.reddit.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://blog.logrocket.com",
+    "name": "I tested every major auth library for Next.js in 2026",
+    "snippet": "Apr 20, 2026 — As of September 2025 , the Better Auth team took over Auth . js maintenance, and the library is in security-patch mode. IDC, SCIM, Directory Sync, ...",
+    "host_name": "blog.logrocket.com",
+    "rank": 1,
+    "date": "Apr 20, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://better-auth.com",
+    "name": "Auth.js is now part of Better Auth",
+    "snippet": "Sep 22, 2025 — We're excited to announce that Auth.js, formerly known as NextAuth.js , is now being maintained and overseen by Better Auth team. Read more",
+    "host_name": "better-auth.com",
+    "rank": 2,
+    "date": "Sep 22, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://dev.to",
+    "name": "Best Authentication Libraries for Next.js in 2025 🔐",
+    "snippet": "Apr 14, 2025 — 1. NextAuth.js · Supports OAuth, magic links, email/password, and more. · Easy to integrate with databases or go database-less. · Type-safe with ... Read more",
+    "host_name": "dev.to",
+    "rank": 3,
+    "date": "Apr 14, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.devtoolsacademy.com",
+    "name": "BetterAuth vs NextAuth: Choose the Right Auth Library for",
+    "snippet": "May 30, 2025 — Both libraries aim to be straightforward to add to a project, but developers report notable differences in ease of setup and configuration. Read more",
+    "host_name": "www.devtoolsacademy.com",
+    "rank": 4,
+    "date": "May 30, 2025",
+    "favicon": ""
+  }
+]

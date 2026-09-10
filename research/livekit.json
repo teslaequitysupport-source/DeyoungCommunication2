@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://livekit.com/pricing",
+    "name": "Pricing - LiveKit",
+    "snippet": "No credit card required • 1,000 free agent session minutes monthly. The open source framework and cloud platform for voice, video, and physical AI agents.",
+    "host_name": "livekit.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://docs.livekit.io/deploy/admin/quotas-and-limits",
+    "name": "Quotas and limits - LiveKit Documentation",
+    "snippet": "WebRTC transport Cloud. every plan includes 40,000 free requests per month. every plan includes 7,500 free requests per month. connected to a WebRTC or ... Quotas And Limits · Webrtc Transport · Livekit Inference",
+    "host_name": "docs.livekit.io",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://livekit.com/blog/announcing-livekit-cloud",
+    "name": "Announcing LiveKit Cloud",
+    "snippet": "Oct 24, 2022 · LiveKit was uniquely positioned as a free, fully open-source stack with more features, SDK integrations and documentation than even commercial ...",
+    "host_name": "livekit.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/FoundryVTT/comments/18dooe3/anyone_have_experience_with_livekit_for_voice_and",
+    "name": "Anyone have experience with LiveKit for voice and if it's better than",
+    "snippet": "Dec 8, 2023 · setting up your own is free, Since the free tier supports 4 cpus and 24 gb, Open-Source WebRTC Video Calls (Self-Hosted, Privacy-Focused)",
+    "host_name": "www.reddit.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://getstream.io/glossary/livekit",
+    "name": "LiveKit - What is it and how does it work?",
+    "snippet": "Is LiveKit Free or Paid? LiveKit is free if you self-host. The managed cloud version is paid, but includes a free tier. Who Uses LiveKit? LiveKit is used by ...",
+    "host_name": "getstream.io",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

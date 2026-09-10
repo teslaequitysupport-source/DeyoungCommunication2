@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://www.runpod.io/pricing",
+    "name": "GPU Cloud Pricing | Per-Second H100, A100, RTX - Runpod",
+    "snippet": "Runpod pricing depends on the GPU workload you. Serverless for API inference, A5000, 3090, MIG 24GB ・ workloads. $ 0.69 /hr 16 GB ・ $ 0.58 /hr ・ and pay ...",
+    "host_name": "www.runpod.io",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.runpod.io/gpu-models/rtx-a5000",
+    "name": "RTX A5000 GPU Rental | Specs and Pricing - Runpod",
+    "snippet": "Rent NVIDIA RTX A5000 GPUs from $0.27/hr. Professional workstation GPU based on Ampere architecture with 24GB GDDR6 memory and 8,192 CUDA cores for balanced ...",
+    "host_name": "www.runpod.io",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://tech-insider.org/runpod-vs-lambda-vs-vast-ai-2026",
+    "name": "RunPod vs Lambda vs Vast.ai: GPU Pricing 2026 - Tech Insider",
+    "snippet": "Aug 17, 2026 · RunPod pricing guide puts the RTX A5000 Pod at just $0.27 an hour on the low end. Serverless, and Clusters,",
+    "host_name": "tech-insider.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.hivenet.com/post/runpod-pricing-complete-guide-to-gpu-cloud-costs",
+    "name": "RunPod pricing in 2026: GPU Pods, Serverless, and storage - Hivenet",
+    "snippet": "Nov 24, 2025 · RunPod's public prices ranged from $0.27 per hour for an RTX A5000 Pod to $7.89 per hour for. Serverless hourly equivalents ranged from $0.58",
+    "host_name": "www.hivenet.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://computeprices.com/providers/runpod/gpus/rtxa5000",
+    "name": "RTX A5000 Price on Runpod: $0.160/hr | ComputePrices.com",
+    "snippet": "Aug 16, 2026 · Current Runpod RTX A5000 pricing, from $0.160/hour. See every Runpod configuration and how it compares with 7 cloud providers offering the ...",
+    "host_name": "computeprices.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

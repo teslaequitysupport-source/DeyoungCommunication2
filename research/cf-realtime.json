@@ -1,0 +1,29 @@
+[
+  {
+    "url": "https://developers.cloudflare.com",
+    "name": "TURN Service · Cloudflare Realtime docs",
+    "snippet": "Using Cloudflare Realtime TURN service is available free of charge when used together with the Realtime SFU . Otherwise, it costs $0.05/ real-time GB outbound",
+    "host_name": "developers.cloudflare.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://blog.cloudflare.com",
+    "name": "Make your apps truly interactive with Cloudflare Realtime",
+    "snippet": "Apr 9, 2025 — Our SFU and TURN products continue to be one of the most affordable ways to build WebRTC apps at scale, at 5 cents per GB after 1,000 GB of free ... Read more",
+    "host_name": "blog.cloudflare.com",
+    "rank": 1,
+    "date": "Apr 9, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://community.sap.com",
+    "name": "Building a Voice AI Bot on Cloudflare Realtime SFU",
+    "snippet": "Aug 21, 2026 — Cost story: Cloudflare bills on egress bandwidth only — $0.05/GB with 1 TB free, no per-minute meters. LiveKit Cloud adds per-minute meters ( ... Read more",
+    "host_name": "community.sap.com",
+    "rank": 2,
+    "date": "Aug 21, 2026",
+    "favicon": ""
+  }
+]

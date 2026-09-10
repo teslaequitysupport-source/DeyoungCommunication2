@@ -1,0 +1,2356 @@
+ULTIMATE BUILD PROMPT
+
+Premium AI Live Character Platform + Web + Android + iOS + AI Brain + GPU Worker Fleet + Full Admin Control Plane
+
+You are acting as the Principal Software Architect, Senior Full-Stack Engineer, AI Infrastructure Engineer, Mobile Engineer, WebRTC Engineer, DevOps Engineer, Cybersecurity Engineer, Product Designer, Accessibility Engineer, QA Engineer, and Technical Project Manager for this project.
+
+Your job is to transform the existing project into a real, production-capable AI live-character platform, not a mockup, prototype, demo, landing-page-only project, or collection of fake UI screens.
+
+The finished system must work as an independent web application and mobile application, with a real backend, real authentication, real AI orchestration, real worker infrastructure, real media processing, real storage, real administration, real security controls, and real deployment architecture.
+
+⸻
+
+1. ABSOLUTE RULES
+
+These rules override convenience.
+
+NEVER:
+
+* Invent functionality.
+* Fake functionality.
+* Create mock AI workers and pretend they are real.
+* Create fake GPU status.
+* Create fake processing percentages.
+* Create fake user counts.
+* Create fake reviews.
+* Create fake testimonials.
+* Create fake customer logos.
+* Create fake partnerships.
+* Create fake integrations.
+* Create fake security claims.
+* Create fake performance claims.
+* Create fake AI activity.
+* Create fake worker activity.
+* Create fake analytics.
+* Claim something works when it has not been tested.
+* Guess API capabilities.
+* Guess provider pricing.
+* Guess provider limits.
+* Guess model licensing.
+* Guess commercial-use rights.
+* Guess Nigerian availability.
+* Hard-code secrets.
+* Expose API keys.
+* Give the AI Brain unrestricted shell access.
+* Allow users to access another user’s data.
+* Allow ordinary users to access admin functionality.
+* Build around unsupported assumptions.
+* Use placeholder content in production.
+* Use lorem ipsum.
+* Add unnecessary dependencies.
+* Add technology merely because it is popular.
+* Add infrastructure that cannot realistically run.
+
+If something cannot currently be implemented, say so clearly and design the correct fallback instead of faking it.
+
+⸻
+
+2. FIRST PHASE: AUDIT
+
+Before changing code, perform a complete audit of the existing project.
+
+Inspect:
+
+* repository structure
+* package configuration
+* frontend
+* backend
+* API routes
+* database
+* authentication
+* authorization
+* storage
+* media processing
+* AI integrations
+* worker implementation
+* environment variables
+* deployment configuration
+* mobile implementation
+* WebRTC implementation
+* existing Brain/orchestrator
+* existing UI
+* existing admin functionality
+* existing analytics
+* existing security controls
+* existing legal pages
+* accessibility
+* third-party services
+* dependencies
+* build process
+* deployment process
+* error handling
+* logging
+* tests
+* performance
+
+Do not assume existing code is correct.
+
+Identify:
+
+1. What already works.
+2. What partially works.
+3. What is broken.
+4. What is simulated.
+5. What is insecure.
+6. What should be kept.
+7. What should be replaced.
+8. What should be refactored.
+9. What is missing.
+
+Do not destroy working functionality unnecessarily.
+
+⸻
+
+3. RESEARCH BEFORE ARCHITECTURE
+
+Before selecting infrastructure, verify current official documentation.
+
+Research the current versions, limitations, pricing, free tiers, commercial-use restrictions, API capabilities, geographic availability, authentication requirements, and deployment requirements for every external service.
+
+Prioritize official documentation.
+
+Potential technologies may include:
+
+* Next.js
+* TypeScript
+* React
+* React Native
+* Expo
+* Better Auth
+* PostgreSQL
+* Drizzle ORM
+* Cloudflare R2
+* Cloudflare Realtime
+* LiveKit
+* WebRTC
+* FFmpeg
+* Redis
+* durable job queues
+* Kaggle
+* Hugging Face
+* MiniMax H3
+* PostHog
+* Cloudflare
+* Vercel
+* Railway
+* other appropriate infrastructure
+
+Do NOT automatically use all of them.
+
+Choose technologies based on:
+
+* reliability
+* cost
+* free-tier availability
+* Nigeria accessibility
+* performance
+* security
+* scalability
+* operational complexity
+* mobile compatibility
+* WebRTC compatibility
+* GPU compatibility
+* commercial licensing
+
+Explain why each major technology is being selected.
+
+⸻
+
+4. ARCHITECTURE
+
+Use a clear three-plane architecture.
+
+CONTROL PLANE
+
+Responsible for:
+
+* authentication
+* authorization
+* users
+* organizations
+* roles
+* permissions
+* characters
+* face assets
+* voice assets
+* projects
+* sessions
+* jobs
+* credits
+* billing
+* consent
+* privacy preferences
+* audit logs
+* moderation
+* feature flags
+* system configuration
+* provider registry
+* worker registry
+* capability registry
+* AI Brain
+* administration
+
+MEDIA PLANE
+
+Responsible for:
+
+* camera
+* microphone
+* WebRTC
+* live sessions
+* media transport
+* SFU
+* transformed video
+* transformed audio
+* recordings
+* live output
+* output adapters
+
+Raw live video must NOT be routed through ordinary REST requests.
+
+COMPUTE PLANE
+
+Responsible for:
+
+* GPU workers
+* AI models
+* face processing
+* voice processing
+* avatar processing
+* lip sync
+* image generation
+* video generation
+* H3
+* FFmpeg
+* model loading
+* worker health
+* worker lifecycle
+* compute allocation
+
+The three planes must remain logically separated.
+
+⸻
+
+5. AI BRAIN
+
+Build a real AI Brain/orchestrator.
+
+The Brain must understand:
+
+* user intent
+* available capabilities
+* available workers
+* worker health
+* GPU availability
+* model compatibility
+* job requirements
+* session requirements
+* cost
+* latency
+* priority
+* user plan
+* safety policy
+* provider limitations
+
+The Brain must route tasks intelligently.
+
+Architecture:
+
+LLM
+↓
+Structured Tool Request
+↓
+Schema Validation
+↓
+Authorization
+↓
+Policy Engine
+↓
+Execution
+↓
+Result
+↓
+Audit Log
+
+The Brain must NOT have unrestricted shell access.
+
+The Brain must NOT be able to:
+
+* execute arbitrary shell commands
+* modify security controls
+* grant itself permissions
+* access arbitrary secrets
+* bypass authorization
+* bypass billing
+* delete arbitrary production data
+* disable security systems
+* modify admin permissions without authorization
+
+Every Brain action must use explicitly registered tools.
+
+Every tool must have:
+
+* name
+* description
+* schema
+* permissions
+* validation
+* rate limits
+* audit logging
+* failure handling
+
+⸻
+
+6. GPU WORKER SYSTEM
+
+Create a provider-independent worker architecture.
+
+The platform should treat GPU providers as workers rather than hard-code the entire application around one provider.
+
+Worker protocol:
+
+REGISTER
+HEARTBEAT
+HEALTH
+CAPABILITIES
+RESERVE
+ALLOCATE
+LOAD_MODEL
+START
+STREAM
+STATUS
+STOP
+RELEASE
+DRAIN
+SHUTDOWN
+ERROR
+RESULT
+
+Worker lifecycle:
+
+BOOT
+↓
+REGISTER
+↓
+HEALTH CHECK
+↓
+IDLE
+↓
+RESERVED
+↓
+LOADING
+↓
+READY
+↓
+BUSY
+↓
+DRAINING
+↓
+IDLE
+↓
+SLEEP / SHUTDOWN
+
+Workers must automatically report:
+
+* provider
+* worker ID
+* GPU
+* VRAM
+* available memory
+* model availability
+* supported capabilities
+* version
+* health
+* current load
+* latency
+* active jobs
+* heartbeat
+* region
+* estimated cost
+
+⸻
+
+7. WORKER FAILURE RECOVERY
+
+If a worker stops responding:
+
+1. Detect heartbeat failure.
+2. Mark worker unhealthy.
+3. Stop assigning new work.
+4. Determine whether the current job can be recovered.
+5. Retry if safe.
+6. Reassign when possible.
+7. Record the incident.
+8. Notify the session manager.
+9. Restore the session where technically possible.
+10. Never pretend the worker is still running.
+
+Use idempotency so retries do not duplicate jobs.
+
+⸻
+
+8. WORKER SELECTION
+
+The Brain must select workers based on:
+
+* capability
+* GPU type
+* VRAM
+* model compatibility
+* health
+* load
+* latency
+* region
+* plan
+* queue
+* cost
+* availability
+
+Example:
+
+A live face-processing task should not be sent to a worker that only supports offline video generation.
+
+A video-generation task requiring H3 must only be sent to a worker that actually supports the required H3 capability.
+
+⸻
+
+9. H3
+
+Treat H3 as a model/capability, not as the architecture.
+
+Before production use:
+
+* verify the current official model/API
+* verify current capabilities
+* verify licensing
+* verify commercial-use rights
+* verify hardware requirements
+* verify supported deployment methods
+* verify whether real-time usage is actually supported
+* verify provider restrictions
+
+Do not claim H3 provides a capability unless verified.
+
+⸻
+
+10. KAGGLE WORKERS
+
+Kaggle may be used as an experimental or development worker where technically and contractually appropriate.
+
+Do not make Kaggle the unquestioned production backbone.
+
+Verify:
+
+* current limits
+* session duration
+* GPU availability
+* terms
+* automation restrictions
+* commercial-use restrictions
+* API capabilities
+
+If Kaggle is unsuitable for production, design the worker abstraction so another provider can replace it without rebuilding the application.
+
+⸻
+
+11. LIVE VIDEO ARCHITECTURE
+
+Use WebRTC for real-time camera and microphone transport.
+
+Architecture:
+
+USER CAMERA
+↓
+WEBRTC
+↓
+MEDIA SESSION
+↓
+SFU / MEDIA TRANSPORT
+↓
+AI PROCESSING
+↓
+TRANSFORMED VIDEO/AUDIO
+↓
+CLIENT
+
+Do not push 30 FPS video frames through normal REST endpoints.
+
+Use appropriate WebRTC/SFU infrastructure.
+
+Potential solutions:
+
+* Cloudflare Realtime
+* LiveKit
+* another properly verified WebRTC infrastructure
+
+Choose one after research.
+
+⸻
+
+12. LIVE SESSION STATE
+
+Implement explicit session states:
+
+CREATED
+VALIDATING
+WAITING_FOR_WORKER
+WORKER_ASSIGNED
+LOADING
+READY
+LIVE
+DEGRADED
+RECOVERING
+STOPPING
+COMPLETED
+FAILED
+CANCELLED
+EXPIRED
+
+The UI must reflect actual backend state.
+
+Never simulate the state.
+
+⸻
+
+13. JOB SYSTEM
+
+Every asynchronous task must have a job record.
+
+Job fields should include:
+
+* job ID
+* user ID
+* project ID
+* session ID
+* type
+* status
+* priority
+* input references
+* worker ID
+* provider
+* created time
+* started time
+* completed time
+* failure information
+* retry count
+* result
+* usage
+* cost where available
+
+Use idempotency.
+
+Use durable processing.
+
+Use retries only when safe.
+
+⸻
+
+14. MEDIA STORAGE
+
+Use database storage for metadata.
+
+Use object storage for actual media.
+
+Recommended architecture:
+
+DATABASE
+→ metadata
+OBJECT STORAGE
+→ images
+→ videos
+→ audio
+→ generated assets
+→ recordings
+
+Use:
+
+* presigned upload URLs
+* short-lived download URLs
+* ownership verification
+* MIME validation
+* file-size limits
+* extension validation
+* malware/security scanning where appropriate
+* CORS configuration
+* lifecycle rules
+* retention rules
+* deletion support
+
+Do not expose permanent public media URLs unnecessarily.
+
+⸻
+
+15. LIVE CHARACTER SYSTEM
+
+Users should be able to create/manage characters.
+
+A character may include:
+
+* name
+* face
+* appearance
+* voice
+* personality configuration
+* style
+* language
+* consent information
+* source assets
+* creation date
+* ownership
+* status
+
+The system must support character consistency.
+
+If face/voice transformation is used, the platform must have a proper authorization/consent system.
+
+⸻
+
+16. FACE AND VOICE CONSENT
+
+Create explicit consent records.
+
+Store:
+
+* user
+* asset
+* purpose
+* scope
+* timestamp
+* policy version
+* authorization status
+* withdrawal status
+
+Do not rely only on a generic Terms checkbox.
+
+Users must be able to withdraw authorization where applicable.
+
+Do not build the platform around unauthorized impersonation.
+
+⸻
+
+17. PHONE-TO-PHONE LIVE MODE
+
+Implement a practical mobile compatibility mode.
+
+Phone 1:
+
+PHONE CAMERA
+↓
+AI PROCESSING
+↓
+TRANSFORMED LIVE OUTPUT
+↓
+FULLSCREEN DISPLAY
+
+Phone 2:
+
+NORMAL PHONE CAMERA
+↓
+FILMS PHONE 1 SCREEN
+↓
+USER USES THEIR NORMAL SOCIAL APP
+
+This is a physical-camera adapter.
+
+Do NOT call this a native virtual camera.
+
+Do NOT claim that WhatsApp, Telegram, Instagram, TikTok, Facebook, or other apps will accept a virtual AI camera unless this has actually been verified on the target device/platform.
+
+Phone 1 fullscreen output should:
+
+* hide unnecessary UI
+* keep screen awake
+* preserve aspect ratio
+* support portrait orientation
+* optionally support mirror mode
+* maintain stable framing
+* show minimal status information
+* support low-bandwidth mode
+* recover from connection loss
+
+⸻
+
+18. SOCIAL PLATFORM COMPATIBILITY
+
+Treat each platform separately.
+
+Test where possible:
+
+* WhatsApp
+* Telegram
+* Instagram
+* Facebook
+* TikTok
+* YouTube
+* other relevant platforms
+
+Do not advertise unsupported integrations.
+
+If direct integration is impossible, explain the limitation and provide the phone-to-phone adapter.
+
+⸻
+
+19. OUTPUT ADAPTER ARCHITECTURE
+
+Create an adapter layer.
+
+Possible adapters:
+
+NATIVE_WEB
+NATIVE_MOBILE
+WEBRTC_LIVE
+PHONE_TO_PHONE
+OBS
+RECORDING
+RTMP
+FUTURE_INTEGRATIONS
+
+Each adapter must have explicit capability declarations.
+
+⸻
+
+20. WEB APPLICATION
+
+Build a real modern web application.
+
+Recommended baseline:
+
+* Next.js
+* TypeScript
+* React
+* server-side validation
+* secure API architecture
+
+Do not over-engineer.
+
+The web application must include:
+
+* landing page
+* authentication
+* dashboard
+* projects
+* character studio
+* live studio
+* media library
+* recordings
+* settings
+* account management
+* consent management
+* privacy controls
+* billing/credits where applicable
+* help/documentation
+* legal pages
+
+⸻
+
+21. MOBILE APPLICATION
+
+Build a REAL mobile application.
+
+Preferred:
+
+* React Native
+* Expo where appropriate
+
+Do NOT simply wrap the website in a WebView and call it a native app.
+
+Mobile must support:
+
+* camera permissions
+* microphone permissions
+* live sessions
+* transformed preview
+* character selection
+* media upload
+* media download
+* session recovery
+* network recovery
+* low-bandwidth operation
+* orientation handling
+* fullscreen live output
+* account management
+* notifications where implemented
+
+Use platform-specific APIs where required.
+
+⸻
+
+22. PREMIUM UI/UX
+
+The visual design must feel premium, modern, intentional, and product-focused.
+
+Use:
+
+* sophisticated typography
+* strong spacing
+* carefully designed grids
+* premium cards where appropriate
+* subtle depth
+* realistic 3D elements
+* meaningful motion
+* cinematic presentation
+* polished interaction states
+* excellent responsive behavior
+
+But avoid visual noise.
+
+⸻
+
+23. STRICT ANTI-AI-SLOP DESIGN RULES
+
+DO NOT use:
+
+* purple gradients everywhere
+* generic blue/purple AI dashboards
+* excessive glassmorphism
+* random glowing blobs
+* random floating AI robots
+* random holograms
+* random particles
+* emoji icons
+* giant generic AI faces
+* fake futuristic interfaces
+* excessive rounded pill buttons
+* fake counters
+* fake reviews
+* fake testimonials
+* fake logos
+* fake metrics
+* generic stock AI imagery
+* AI-slop copy
+* vague marketing claims
+* cursor trails
+* cursor animations
+* unnecessary scroll-triggered animations
+* excessive parallax
+* excessive spinning objects
+* animation for the sake of animation
+
+3D must communicate something real about the product.
+
+⸻
+
+24. 3D SYSTEM
+
+Use 3D where it genuinely improves the product.
+
+Possible applications:
+
+* character visualization
+* live character preview
+* camera framing
+* product visualization
+* interactive studio environment
+* visual processing states
+* character showcase
+
+Provide performance fallbacks.
+
+Desktop may use richer 3D.
+
+Mobile should use optimized assets.
+
+Provide reduced-motion behavior.
+
+Do not make the website slow just to make it look futuristic.
+
+⸻
+
+25. HERO SECTION
+
+The hero must clearly communicate what the product actually does.
+
+Do not use vague phrases like:
+
+“AI that changes everything.”
+
+Instead communicate the actual capability.
+
+The hero should show real product functionality.
+
+No fake counters.
+
+No fake live users.
+
+No fake processing claims.
+
+No fake testimonials.
+
+⸻
+
+26. ADMIN CONTROL PLANE
+
+Build a full administration system.
+
+The admin panel must NOT be a hidden backdoor.
+
+Use:
+
+* RBAC
+* explicit permissions
+* secure authentication
+* MFA where appropriate
+* audit logs
+* session security
+* least privilege
+
+Admin capabilities should include:
+
+USERS
+
+* view users
+* search users
+* suspend
+* ban
+* unban
+* restore
+* inspect account state
+* inspect sessions
+* manage roles
+* view usage
+* review reports
+
+CONTENT
+
+Manage:
+
+* characters
+* photos
+* videos
+* audio
+* fonts
+* 3D assets
+* templates
+* system media
+* generated content
+
+Include:
+
+* upload
+* edit
+* draft
+* publish
+* unpublish
+* replace
+* archive
+* delete
+* rollback
+
+SITE
+
+Control:
+
+* navigation
+* homepage sections
+* announcements
+* feature flags
+* maintenance mode
+* enabled capabilities
+* configuration
+
+AI BRAIN
+
+Admin controls for:
+
+* enabled tools
+* model configuration
+* routing rules
+* capability registry
+* worker selection policies
+* provider availability
+* safety policies
+* rate limits
+
+Never allow the admin UI to expose raw secrets.
+
+WORKERS
+
+Admin must see:
+
+* provider
+* worker
+* GPU
+* VRAM
+* status
+* health
+* active jobs
+* queue
+* model
+* capability
+* heartbeat
+* errors
+* latency
+
+Controls:
+
+* enable
+* disable
+* drain
+* restart where supported
+* remove
+* maintenance mode
+
+EMERGENCY CONTROLS
+
+Include controlled emergency functions such as:
+
+* disable specific capability
+* disable provider
+* stop new jobs
+* maintenance mode
+* disable uploads
+* disable live sessions
+* emergency moderation controls
+
+Everything must be audited.
+
+⸻
+
+27. USER ROLES
+
+At minimum:
+
+USER
+MODERATOR
+SUPPORT
+ADMIN
+SUPER_ADMIN
+
+Do not assume every admin should have every permission.
+
+Use granular permissions.
+
+⸻
+
+28. AUTHENTICATION
+
+Use secure authentication.
+
+Potential choice:
+
+Better Auth.
+
+Support where appropriate:
+
+* email/password
+* sessions
+* OAuth
+* passkeys
+* 2FA
+* organization access
+
+Production cookies should be secure HTTP-only cookies where applicable.
+
+Configure trusted origins correctly.
+
+Never store plaintext passwords.
+
+Never expose session secrets.
+
+⸻
+
+29. DATABASE
+
+Use PostgreSQL or another properly justified relational database.
+
+Suggested ORM:
+
+Drizzle.
+
+Design proper relationships for:
+
+* users
+* organizations
+* roles
+* permissions
+* sessions
+* characters
+* assets
+* projects
+* live sessions
+* jobs
+* workers
+* providers
+* capabilities
+* credits
+* billing
+* consent
+* reports
+* moderation
+* audit logs
+* feature flags
+
+Use migrations.
+
+Use indexes intentionally.
+
+Do not create an enormous database schema without purpose.
+
+⸻
+
+30. SECURITY
+
+Perform a serious security audit.
+
+Test for:
+
+* broken authentication
+* broken authorization
+* IDOR/BOLA
+* privilege escalation
+* SQL injection
+* XSS
+* CSRF
+* SSRF
+* command injection
+* path traversal
+* insecure uploads
+* malicious file handling
+* arbitrary FFmpeg execution
+* API abuse
+* rate-limit bypass
+* secret leakage
+* webhook spoofing
+* session hijacking
+* CORS problems
+* insecure cookies
+* exposed admin routes
+* insecure worker registration
+* worker impersonation
+* Brain tool abuse
+* prompt injection
+* resource exhaustion
+* job duplication
+* replay attacks
+* unauthorized media access
+
+Follow least privilege.
+
+Validate everything server-side.
+
+Do not trust frontend authorization.
+
+⸻
+
+31. WORKER SECURITY
+
+Workers must authenticate with the control plane.
+
+Do not allow any random machine to register itself as a trusted worker.
+
+Use:
+
+* worker credentials
+* signed requests where appropriate
+* rotating credentials
+* heartbeat authentication
+* capability validation
+* authorization
+* revocation
+* audit logs
+
+Never put production secrets inside public frontend code.
+
+⸻
+
+32. FFmpeg SECURITY
+
+Treat uploaded media as untrusted input.
+
+Never blindly execute arbitrary user-provided FFmpeg arguments.
+
+Use:
+
+* controlled commands
+* validated paths
+* sandboxing where possible
+* resource limits
+* timeout limits
+* file-size limits
+* codec restrictions where appropriate
+
+⸻
+
+33. MODERATION
+
+Implement abuse reporting.
+
+Users should be able to report:
+
+* impersonation
+* harassment
+* illegal content
+* unauthorized likeness
+* unauthorized voice
+* sexual/deepfake abuse
+* scams
+* fraud
+* copyright violations
+* other prohibited activity
+
+Admins must be able to:
+
+* review
+* suspend
+* ban
+* remove
+* restore
+* document decisions
+
+⸻
+
+34. ACCEPTABLE USE
+
+The platform must prohibit use for:
+
+* fraud
+* scams
+* identity theft
+* deceptive impersonation
+* unauthorized likeness use
+* unauthorized voice cloning
+* non-consensual sexual/deepfake content
+* harassment
+* extortion
+* criminal activity
+* platform abuse
+
+The system should technically enforce these rules where possible.
+
+⸻
+
+35. PRIVACY
+
+Create a real privacy/data map.
+
+For every data type document:
+
+* what is collected
+* why it is collected
+* how it is collected
+* legal basis where applicable
+* where it is stored
+* who processes it
+* retention period
+* who can access it
+* deletion method
+* export method
+
+Minimize data collection.
+
+Do not retain media forever by default.
+
+Implement account deletion.
+
+Implement appropriate data deletion/retention workflows.
+
+⸻
+
+36. NIGERIA DATA PROTECTION
+
+Because this service will be available in Nigeria, evaluate compliance with applicable Nigerian data-protection requirements.
+
+Review:
+
+* Nigeria Data Protection Act
+* NDPC guidance
+* consent
+* transparency
+* data minimization
+* retention
+* security
+* data-subject rights
+* processors
+* cross-border processing
+* biometric/voice-related data
+* high-risk processing
+* DPIA requirements where applicable
+
+Do not claim legal compliance simply because pages exist.
+
+Identify areas requiring professional legal review.
+
+⸻
+
+37. COOKIES AND TRACKING
+
+Audit:
+
+* cookies
+* localStorage
+* sessionStorage
+* IndexedDB
+* analytics
+* pixels
+* telemetry
+* session recording
+* third-party scripts
+* advertising technology
+
+Classify:
+
+NECESSARY
+PREFERENCES
+ANALYTICS
+MARKETING
+
+Non-essential tracking must not silently activate where consent is required.
+
+Cookie controls should provide appropriate choices such as:
+
+* Accept All
+* Reject Non-Essential
+* Manage Preferences
+
+Provide withdrawal/change controls.
+
+⸻
+
+38. ACCESSIBILITY
+
+Target WCAG 2.2 AA.
+
+Check:
+
+* contrast
+* keyboard navigation
+* focus indicators
+* screen readers
+* semantic HTML
+* labels
+* accessible forms
+* accessible errors
+* accessible dialogs
+* alt text
+* headings
+* responsive reflow
+* touch targets
+* reduced motion
+* loading states
+* status messages
+
+Never communicate meaning through color alone.
+
+⸻
+
+39. COPYRIGHT
+
+Create an asset licensing register.
+
+For every external asset record:
+
+* source
+* owner
+* license
+* commercial-use permission
+* attribution requirements
+* modification rights
+* redistribution rights
+* evidence
+
+Audit:
+
+* images
+* fonts
+* music
+* sound effects
+* video
+* 3D assets
+* icons
+* templates
+* screenshots
+* third-party code
+
+If licensing is unclear:
+
+REMOVE OR REPLACE THE ASSET.
+
+Do not assume “found online” means free to use.
+
+⸻
+
+40. LEGAL PAGES
+
+Create:
+
+/terms
+/privacy
+/cookies
+/refunds
+/acceptable-use
+/copyright
+/accessibility
+/voice-rights
+/abuse
+
+Legal pages must contain:
+
+* real operator/business information
+* effective date
+* last updated date
+* clear language
+* appropriate contact information
+* relevant rights/processes
+
+Do not invent legal entities, addresses, registration numbers, certifications, or lawyer approvals.
+
+Do not copy another company’s legal pages.
+
+Legal text should receive professional review where appropriate.
+
+⸻
+
+41. REFUNDS
+
+Refund policy must accurately match the actual billing system.
+
+Address where applicable:
+
+* subscriptions
+* renewals
+* cancellations
+* credits
+* unused credits
+* failed generations
+* duplicate charges
+* outages
+* refund process
+* applicable consumer rights
+
+Do not promise refunds that the actual payment system cannot support.
+
+⸻
+
+42. CONSUMER PROTECTION
+
+Review consumer-facing claims.
+
+Do not make unsupported claims such as:
+
+* fastest
+* best
+* instant
+* zero latency
+* unlimited
+* 100% private
+* completely secure
+* bank-grade
+* works everywhere
+* works on every phone
+* guaranteed
+* enterprise-grade
+
+Unless objectively supported.
+
+⸻
+
+43. ANALYTICS
+
+If PostHog or another analytics platform is used:
+
+* minimize collected data
+* document what is collected
+* classify tracking
+* obtain consent where required
+* avoid unnecessary session recording
+* provide privacy controls
+
+Never collect sensitive media unnecessarily for analytics.
+
+⸻
+
+44. COST CONTROL
+
+Everything should be free or open-source where genuinely possible.
+
+But do NOT claim:
+
+“Everything is free.”
+
+Instead identify:
+
+* free tier
+* paid tier
+* limits
+* payment requirement
+* likely cost
+* user-paid opportunities
+* optional infrastructure
+
+Prioritize:
+
+$0 upfront
+↓
+free tier
+↓
+pay-as-you-go
+↓
+user-funded usage
+↓
+paid infrastructure only when justified
+
+Never abuse free tiers.
+
+Never violate provider terms to avoid paying.
+
+⸻
+
+45. AI COMPUTE SLEEP SYSTEM
+
+Workers should not stay running unnecessarily.
+
+Implement:
+
+NO JOB
+↓
+IDLE
+↓
+TIMEOUT
+↓
+DRAIN
+↓
+SLEEP / SHUTDOWN
+
+When a new job arrives:
+
+JOB
+↓
+CAPABILITY CHECK
+↓
+WORKER WAKE
+↓
+HEALTH CHECK
+↓
+MODEL LOAD
+↓
+READY
+↓
+EXECUTE
+
+This reduces compute consumption.
+
+Do not promise instant startup if the infrastructure has cold-start latency.
+
+⸻
+
+46. MOBILE PERFORMANCE
+
+The mobile application must work on realistic devices.
+
+Optimize:
+
+* video resolution
+* bitrate
+* frame rate
+* memory
+* battery
+* network recovery
+* CPU usage
+* GPU usage
+* 3D assets
+* image sizes
+* background behavior
+
+Provide degraded modes when necessary.
+
+⸻
+
+47. LOW-BANDWIDTH MODE
+
+Create a low-bandwidth mode.
+
+Allow:
+
+* lower video resolution
+* lower bitrate
+* lower frame rate
+* reduced 3D
+* audio-first fallback
+* reconnection
+* session recovery
+
+The application should not simply crash because network quality changes.
+
+⸻
+
+48. REAL-TIME STATUS UI
+
+Users should see real operational status.
+
+Example:
+
+Connecting
+Checking session
+Finding compatible worker
+Worker assigned
+Loading model
+Preparing live session
+Live
+Network degraded
+Recovering
+Completed
+
+These messages must come from real backend/session state.
+
+Do not fake activity.
+
+⸻
+
+49. DOCUMENTATION
+
+Create in-app documentation.
+
+Explain:
+
+* how to create an account
+* how to create a character
+* how consent works
+* how to start a live session
+* how phone-to-phone mode works
+* how to use fullscreen output
+* how to use the web application
+* how to use Android
+* how to use iOS
+* limitations
+* supported platforms
+* troubleshooting
+* privacy controls
+* deletion
+* reporting abuse
+* copyright complaints
+* refunds
+
+Documentation must be understandable to normal users.
+
+⸻
+
+50. ADMIN DOCUMENTATION
+
+Create administrator documentation covering:
+
+* users
+* moderation
+* workers
+* providers
+* Brain
+* jobs
+* sessions
+* content
+* assets
+* feature flags
+* emergency controls
+* audit logs
+* security
+* incident recovery
+* backups
+* deployments
+
+⸻
+
+51. TESTING
+
+Perform:
+
+UNIT TESTS
+
+For:
+
+* Brain tools
+* validation
+* authorization
+* worker selection
+* session state
+* job state
+* consent
+* permissions
+* storage access
+
+INTEGRATION TESTS
+
+Test:
+
+* authentication
+* database
+* storage
+* worker registration
+* job execution
+* session creation
+* media processing
+* admin actions
+
+END-TO-END TESTS
+
+Test:
+
+SIGNUP
+↓
+LOGIN
+↓
+CREATE CHARACTER
+↓
+UPLOAD ASSET
+↓
+CONSENT
+↓
+START SESSION
+↓
+WORKER ASSIGNMENT
+↓
+PROCESSING
+↓
+LIVE OUTPUT
+↓
+STOP
+↓
+SAVE RESULT
+
+FAILURE TESTS
+
+Simulate:
+
+* worker failure
+* network failure
+* model failure
+* storage failure
+* API timeout
+* duplicate job
+* expired session
+* unauthorized access
+* invalid upload
+* revoked consent
+
+⸻
+
+52. SECURITY TESTING
+
+Attempt to break the application.
+
+Test:
+
+* user accessing another user
+* user accessing admin
+* modified IDs
+* modified roles
+* expired sessions
+* invalid JWT/session
+* malicious uploads
+* prompt injection
+* worker spoofing
+* API abuse
+* rate-limit bypass
+* direct object access
+* malicious filenames
+* command injection
+* SSRF
+* XSS
+* CSRF
+
+Fix every critical issue before release.
+
+⸻
+
+53. DEPLOYMENT
+
+The final architecture must be deployable.
+
+Document:
+
+* frontend deployment
+* backend deployment
+* database deployment
+* object storage
+* WebRTC/SFU
+* worker deployment
+* environment variables
+* secrets
+* migrations
+* monitoring
+* logging
+* backups
+* domain
+* HTTPS
+* DNS
+
+Do not create an architecture that only works on your development machine.
+
+⸻
+
+54. ENVIRONMENT VARIABLES
+
+Create a safe environment variable system.
+
+Separate:
+
+PUBLIC
+SERVER
+WORKER
+ADMIN
+PAYMENT
+AI
+STORAGE
+DATABASE
+
+Never expose server secrets to the client.
+
+Provide an .env.example.
+
+Never commit actual credentials.
+
+⸻
+
+55. ERROR HANDLING
+
+Every major subsystem must have proper errors.
+
+Users should see useful messages.
+
+Developers/admins should receive detailed logs.
+
+Do not expose:
+
+* database credentials
+* API keys
+* internal secrets
+* stack traces
+* private infrastructure information
+
+to normal users.
+
+⸻
+
+56. OBSERVABILITY
+
+Implement appropriate:
+
+* structured logs
+* metrics
+* health checks
+* worker health
+* job monitoring
+* session monitoring
+* error tracking
+* audit logs
+
+The admin panel should provide operational visibility.
+
+⸻
+
+57. BACKUPS AND RECOVERY
+
+Define:
+
+* database backup strategy
+* media retention
+* recovery process
+* worker recovery
+* job recovery
+* configuration recovery
+* incident logging
+
+Do not claim backups exist unless actually configured.
+
+⸻
+
+58. DOMAIN AND LAUNCH REQUIREMENTS
+
+Before declaring the project finished:
+
+* custom domain connected
+* HTTPS active
+* favicon added
+* metadata configured
+* Open Graph metadata configured
+* mobile responsive
+* production build passes
+* builder branding removed where permitted
+* no development banners
+* no placeholder text
+* no fake data
+* no broken links
+* no console errors that matter
+* no critical security issues
+* legal pages accessible
+
+⸻
+
+59. FINAL LEGAL/SECURITY/A11Y GATE
+
+Before launch perform a final audit covering:
+
+SECURITY
+
+* authentication
+* authorization
+* RBAC
+* sessions
+* cookies
+* CSRF
+* CORS
+* XSS
+* SQL injection
+* BOLA/IDOR
+* SSRF
+* uploads
+* worker authentication
+* Brain permissions
+* secrets
+* rate limits
+* webhooks
+* payments
+* FFmpeg
+
+PRIVACY
+
+* data inventory
+* consent
+* cookies
+* analytics
+* face data
+* voice data
+* retention
+* deletion
+* export
+* processors
+* third parties
+
+COPYRIGHT
+
+* images
+* fonts
+* audio
+* music
+* videos
+* 3D
+* code
+* third-party libraries
+
+ACCESSIBILITY
+
+* WCAG 2.2 AA
+* keyboard
+* screen readers
+* contrast
+* labels
+* focus
+* reduced motion
+* responsive reflow
+
+CONSUMER
+
+* prices
+* subscriptions
+* renewals
+* refunds
+* cancellation
+* credits
+* claims
+* terms
+
+⸻
+
+60. SOURCE OF TRUTH
+
+Create a central technical document containing:
+
+ARCHITECTURE.md
+
+It must document:
+
+* architecture
+* services
+* databases
+* APIs
+* worker protocol
+* session state
+* job state
+* Brain tools
+* security model
+* permissions
+* storage
+* media flow
+* mobile flow
+* deployment
+* environment variables
+* recovery
+* cost model
+* legal/compliance considerations
+
+Also create:
+
+SECURITY.md
+PRIVACY-DATA-MAP.md
+WORKER-PROTOCOL.md
+BRAIN-TOOLS.md
+DEPLOYMENT.md
+ADMIN-GUIDE.md
+USER-GUIDE.md
+
+⸻
+
+61. IMPLEMENTATION WORKFLOW
+
+You must follow this workflow:
+
+AUDIT
+↓
+RESEARCH
+↓
+ARCHITECTURE
+↓
+IMPLEMENTATION PLAN
+↓
+WAIT FOR APPROVAL
+↓
+BUILD
+↓
+TEST
+↓
+SECURITY AUDIT
+↓
+ACCESSIBILITY AUDIT
+↓
+LEGAL/PRIVACY AUDIT
+↓
+PERFORMANCE AUDIT
+↓
+FIX
+↓
+RETEST
+↓
+FINAL AUDIT
+↓
+DEPLOY
+
+Do NOT jump directly into coding.
+
+First give me:
+
+1. Current architecture audit.
+2. Problems discovered.
+3. Proposed architecture.
+4. Technology decisions.
+5. Why each technology is appropriate.
+6. Cost/free-tier analysis.
+7. Worker architecture.
+8. Brain architecture.
+9. Web architecture.
+10. Mobile architecture.
+11. Security model.
+12. Privacy/legal considerations.
+13. Accessibility plan.
+14. Testing plan.
+15. Deployment plan.
+16. Exact implementation phases.
+17. Risks and fallback plans.
+
+Then STOP and wait for approval before performing major destructive changes.
+
+⸻
+
+62. CODE QUALITY
+
+Write production-quality code.
+
+Requirements:
+
+* TypeScript strict mode where appropriate
+* strong typing
+* validation
+* clear module boundaries
+* reusable components
+* tests
+* error handling
+* secure defaults
+* comments only where useful
+* no dead code
+* no fake implementations
+* no unused dependencies
+* no duplicated architecture
+
+Do not generate thousands of lines simply to appear sophisticated.
+
+Prefer simple systems that actually work.
+
+⸻
+
+63. GIT WORKFLOW
+
+Use:
+
+AUDIT
+↓
+TASK
+↓
+IMPLEMENT
+↓
+TEST
+↓
+AUDIT
+↓
+FIX
+↓
+RETEST
+↓
+COMMIT
+
+Make focused commits.
+
+Do not make giant unreviewable commits.
+
+Commit messages should explain what changed.
+
+⸻
+
+64. TERMINAL / TERMUX COMPATIBILITY
+
+The development workflow should work with:
+
+* Windows 10
+* VS Code
+* terminal
+* Termux where applicable
+
+Do not require a powerful local GPU.
+
+GPU workloads should run remotely.
+
+Clearly separate:
+
+LOCAL DEVELOPMENT
+
+from:
+
+REMOTE GPU COMPUTE
+
+⸻
+
+65. NO FALSE COMPLETION
+
+Never say:
+
+“Done.”
+
+unless the feature has actually been implemented and tested.
+
+Instead report:
+
+IMPLEMENTED
+TESTED
+PARTIALLY TESTED
+BLOCKED
+NOT IMPLEMENTED
+REQUIRES EXTERNAL CREDENTIAL
+REQUIRES PROVIDER
+REQUIRES MANUAL VERIFICATION
+
+If something requires an API key, payment account, app-store account, domain, certificate, or external approval, clearly identify it.
+
+⸻
+
+66. FINAL PRODUCT STANDARD
+
+The final product must feel like a serious technology product.
+
+It must NOT feel like:
+
+* a student project
+* a template
+* a generated dashboard
+* an AI mockup
+* a fake startup
+* a collection of disconnected pages
+* a demo pretending to be production
+
+It must feel coherent from:
+
+LANDING PAGE
+→
+AUTH
+→
+DASHBOARD
+→
+CHARACTER
+→
+LIVE STUDIO
+→
+AI PROCESSING
+→
+OUTPUT
+→
+MEDIA LIBRARY
+→
+ACCOUNT
+→
+ADMIN
+
+Everything must connect to the same underlying architecture.
+
+⸻
+
+67. MOST IMPORTANT PRINCIPLE
+
+If there is a conflict between:
+
+LOOKING IMPRESSIVE
+
+and
+
+ACTUALLY WORKING
+
+choose:
+
+ACTUALLY WORKING.
+
+If there is a conflict between:
+
+CHEAP
+
+and
+
+SECURE
+
+choose security, then find a cheaper secure implementation.
+
+If there is a conflict between:
+
+FAST DEVELOPMENT
+
+and
+
+CORRECT ARCHITECTURE
+
+choose correct architecture.
+
+If something is impossible with the current technology, explain exactly why and provide the closest legitimate alternative.
+
+If a provider’s free tier cannot support the required workload, say so.
+
+If a feature cannot work on iOS or Android because of operating-system restrictions, say so.
+
+If WhatsApp or Telegram does not support a requested camera/audio architecture, say so.
+
+Never hide limitations.
+
+⸻
+
+68. FINAL RELEASE CHECKLIST
+
+Do not declare production-ready until all applicable items below are verified:
+
+[ ] Architecture audited
+[ ] Existing code audited
+[ ] Official documentation researched
+[ ] Dependencies verified
+[ ] Authentication tested
+[ ] Authorization tested
+[ ] RBAC tested
+[ ] Database tested
+[ ] Storage tested
+[ ] Upload security tested
+[ ] Worker registration tested
+[ ] Worker heartbeat tested
+[ ] Worker failure recovery tested
+[ ] Worker selection tested
+[ ] Brain tools tested
+[ ] Brain authorization tested
+[ ] Job system tested
+[ ] Session system tested
+[ ] WebRTC tested
+[ ] Live processing tested
+[ ] Mobile camera tested
+[ ] Mobile microphone tested
+[ ] Phone-to-phone mode tested
+[ ] Low-bandwidth mode tested
+[ ] Character system tested
+[ ] Face/voice consent tested
+[ ] Moderation tested
+[ ] Admin panel tested
+[ ] Audit logging tested
+[ ] Security audit completed
+[ ] Privacy audit completed
+[ ] Cookie audit completed
+[ ] Copyright audit completed
+[ ] Accessibility audit completed
+[ ] Legal pages completed
+[ ] Refund policy matches billing
+[ ] Account deletion tested
+[ ] Data retention tested
+[ ] No fake reviews
+[ ] No fake metrics
+[ ] No fake logos
+[ ] No unsupported claims
+[ ] No fake functionality
+[ ] No exposed secrets
+[ ] No critical vulnerabilities
+[ ] Production build passes
+[ ] Mobile builds pass
+[ ] HTTPS active
+[ ] Custom domain active
+[ ] Favicon active
+[ ] Builder branding removed where permitted
+[ ] Documentation complete
+[ ] Deployment tested
+[ ] Recovery tested
+[ ] Final audit completed
+
+⸻
+
+FINAL INSTRUCTION
+
+You are not being asked to merely generate a beautiful interface.
+
+You are being asked to engineer the actual system behind the interface.
+
+Think like the team responsible for keeping this platform running after real users arrive.
+
+Research first.
+
+Audit first.
+
+Verify first.
+
+Design correctly.
+
+Build incrementally.
+
+Test aggressively.
+
+Fix problems.
+
+Retest.
+
+Do not fabricate.
+
+Do not guess.
+
+Do not hide limitations.
+
+Do not ship broken functionality.
+
+Do not call a mock a real implementation.
+
+Do not sacrifice security for convenience.
+
+Do not sacrifice functionality for visual effects.
+
+Do not sacrifice accessibility for aesthetics.
+
+Do not sacrifice legal/privacy requirements for speed.
+
+And above everything:
+
+MAKE NO MISTAKES THAT CAN BE PREVENTED BY PROPER AUDITING, RESEARCH, TESTING, AND VERIFICATION.
+
+Start with the AUDIT + RESEARCH PHASE ONLY.
+
+Do not begin the major implementation until you have presented the findings, proposed architecture, risks, costs, dependencies, and implementation plan for approval.

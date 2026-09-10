@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://posthog.com",
+    "name": "PostHog pricing – Start free, scale when you need",
+    "snippet": "Generous monthly free tiers on every product , usage-based pricing after that, and no surprise bills. Analytics 1M events Session replay 5K recordings ・ 2500 ...",
+    "host_name": "posthog.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://schematichq.com",
+    "name": "PostHog Pricing: How Much Does PostHog Cost in 2026?",
+    "snippet": "Aug 19, 2026 — The first one million events per month are free . After that, pricing starts at $0.0000500/event for 1–2 million events and decreases as volume ... Read more",
+    "host_name": "schematichq.com",
+    "rank": 1,
+    "date": "Aug 19, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://userpilot.com",
+    "name": "PostHog Features in 2026: What's Free vs. Cloud-Only",
+    "snippet": "Aug 26, 2026 — PostHog Cloud's generous free tier gives you 1 million analytics events a month, 5 alerts, and 5 dashboard subscriptions, all of which reset ... Read more",
+    "host_name": "userpilot.com",
+    "rank": 2,
+    "date": "Aug 26, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.usercall.co",
+    "name": "PostHog Pricing Free Plan 2026: When Charges Start",
+    "snippet": "Sep 2, 2026 — Free plan: $0/month, no credit card required . Includes 1M product analytics events, 5K session recordings, 1M feature flag requests, 1,500 ... Read more",
+    "host_name": "www.usercall.co",
+    "rank": 3,
+    "date": "Sep 2, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://scrapegraphai.com",
+    "name": "PostHog Pricing, Status, and GitHub Activity",
+    "snippet": "Jun 25, 2026 — PostHog's pricing page highlights free usage for core products such as product analytics, session replay, feature flags, and related tools. The ... Read more",
+    "host_name": "scrapegraphai.com",
+    "rank": 4,
+    "date": "Jun 25, 2026",
+    "favicon": ""
+  }
+]

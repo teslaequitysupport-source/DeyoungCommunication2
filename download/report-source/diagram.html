@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 1000px; font-family: 'Helvetica Neue', Arial, sans-serif; background: #ffffff; padding: 24px 28px; }
+  .canvas { width: 944px; display: flex; flex-direction: column; gap: 0; }
+
+  .plane { border: 1.5px solid #c0d0e2; border-radius: 10px; background: #f8fafd; }
+  .plane-head { display: flex; align-items: baseline; gap: 14px; padding: 12px 18px 8px 18px; }
+  .plane-name { font-size: 24px; font-weight: 700; color: #1a4a7a; letter-spacing: 0.5px; }
+  .plane-desc { font-size: 16px; color: #5a7a96; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; padding: 4px 18px 16px 18px; max-width: 100%; }
+  .chip { flex: 0 1 auto; min-width: 96px; max-width: 100%; background: #e4ecf5; border: 1px solid #c0d0e2;
+          border-radius: 7px; padding: 9px 14px; font-size: 19px; color: #142840; overflow-wrap: break-word; }
+  .chip b { color: #1a4a7a; }
+
+  .row { display: flex; gap: 14px; max-width: 100%; }
+  .clients { width: 218px; flex: 0 0 218px; display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+  .client { border: 1.5px solid #c0d0e2; border-radius: 10px; background: #edf2f9; padding: 12px 14px; }
+  .client .t { font-size: 20px; font-weight: 700; color: #142840; }
+  .client .d { font-size: 16px; color: #5a7a96; margin-top: 3px; line-height: 1.35; }
+
+  .connector { display: flex; align-items: center; gap: 12px; padding: 7px 0 7px 109px; }
+  .conn-line { width: 2px; align-self: stretch; background: #2d7ab3; flex: 0 0 2px; margin-left: 4px; }
+  .conn-body { display: flex; align-items: center; gap: 10px; }
+  .conn-arrow { font-size: 20px; color: #2d7ab3; }
+  .conn-label { font-size: 17px; color: #2d7ab3; font-weight: 600; letter-spacing: 0.4px; }
+  .conn-sub { font-size: 15px; color: #5a7a96; font-weight: 400; }
+
+  .legend { margin-top: 14px; padding: 10px 16px; border: 1px dashed #c0d0e2; border-radius: 8px;
+            background: #f8fafd; font-size: 16px; color: #5a7a96; line-height: 1.5; }
+  .legend b { color: #142840; }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="row">
+    <div class="clients">
+      <div class="client"><div class="t">Web App</div><div class="d">Next.js · browser</div></div>
+      <div class="client"><div class="t">Mobile App</div><div class="d">Expo React Native</div></div>
+    </div>
+    <div class="plane" style="flex:1 1 auto;">
+      <div class="plane-head"><span class="plane-name">CONTROL PLANE</span><span class="plane-desc">state, identity, orchestration</span></div>
+      <div class="chips">
+        <div class="chip"><b>Next.js API</b> routes</div>
+        <div class="chip"><b>Better Auth</b> sessions</div>
+        <div class="chip"><b>AI Brain</b> + tool registry</div>
+        <div class="chip"><b>Jobs</b> durable queue</div>
+        <div class="chip"><b>Consent</b> records</div>
+        <div class="chip"><b>Admin</b> RBAC + audit</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><div class="conn-line"></div>
+    <div class="conn-body"><span class="conn-arrow">&#8595;&#8593;</span>
+    <span class="conn-label">HTTPS · REST + WebSocket&nbsp;&nbsp;<span class="conn-sub">commands, session state, job status (never raw video)</span></span></div>
+  </div>
+
+  <div class="row">
+    <div class="plane" style="width: 218px; flex: 0 0 218px;">
+      <div class="plane-head" style="padding-bottom:12px;"><span class="plane-name" style="font-size:20px;">SFU</span></div>
+      <div class="chips" style="padding-top:0;"><div class="chip">LiveKit<br>rooms</div></div>
+    </div>
+    <div class="plane" style="flex:1 1 auto;">
+      <div class="plane-head"><span class="plane-name">MEDIA PLANE</span><span class="plane-desc">real-time transport</span></div>
+      <div class="chips">
+        <div class="chip"><b>LiveKit SFU</b> + TURN</div>
+        <div class="chip"><b>Live sessions</b> state machine</div>
+        <div class="chip"><b>Transformed</b> video / audio out</div>
+        <div class="chip"><b>Recordings</b> to R2</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><div class="conn-line"></div>
+    <div class="conn-body"><span class="conn-arrow">&#8595;&#8593;</span>
+    <span class="conn-label">WebRTC · SRTP / RTP&nbsp;&nbsp;<span class="conn-sub">camera + microphone tracks; workers join rooms as participants</span></span></div>
+  </div>
+
+  <div class="plane">
+    <div class="plane-head"><span class="plane-name">COMPUTE PLANE</span><span class="plane-desc">GPU workloads</span></div>
+    <div class="chips">
+      <div class="chip"><b>GPU workers</b> RunPod pods</div>
+      <div class="chip"><b>Face / voice</b> processing</div>
+      <div class="chip"><b>Avatar + lip sync</b></div>
+      <div class="chip"><b>MiniMax H3</b> via official API</div>
+      <div class="chip"><b>FFmpeg</b> sandboxed</div>
+      <div class="chip"><b>Worker agent</b> register · heartbeat · sleep</div>
+    </div>
+  </div>
+
+  <div class="legend"><b>Provider independence:</b> GPU providers (RunPod, future hosts, dev-only Kaggle) appear to the control plane only as authenticated workers speaking one protocol; models (H3 and successors) are capabilities, not architecture. Media never crosses ordinary REST endpoints.</div>
+</div>
+</body>
+</html>

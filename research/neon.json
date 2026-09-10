@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://neon.com/pricing",
+    "name": "Neon pricing",
+    "snippet": "Build and learn free with no time limits and no credit card required. On the Free plan, each project gets 100 CU-hours of database compute per month, and ...",
+    "host_name": "neon.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/PostgreSQL/comments/1fnydzg/neon_silliness",
+    "name": "Neon silliness : r/PostgreSQL - Reddit",
+    "snippet": "Sep 24, 2024 · I just used Free Tier on Neon to host my DB for testing before it should be prod ready. I got an e-mail from Neon saying I used limit of 191 Neon.tech updated their pricing Neon vs. Supabase More results from www.reddit.com",
+    "host_name": "www.reddit.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@alexeylark/neon-does-going-serverless-solve-fixed-expenses-for-postgres-b54786af3f40",
+    "name": "Neon: Does Going Serverless Solve Fixed Expenses for Postgres?",
+    "snippet": "Apr 25, 2024 · Free-Tier has fixed 0.25 vCPU, 1 GB RAM, and most notably just 0.5 GB of storage. The storage plays the biggest limiting factor here, although ...",
+    "host_name": "medium.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://neon.com/docs/introduction/plans",
+    "name": "Neon plans - Neon Docs",
+    "snippet": "Postgres objects (databases, Free plan users get 0.5 GB of storage per project. The Free plan is limited to 0.5 GB per project. Free: No charge, 6-hour limit, ... Plan overview · Plan features · Usage metrics · Usage-based cost examples",
+    "host_name": "neon.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.srvrlss.io/provider/neon",
+    "name": "Neon Review 2026 - Features, Pricing & Alternatives | srvrlss",
+    "snippet": "Rating 3.9 (1) · Free · Developer Jun 18, 2026 · Neon Free gives you 0.5 GB of storage and 100 compute-hours per project per month, across up to 100 projects with 10 branches each.",
+    "host_name": "www.srvrlss.io",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

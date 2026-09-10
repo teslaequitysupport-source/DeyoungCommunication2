@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE",
+    "name": "LICENSE · MiniMaxAI/MiniMax-H3 at main - Hugging Face",
+    "snippet": "Aug 3, 2026 · Instructions to use MiniMaxAI/MiniMax-H3 with libraries, inference providers, notebooks, and local apps. Follow these links to get started.",
+    "host_name": "huggingface.co",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/MiniMaxAI/MiniMax-H3/discussions/12",
+    "name": "MiniMaxAI/MiniMax-H3 · Any License Question Ask here!",
+    "snippet": "Aug 3, 2026 · Who needs a MiniMax H3 commercial license? Anyone running MiniMax models locally for commercial work: business use, client work, or products you ...",
+    "host_name": "huggingface.co",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/LocalLLaMA/comments/1sj2oqz/minimax_m27_is_not_open_source_doa_license",
+    "name": "MiniMax M2.7 is NOT open source - DOA License :( : r/LocalLLaMA",
+    "snippet": "Apr 12, 2026 · Commercial use is banned without prior written permission from MiniMax. https://huggingface.co/MiniMaxAI/MiniMax-M2.7/blob/main/LICENSE PSA: reminder that Minimax H3 is forbidden to use in US, EU ... MiniMax-H3 now on huggingface : r/LocalLLaMA - Reddit More results from www.reddit.com",
+    "host_name": "www.reddit.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/MiniMaxAI/MiniMax-H3",
+    "name": "MiniMaxAI/MiniMax-H3 - Hugging Face",
+    "snippet": "Aug 9, 2026 · MiniMax H3 is a general-purpose, omni-modal generative system. It supports unified understanding of multimodal contexts composed of text, images ...",
+    "host_name": "huggingface.co",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://domoai.app/blog/is-minimax-h3-open-source",
+    "name": "Is MiniMax H3 Open Source? What the Weights Include - DomoAI",
+    "snippet": "Aug 20, 2026 · Yes—MiniMax H3 is publicly available as an open-weight model. However, the full H3 system is not completely open or unrestricted.",
+    "host_name": "domoai.app",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

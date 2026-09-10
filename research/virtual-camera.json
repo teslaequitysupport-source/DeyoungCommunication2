@@ -1,0 +1,38 @@
+[
+  {
+    "url": "https://obsproject.com",
+    "name": "New Whatsapp Desktop Application does not work with",
+    "snippet": "Mar 6, 2021 — WhatsApp only detects camera devices. If you would notice OBS Camera is not recognized as a device in Device Manager. Mac, Windows, iOS ,  ...",
+    "host_name": "obsproject.com",
+    "rank": 0,
+    "date": "Mar 6, 2021",
+    "favicon": ""
+  },
+  {
+    "url": "https://faq.whatsapp.com",
+    "name": "Can't use camera",
+    "snippet": "Android : Tap Settings > Apps > All apps > WhatsApp > Permissions > Camera . Then, select Allow only while using the app . WhatsApp won't take photos or videos ... Read more",
+    "host_name": "faq.whatsapp.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://discussions.apple.com",
+    "name": "Don't have access to my camera from other",
+    "snippet": "Feb 23, 2024 — Go to Settings > Privacy & Security > Camera > and turn on camera access for any app you want to have access to your camera .",
+    "host_name": "discussions.apple.com",
+    "rank": 2,
+    "date": "Feb 23, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "https://learn.microsoft.com",
+    "name": "unable to use camera while using whatsapp video calls",
+    "snippet": "Aug 5, 2026 — unable to use camera while using whatsapp video calls",
+    "host_name": "learn.microsoft.com",
+    "rank": 3,
+    "date": "Aug 5, 2026",
+    "favicon": ""
+  }
+]

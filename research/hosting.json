@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://vercel.com",
+    "name": "Vercel Pricing: Hobby, Pro, and Enterprise plans",
+    "snippet": "Hobby $0/mo . Our limits are listed here. Pro plans have a $20 included credit to use across resources. If you have a free Hobby account, you are limited to the ...",
+    "host_name": "vercel.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://temps.sh",
+    "name": "Vercel Pricing 2026: Plans, Limits & Costs - Temps",
+    "snippet": "Mar 26, 2026 — Vercel free tier limits in 2026 ( Hobby plan ): 100GB bandwidth, 1 million edge requests, 1 million function invocations, and 4 CPU-hours of ... Read more",
+    "host_name": "temps.sh",
+    "rank": 1,
+    "date": "Mar 26, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://kuberns.com",
+    "name": "Vercel Pricing Plans and Hidden Costs Explained in 2026",
+    "snippet": "Aug 16, 2026 — Vercel pricing looks simple at first: a free Hobby plan , a Pro plan at $20 per seat per month, and custom Enterprise pricing. Read more",
+    "host_name": "kuberns.com",
+    "rank": 2,
+    "date": "Aug 16, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://schematichq.com",
+    "name": "Vercel Pricing Plans and Hidden Costs Explained (2026)",
+    "snippet": "Mar 19, 2026 — Yes, Vercel's Hobby plan is free forever . However, it comes with strict limits on bandwidth, active CPU time, and storage size. Once your app ... Read more",
+    "host_name": "schematichq.com",
+    "rank": 3,
+    "date": "Mar 19, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://focusreactive.com",
+    "name": "How to Optimize Vercel Cost in 2026",
+    "snippet": "How much does Vercel cost ? Vercel pricing is tiered by plan : the Hobby plan is free forever for personal use; the Pro plan starts at around $20 per user per ... Read more",
+    "host_name": "focusreactive.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

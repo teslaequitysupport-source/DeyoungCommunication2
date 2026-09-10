@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://developers.cloudflare.com/r2/pricing",
+    "name": "R2 pricing - Cloudflare Developer Docs",
+    "snippet": "Aug 7, 2026 · There are no charges for egress bandwidth for any storage class. Free Storage 10 GB-month / month … free tier only applies to Standard storage, ... R2 pricing · Free tier · Storage usage · Sippy",
+    "host_name": "developers.cloudflare.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/CloudFlare/comments/1ic51x1/r2_pricing_serving_filesimages_is_not_free",
+    "name": "r/CloudFlare on Reddit: R2 Pricing: Serving Files/Images is *Not* Free",
+    "snippet": "Jan 28, 2025 · Cloudflare R2 does have a generous free tier, Egress (data transfer out) is FREE. This \"free egress\" means you don't get charged for pulling ... Does CloudFlare really charge $9.00 for a single R2 request - Reddit R2 Free Tier for development? : r/CloudFlare - Reddit More results from www.reddit.com",
+    "host_name": "www.reddit.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.cloudflare.com/products/r2",
+    "name": "Egress-Free Object Storage - Cloudflare R2",
+    "snippet": "zero egress fees, zero-egress fees immediately. Storage Free 10 GB-month Paid $0.015 / GB-month Standard Class A operations Free 1 million Paid $4.50",
+    "host_name": "www.cloudflare.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://nubbo.app/blog/cloudflare-r2-free-tier",
+    "name": "Cloudflare R2 free tier in 2026: what you get and when to upgrade",
+    "snippet": "Apr 3, 2026 · Everything included in Cloudflare R2 free tier: 10 GB storage, 1M Class A and 10M Class B operations, zero egress. Plus when the free tier stops",
+    "host_name": "nubbo.app",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://filebase.com/blog/cloudflare-r2-pricing-costs-savings-and-alternatives-in-2026",
+    "name": "Cloudflare R2 Pricing: Costs, Savings, and Alternatives in 2026",
+    "snippet": "Jul 20, 2026 · Cloudflare R2 has a free tier that includes 10 GB-month of storage, 1 million Class A operations, 10 million Class B operations, and free egress ...",
+    "host_name": "filebase.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

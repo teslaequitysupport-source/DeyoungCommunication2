@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://platform.minimax.io",
+    "name": "Create Video Generation Task - Models - MiniMax API Docs",
+    "snippet": "MiniMax H3 is now available ! A new-generation open general-purpose multimodal video model. Currently available: MiniMax-H3 , MiniMax-H3-Max .",
+    "host_name": "platform.minimax.io",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://fal.ai",
+    "name": "MiniMax H3 Max: Free AI Video Generator, Ranked #1,",
+    "snippet": "The same endpoints are pay-per-use through the API , at 75% off until September 14, 2026. same model is pay-per-use through the API .",
+    "host_name": "fal.ai",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co",
+    "name": "MiniMaxAI/MiniMax-H3",
+    "snippet": "Aug 9, 2026 — Use MiniMax - H3 directly via API . MiniMax H3 is a general-purpose, omni-modal generative system. images, video , and audio, and can generate  ...",
+    "host_name": "huggingface.co",
+    "rank": 2,
+    "date": "Aug 9, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.mindstudio.ai",
+    "name": "MiniMax H3 Max: Fal's Real-Time AI Video Generator",
+    "snippet": "Sep 1, 2026 — H3 Max is a speed-optimized version of MiniMax's open source H3 video model , hosted and accelerated by Fal, capable of generating a 5-second ...",
+    "host_name": "www.mindstudio.ai",
+    "rank": 3,
+    "date": "Sep 1, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.atlascloud.ai",
+    "name": "MiniMax H3 API is Now Live on Atlas Cloud - Pay As You Go",
+    "snippet": "MiniMax H3 API accepts up to 9 images, 3 videos and 3 audio tracks in one request to keep characters and voices consistent. Start today.",
+    "host_name": "www.atlascloud.ai",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://recipes.vllm.ai",
+    "name": "MiniMaxAI/MiniMax-H3",
+    "snippet": "Architecturally it is a CFG-distilled joint video /audio diffusion transformer served through vLLM-Omni's OpenAI-compatible /v1/ videos API . Every request returns ...",
+    "host_name": "recipes.vllm.ai",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  }
+]
