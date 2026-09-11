@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Typecheck (strict)
+        run: bun run typecheck
+
+      # Integration tests run against an in-memory Postgres (PGlite) with the
+      # committed Drizzle migrations applied — no service container needed.
+      - name: Test
+        run: bun run test
