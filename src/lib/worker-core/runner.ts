@@ -253,8 +253,14 @@ export class WorkerRunner {
     });
 
     socket.on("session-state", (update: { status?: string }) => {
-      if (update.status === "STOPPING" || update.status === "COMPLETED") {
-        this.scheduleFinalize(state, "session_stopping");
+      if (
+        update.status === "STOPPING" ||
+        update.status === "COMPLETED" ||
+        update.status === "FAILED" ||
+        update.status === "CANCELLED" ||
+        update.status === "EXPIRED"
+      ) {
+        this.scheduleFinalize(state, `session_${update.status.toLowerCase()}`);
       }
     });
 
@@ -332,6 +338,16 @@ export class WorkerRunner {
         framesOut: state.framesOut,
         framesCorrupt: state.framesCorrupt,
       });
+      // Liveness touch: while frames are flowing, keep the session row
+      // fresh so the scheduler's abandoned-session sweep can tell an
+      // active session from an abandoned one.
+      if (now - state.lastFrameAt < 5_000) {
+        await this.opts.controlPlane.sessionPhase(
+          state.jobId,
+          "SESSION_LIVE",
+          state.sessionId,
+        );
+      }
     }
   }
 
@@ -376,7 +392,7 @@ export class WorkerRunner {
           detail: upload.detail ?? String(upload.status),
         });
       } else {
-        await this.opts.controlPlane.jobResult(state.jobId, {
+        const result = await this.opts.controlPlane.jobResult(state.jobId, {
           result: {
             outputAssetId: null,
             transform: "dev.colorgrade",
@@ -388,6 +404,15 @@ export class WorkerRunner {
             framesOut: state.framesOut,
           },
         });
+        if (!result.ok) {
+          this.log(
+            `live ${state.sessionId}: final RESULT failed (${result.status}) — job left in its current state`,
+          );
+        } else {
+          this.log(
+            `live ${state.sessionId}: finalized with no frames (${state.finalizeReason})`,
+          );
+        }
       }
     } finally {
       state.socket.disconnect();

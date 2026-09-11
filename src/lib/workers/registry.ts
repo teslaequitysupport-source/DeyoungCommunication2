@@ -208,8 +208,9 @@ export interface HeartbeatInput {
 
 /**
  * HEARTBEAT (worker → control). Updates liveness + load. A previously
- * UNHEALTHY worker returns to IDLE (its sessions recover via job requeue,
- * not via this status alone).
+ * UNHEALTHY worker whose heartbeats resumed returns to IDLE (its in-flight
+ * jobs were already requeued when it went unhealthy — nothing is silently
+ * resurrected). DRAINING/SHUTDOWN states are respected.
  */
 export async function workerHeartbeat(
   db: PlatformDatabase,
@@ -224,6 +225,11 @@ export async function workerHeartbeat(
       updatedAt: new Date(),
     })
     .where(eq(workers.id, input.workerId));
+
+  await db.execute(sql`
+    UPDATE workers SET status = 'IDLE', updated_at = now()
+    WHERE id = ${input.workerId} AND status = 'UNHEALTHY'
+  `);
 }
 
 export interface UnhealthyOutcome {

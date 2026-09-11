@@ -293,6 +293,125 @@ describe("Failure suite — worker loss and recovery", () => {
     expect(job?.status).toBe("CANCELLED");
   });
 
+  it("stopping after the worker already finalized completes the session immediately", async () => {
+    const userId = await anyUserId();
+    const [character] = await db
+      .getDb()
+      .insert(schema.characters)
+      .values({ userId, name: "LateStopChar", status: "ACTIVE" })
+      .returning();
+    await db
+      .getDb()
+      .insert(schema.consentRecords)
+      .values({
+        userId,
+        purpose: "camera.transform.live",
+        policyVersion: "test",
+        status: "GRANTED",
+      });
+    const created = await createLiveSession(db.getDb(), {
+      userId,
+      characterId: character.id,
+    });
+    if (!created.ok) throw new Error(created.code);
+    const sessionId = created.session.id;
+
+    // The worker claims, runs, and finalizes (publisher-left path).
+    const workerB = await workerRow(WORKER_B);
+    const claimed = await claimNextJob(db.getDb(), workerB.id);
+    expect(claimed?.liveSessionId).toBe(sessionId);
+    await startJob(db.getDb(), claimed!.id, workerB.id);
+    const { completeJob } = await import("@/lib/jobs/queue");
+    const completed = await completeJob(db.getDb(), {
+      jobId: claimed!.id,
+      workerId: workerB.id,
+      result: { outputAssetId: null, note: "no frames were processed" },
+    });
+    expect(completed?.status).toBe("SUCCEEDED");
+
+    // The user presses stop only now — the session must complete, not hang.
+    const stopped = await stopLiveSession(db.getDb(), { sessionId, userId });
+    expect(stopped?.status).toBe("COMPLETED");
+  });
+
+  it("the scheduler sweep expires abandoned READY sessions (publisher never joined)", async () => {
+    const userId = await anyUserId();
+    const [character] = await db
+      .getDb()
+      .insert(schema.characters)
+      .values({ userId, name: "GhostChar", status: "ACTIVE" })
+      .returning();
+    await db
+      .getDb()
+      .insert(schema.consentRecords)
+      .values({
+        userId,
+        purpose: "camera.transform.live",
+        policyVersion: "test",
+        status: "GRANTED",
+      });
+    const created = await createLiveSession(db.getDb(), {
+      userId,
+      characterId: character.id,
+    });
+    if (!created.ok) throw new Error(created.code);
+    const sessionId = created.session.id;
+
+    const workerB = await workerRow(WORKER_B);
+    const claimed = await claimNextJob(db.getDb(), workerB.id);
+    await startJob(db.getDb(), claimed!.id, workerB.id);
+    await db
+      .getDb()
+      .execute(sql`UPDATE live_sessions SET status = 'READY' WHERE id = ${sessionId}`);
+
+    // Backdate: no activity for 10 minutes.
+    await db
+      .getDb()
+      .execute(sql`UPDATE live_sessions SET updated_at = now() - interval '10 minutes' WHERE id = ${sessionId}`);
+
+    const result = await schedulerTick(db.getDb());
+    expect(result.staleAbandonedSessions).toContain(sessionId);
+    const session = await getSession(db.getDb(), sessionId);
+    expect(session?.status).toBe("EXPIRED");
+    const { latestJobForSession } = await import("@/lib/jobs/queue");
+    const job = await latestJobForSession(db.getDb(), sessionId);
+    expect(job?.status).toBe("EXPIRED");
+  });
+
+  it("the scheduler sweep completes sessions stuck in STOPPING past their grace", async () => {
+    const userId = await anyUserId();
+    const [character] = await db
+      .getDb()
+      .insert(schema.characters)
+      .values({ userId, name: "StuckStopChar", status: "ACTIVE" })
+      .returning();
+    await db
+      .getDb()
+      .insert(schema.consentRecords)
+      .values({
+        userId,
+        purpose: "camera.transform.live",
+        policyVersion: "test",
+        status: "GRANTED",
+      });
+    const created = await createLiveSession(db.getDb(), {
+      userId,
+      characterId: character.id,
+    });
+    if (!created.ok) throw new Error(created.code);
+    const sessionId = created.session.id;
+
+    await db
+      .getDb()
+      .execute(sql`UPDATE live_sessions SET status = 'STOPPING', updated_at = now() - interval '2 minutes' WHERE id = ${sessionId}`);
+
+    const result = await schedulerTick(db.getDb());
+    expect(result.staleCompletedSessions).toContain(sessionId);
+    const session = await getSession(db.getDb(), sessionId);
+    expect(session?.status).toBe("COMPLETED");
+    expect(session?.endedAt).toBeTruthy();
+  });
+
   async function jobByKey(key: string) {
     const rows = await db
       .getDb()

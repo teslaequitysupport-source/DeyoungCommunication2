@@ -186,14 +186,17 @@ function startRoomPolling(sid: string): void {
           stopRoomPollingIfEmpty(sid);
           return;
         }
+        // Coarse heartbeat bucket: exact ms would re-emit every poll.
+        const heartbeatBucket =
+          row.heartbeat_age_ms === null ? null : row.heartbeat_age_ms > 5_000 ? 1 : 0;
         const changed =
           row.status !== state.lastStatus ||
           row.job_status !== state.lastJobStatus ||
-          row.heartbeat_age_ms !== state.workerHeartbeatAgeMs;
+          heartbeatBucket !== state.workerHeartbeatAgeMs;
         if (changed) {
           state.lastStatus = row.status;
           state.lastJobStatus = row.job_status;
-          state.workerHeartbeatAgeMs = row.heartbeat_age_ms;
+          state.workerHeartbeatAgeMs = heartbeatBucket;
           io.to(roomFor(sid)).emit("session-state", {
             status: row.status,
             jobStatus: row.job_status,

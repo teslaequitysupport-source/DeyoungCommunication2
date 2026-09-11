@@ -15,7 +15,12 @@
 
 import { and, desc, eq, sql } from "drizzle-orm";
 import type { PlatformDatabase } from "@/lib/db";
-import { characters, consentRecords, liveSessions } from "@/lib/db/schema";
+import {
+  characters,
+  consentRecords,
+  jobs as jobsTable,
+  liveSessions,
+} from "@/lib/db/schema";
 import { enqueueJob } from "@/lib/jobs/queue";
 import { recordAudit } from "@/lib/audit";
 
@@ -148,8 +153,9 @@ export async function createLiveSession(
 
 /**
  * User stop: STOPPING now; the worker finalizes and the job completion
- * moves the session to COMPLETED. If no worker ever claimed it, the
- * session (and its queued job) is cancelled directly.
+ * moves the session to COMPLETED. If the worker already finalized (e.g.
+ * publisher left first), the session completes immediately. If no worker
+ * ever claimed it, the session (and its queued job) is cancelled directly.
  */
 export async function stopLiveSession(
   db: PlatformDatabase,
@@ -187,6 +193,31 @@ export async function stopLiveSession(
       UPDATE jobs SET status = 'CANCELLED', completed_at = now()
       WHERE live_session_id = ${session.id} AND status = 'QUEUED'
     `);
+  } else {
+    // STOPPING: if the live job is already terminal, nothing will move the
+    // session anymore — complete it now instead of stranding it.
+    const [job] = await db
+      .select({ status: jobsTable.status })
+      .from(jobsTable)
+      .where(eq(jobsTable.liveSessionId, session.id))
+      .orderBy(desc(jobsTable.createdAt))
+      .limit(1);
+    if (job && ["SUCCEEDED", "FAILED", "CANCELLED", "EXPIRED"].includes(job.status)) {
+      const [completed] = await db
+        .update(liveSessions)
+        .set({ status: "COMPLETED", endedAt: new Date(), updatedAt: new Date() })
+        .where(eq(liveSessions.id, session.id))
+        .returning();
+      await recordAudit(db, {
+        actorId: input.userId,
+        action: "session.stop",
+        targetType: "live_session",
+        targetId: session.id,
+        outcome: "SUCCESS",
+        metadata: { from, to: "STOPPING", completedImmediately: true },
+      });
+      return completed as unknown as SessionRecord;
+    }
   }
 
   await recordAudit(db, {
@@ -237,14 +268,19 @@ export async function workerSessionReady(
   `);
 }
 
-/** First transformed frame flows: READY/RECOVERING → LIVE. */
+/** First transformed frame flows: READY/RECOVERING → LIVE. Idempotent —
+ *  repeated calls from the worker's stats loop touch updated_at, which the
+ *  scheduler's stale-session sweep uses as session liveness. */
 export async function sessionWentLive(
   db: PlatformDatabase,
   sessionId: string,
 ): Promise<void> {
   await db.execute(sql`
-    UPDATE live_sessions SET status = 'LIVE', started_at = now(), updated_at = now()
-    WHERE id = ${sessionId} AND status IN ('READY','RECOVERING')
+    UPDATE live_sessions SET
+      status = CASE WHEN status IN ('READY','RECOVERING') THEN 'LIVE'::live_session_status ELSE status END,
+      started_at = COALESCE(started_at, CASE WHEN status IN ('READY','RECOVERING') THEN now() END),
+      updated_at = now()
+    WHERE id = ${sessionId} AND status IN ('READY','RECOVERING','LIVE')
   `);
 }
 
