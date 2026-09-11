@@ -61,3 +61,29 @@ Work Log:
 Stage Summary:
 - Tokens fully scrubbed; LLM integration rolled back; repo clean at 2c40489.
 - P2 analysis starting.
+
+---
+Task ID: 4
+Agent: Super Z (main agent)
+Task: P2 Compute Reality — complete failure reassignment (spec §7 step 6) and the H3 official-API execution path (spec §9), on top of the committed sleep/selection work (1bc1956).
+
+Work Log:
+- Verified workspace security: token sweep found zero Baidu/ModelScope remnants; .env holds exactly the 7 pre-token vars; git history clean (confirmed Task 3's scrub held).
+- Recovery reassignment (§7.6): new src/lib/workers/recovery.ts (rerouteRequeuedJobs — skips re-claimed jobs, wakes sleeping capable workers via selection). Wired into all three requeue paths: markWorkerUnhealthy (routing outcomes join the worker.unhealthy audit metadata), failJob (post-requeue), scheduler tick's reservation sweeper.
+- Scheduler hardening: markWorkerUnhealthy now honors per-type retry budgets (jobTypeDefinition().maxRetries — live transforms retry less than batch) instead of a hardcoded 3.
+- Orphaned-job re-router (tick step 2.5): QUEUED job types with zero awake capacity wake their best sleeping capable worker (skip when a wake is already pending) — the safety net for jobs orphaned when a worker reports ERROR then dies (no requeue path owns them). Result field: orphanWakes.
+- H3 official-API client (§9): src/lib/h3/client.ts — h3ConfigFromEnv (requires BOTH H3_API_BASE_URL + H3_API_KEY; H3_MODEL/H3_GROUP_ID optional), submit/query/retrieve against the documented platform API shape, base_resp envelope checking with query-endpoint task-state interpretation (task-level Fail maps to phase:failed, unknown statuses stay pending until the executor timeout — never guessed).
+- H3 executor: src/lib/worker-core/h3-executor.ts — injectable fetch + ports (fully unit-testable); submit → bounded poll → retrieve → worker-authenticated upload → RESULT with real usage. Deterministic errors (not-configured, missing prompt) are terminal requeue:false; provider/timeout/transport failures requeue within budget.
+- Runner integration: video.h3 capability announced only when env config resolves; H3 jobs run detached from the claim loop (minutes-long generation; heartbeat counts load; mid-generation worker death recovered by §7 paths; idempotency key prevents duplicate provider work). uploadOutput refactored to public uploadJobOutput(jobId, bytes, mime).
+- worker-dev service: env-gated H3 with honest boot log ("H3 not configured — video.generate.h3 jobs will wait for a capable worker").
+- .env.example: replaced placeholder MINIMAX_API_KEY with the real H3_API_* contract (worker-side, external-credential gate).
+- Tests: tests/p2-recovery.test.ts (7 — batch/live cold-start reassignment, per-type budget exhaustion, failJob honesty + orphan wake, sweeper reassignment, reroute skip safety) and tests/p2-h3.test.ts (15 — env gate, client contract incl. status normalization and base_resp failures, executor terminal states incl. happy path with faked transport, timeout, upload failure).
+- Fixed during test-driven refinement: query-endpoint base_resp semantics (task failure vs transport error); two test-design flaws (worker-pool pollution across suites → video.h3 capability isolation; failJob wake assertion corrected to honest assigned-to-awake behavior which exposed the orphaned-job gap and produced the safety net).
+- Docs: WORKER-PROTOCOL.md (failure recovery + reassignment + H3 sections), ARCHITECTURE.md (capability table + roadmap).
+- Dev stack restarted and verified end-to-end: pglite-db :6543 (migrations re-applied after data-dir loss), next-dev :3000 (health ok, IDLE:1), media-relay :3031, control-scheduler ticking (response includes orphanWakes), worker-dev registered with honest H3 gate message.
+- Final gate: lint clean, typecheck clean, 104/104 tests.
+
+Stage Summary:
+- P2 Compute Reality COMPLETE: §45 sleep system + §8 selection (prior commit) + §7 failure recovery with reassignment + orphan safety net + §9 H3 official-API path (env-gated, live generation REQUIRES EXTERNAL CREDENTIAL per approved decision).
+- Deliverables: recovery.ts, h3/client.ts, h3-executor.ts, runner/worker-dev/tick/queue/registry integration, 22 new tests (104 total), updated docs.
+- Next: P3 Trust plane (moderation, admin console, MFA, rate limits).

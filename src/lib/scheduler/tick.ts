@@ -11,6 +11,8 @@
  *      live sessions — see markWorkerUnhealthy). SLEEPING workers are not
  *      monitored: a sleeping box sends no beats by design (spec §45).
  *   2. reservation sweeper — jobs claimed but never started are requeued,
+ *   2.5 orphaned-job re-router — QUEUED types with no awake capacity wake
+ *       their best sleeping capable worker (spec §7 step 6 safety net),
  *   3. session expiry — sessions still waiting when their TTL passes are
  *      EXPIRED (their queued job is cancelled), never left hanging.
  *   4. sleep sweep (spec §45) — IDLE workers past the idle timeout with no
@@ -24,7 +26,9 @@ import { eq, inArray, sql } from "drizzle-orm";
 import type { PlatformDatabase } from "@/lib/db";
 import { liveSessions, workers } from "@/lib/db/schema";
 import { markWorkerUnhealthy } from "@/lib/workers/registry";
-import { sleepIdleWorkers } from "@/lib/workers/sleep";
+import { sleepIdleWorkers, requestWorkerWake } from "@/lib/workers/sleep";
+import { rerouteRequeuedJobs } from "@/lib/workers/recovery";
+import { selectWorkerForJobType } from "@/lib/workers/selection";
 
 export interface SchedulerTickResult {
   ranAt: string;
@@ -35,6 +39,9 @@ export interface SchedulerTickResult {
   staleAbandonedSessions: string[];
   /** Spec §45: workers that hit the idle timeout and went to sleep. */
   sleptWorkers: string[];
+  /** Spec §7.6 safety net: sleeping workers woken for QUEUED job types
+   *  that have no awake capacity (orphaned jobs). */
+  orphanWakes: string[];
 }
 
 export const WORKER_HEARTBEAT_TIMEOUT_MS = 20_000;
@@ -58,6 +65,7 @@ export async function schedulerTick(
     staleCompletedSessions: [],
     staleAbandonedSessions: [],
     sleptWorkers: [],
+    orphanWakes: [],
   };
 
   // 1. Heartbeat monitor.
@@ -101,6 +109,39 @@ export async function schedulerTick(
     RETURNING id
   `);
   result.requeuedReservations = requeued.rows.map((r) => r.id);
+
+  // Spec §7 step 6 — reassignment: a job whose claiming worker vanished
+  // between RESERVE and START is re-routed like any other requeued job, so
+  // it does not silently wait on a sleeping box that never polls it back.
+  if (result.requeuedReservations.length > 0) {
+    await rerouteRequeuedJobs(db, result.requeuedReservations);
+  }
+
+  // 2.5 Orphaned-job re-router (spec §7 step 6 safety net): a QUEUED job
+  //     can end up with no awake capable worker through paths no requeue
+  //     owns — e.g. a worker that reports an ERROR and then dies leaves the
+  //     job QUEUED with no in-flight owner to reroute. Each tick, every
+  //     distinct QUEUED job type with zero awake capacity but a sleeping
+  //     capable worker gets the same honest cold start as a fresh enqueue:
+  //     a wake request — unless one is already pending for that worker.
+  const queuedTypes = await db.execute<{ type: string }>(sql`
+    SELECT DISTINCT type FROM jobs WHERE status = 'QUEUED'
+  `);
+  for (const { type } of queuedTypes.rows) {
+    const decision = await selectWorkerForJobType(db, type);
+    if (decision.outcome === "wake") {
+      const pending = await db.execute<{ id: string }>(sql`
+        SELECT id FROM workers
+        WHERE id = ${decision.workerId}
+          AND status = 'SLEEPING'
+          AND wake_requested_at IS NOT NULL
+      `);
+      if (pending.rows.length === 0) {
+        await requestWorkerWake(db, { workerId: decision.workerId });
+        result.orphanWakes.push(decision.workerId);
+      }
+    }
+  }
 
   // 3. Session expiry — never leave a user stuck on "waiting".
   const expired = await db.execute<{ id: string }>(sql`

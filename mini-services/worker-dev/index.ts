@@ -20,6 +20,7 @@
 
 import { WorkerRunner } from "../../src/lib/worker-core/runner";
 import { ControlPlaneClient } from "../../src/lib/worker-core/client";
+import { h3ConfigFromEnv } from "../../src/lib/h3/client";
 
 const CONTROL_PLANE_URL = process.env.CONTROL_PLANE_URL ?? "http://127.0.0.1:3000";
 const MEDIA_RELAY_URL = process.env.MEDIA_RELAY_URL ?? "http://127.0.0.1:3031";
@@ -39,10 +40,21 @@ const client = new ControlPlaneClient(
   WORKER_CREDENTIAL,
 );
 
+// Spec §9 external-credential gate: the video.h3 capability is announced
+// ONLY when the worker's own environment carries a complete official-API
+// config. No credentials → no capability → H3 jobs wait honestly.
+const h3 = h3ConfigFromEnv(process.env);
+console.log(
+  h3
+    ? `[worker-dev] H3 official API enabled (model ${h3.model}) — video.h3 capability announced`
+    : "[worker-dev] H3 not configured (H3_API_BASE_URL + H3_API_KEY unset) — video.generate.h3 jobs will wait for a capable worker",
+);
+
 const runner = new WorkerRunner({
   controlPlane: client,
   relayUrl: MEDIA_RELAY_URL,
   workerName: WORKER_NAME,
+  ...(h3 ? { h3: { config: h3 } } : {}),
 });
 
 console.log(

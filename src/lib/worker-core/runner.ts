@@ -22,6 +22,8 @@ import {
   type ClaimedJob,
 } from "./client";
 import { transformFrame, transformImage, type TransformConfig } from "./transform";
+import { executeH3Job } from "./h3-executor";
+import type { H3EnvConfig } from "../h3/client";
 
 export interface RunnerOptions {
   controlPlane: ControlPlaneClient;
@@ -32,6 +34,12 @@ export interface RunnerOptions {
   /** Poll gap while SLEEPing (spec §45 cold-start simulation in dev). */
   coldStartPollMs?: number;
   maxConcurrentLive?: number;
+  /**
+   * H3 official-API runtime (spec §9): present only when the worker's env
+   * resolved a real config. Its presence adds the `video.h3` capability to
+   * the REGISTER announcement — absence means H3 jobs never route here.
+   */
+  h3?: { config: H3EnvConfig };
   logger?: (line: string) => void;
 }
 
@@ -64,13 +72,22 @@ export class WorkerRunner {
   }
 
   async start(): Promise<void> {
+    // The capability manifest is honest by construction: `video.h3` is only
+    // announced when this worker actually holds official-API credentials
+    // (spec §8: an H3 task must only reach a worker with the H3 capability).
+    const capabilities = ["transform.image", "transform.live"];
+    const models = ["sharp:0.34"];
+    if (this.opts.h3) {
+      capabilities.push("video.h3");
+      models.push(`${this.opts.h3.config.model}:official-api`);
+    }
     const announce = {
       provider: "DEVELOPMENT_LOCAL",
       gpuType: "cpu",
       region: "local",
       version: "dev-worker-1.0.0",
-      capabilities: ["transform.image", "transform.live"],
-      models: ["sharp:0.34"],
+      capabilities,
+      models,
     };
     const reg = await this.opts.controlPlane.register(announce);
     if (!reg.ok) {
@@ -154,11 +171,40 @@ export class WorkerRunner {
       return;
     }
 
+    if (job.type === "video.generate.h3") {
+      // H3 generation runs for minutes — the claim loop must keep serving
+      // other jobs while it works, so it runs detached. The heartbeat counts
+      // it as load; if this worker dies mid-generation the scheduler's
+      // recovery path requeues it, and the idempotency key means the retry
+      // never duplicates provider work (spec §7 + §9).
+      this.activeBatch++;
+      void this.executeH3Detached(job).finally(() => this.activeBatch--);
+      return;
+    }
+
     if (allocate.kind === "batch") {
       await this.executeBatch(job, allocate);
       return;
     }
     await this.executeLive(job, allocate);
+  }
+
+  // ── H3 (official API, spec §9) ─────────────────────────────────────────
+
+  private async executeH3Detached(job: ClaimedJob): Promise<void> {
+    const cp = this.opts.controlPlane;
+    await executeH3Job(job, {
+      config: this.opts.h3?.config ?? null,
+      log: (line) => this.log(`H3 job ${job.id}: ${line}`),
+      reportResult: (jobId, payload) =>
+        cp.jobResult(jobId, payload).then((r) => ({ ok: r.ok, status: r.status })),
+      reportError: (jobId, failureInfo, requeue) =>
+        cp
+          .jobError(jobId, failureInfo, requeue)
+          .then((r) => ({ ok: r.ok, status: r.status })),
+      uploadOutput: (jobId, bytes, mime) =>
+        this.uploadJobOutput(jobId, Buffer.from(bytes), mime),
+    });
   }
 
   // ── Batch ─────────────────────────────────────────────────────────────
@@ -186,7 +232,7 @@ export class WorkerRunner {
       const config = configFromRefs(job.inputRefs);
       const transformed = await transformImage(download.bytes, config);
 
-      const upload = await this.uploadOutput(job, transformed.data, "image/jpeg");
+      const upload = await this.uploadJobOutput(job.id, transformed.data, "image/jpeg");
       if (!upload.ok) {
         await this.opts.controlPlane.jobError(job.id, {
           reason: "output_upload_failed",
@@ -381,11 +427,7 @@ export class WorkerRunner {
     const finalFrame = takePendingFrame(state) ?? lastFrameSnapshot(state);
     try {
       if (finalFrame) {
-        const upload = await this.uploadOutput(
-          { id: state.jobId } as ClaimedJob,
-          finalFrame,
-          "image/jpeg",
-        );
+        const upload = await this.uploadJobOutput(state.jobId, finalFrame, "image/jpeg");
         if (upload.ok) {
           await this.opts.controlPlane.jobResult(state.jobId, {
             result: {
@@ -440,13 +482,13 @@ export class WorkerRunner {
   }
 
   /** Worker-authenticated output upload via the control plane. */
-  private async uploadOutput(
-    job: ClaimedJob,
+  async uploadJobOutput(
+    jobId: string,
     bytes: Buffer,
     mime: string,
   ): Promise<{ ok: boolean; assetId?: string; status?: number; detail?: string }> {
     const res = await fetch(
-      `${this.opts.controlPlane.baseUrl}/api/worker/jobs/${job.id}/output`,
+      `${this.opts.controlPlane.baseUrl}/api/worker/jobs/${jobId}/output`,
       {
         method: "POST",
         headers: {

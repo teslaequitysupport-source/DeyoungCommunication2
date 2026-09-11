@@ -19,6 +19,7 @@ import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import type { PlatformDatabase } from "@/lib/db";
 import { jobs, liveSessions, workers } from "@/lib/db/schema";
 import { claimableJobTypes, jobTypeDefinition } from "@/lib/jobs/types";
+import { rerouteRequeuedJobs } from "@/lib/workers/recovery";
 
 export interface JobRecord {
   id: string;
@@ -310,6 +311,10 @@ export async function failJob(
           AND status IN ('WORKER_ASSIGNED','LOADING','READY','LIVE','RECOVERING')
       `);
     }
+    // Spec §7 step 6 ("Reassign when possible"): a requeued job with no
+    // awake capacity wakes a sleeping capable worker instead of waiting
+    // for a claim that cannot come from a sleeping box.
+    await rerouteRequeuedJobs(db, [record.id]);
     return record;
   }
 

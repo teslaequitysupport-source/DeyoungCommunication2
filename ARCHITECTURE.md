@@ -34,9 +34,11 @@ scales (and bills) on its own axis:
 | Audit log | Append-only table, auth events wired | TESTED (auth events) |
 | Job queue | jobs-table queue (FOR UPDATE SKIP LOCKED, idempotency keys) | TESTED |
 | Worker protocol | Pull-based claim loop + failure recovery | TESTED |
+| Failure reassignment | Every requeue path reroutes; orphaned-job re-router safety net (spec §7.6) | TESTED |
 | Compute sleep system | Idle → SLEEP, wake handshake, WORKER_IDLE_SLEEP_MS (spec §45) | TESTED |
 | Worker selection | §8 scoring: capability/health/load/latency/errors/region | TESTED |
 | H3 job routing | `video.generate.h3` registry entry, `video.h3` capability gate | TESTED (routing only) — actual generation REQUIRES EXTERNAL CREDENTIAL |
+| H3 official-API client | Env-gated worker-side client + executor (submit/poll/retrieve) | TESTED (faked transport) — live calls REQUIRE EXTERNAL CREDENTIAL |
 | Media plane | LiveKit | NOT IMPLEMENTED (dev uses socket.io relay; LiveKit at deploy) |
 | Object storage | Cloudflare R2 | NOT IMPLEMENTED (dev local object store) — REQUIRES EXTERNAL CREDENTIAL |
 | Admin console | RBAC-gated routes | NOT IMPLEMENTED (Phase 3) |
@@ -76,7 +78,8 @@ compile time as the first line of defense.
 
 P0 Foundations → P1 Vertical slice (characters, uploads, job system, one real
  dev worker, session state machine, minimal live studio) → P2 Compute reality
- (sleep system, worker selection, H3 registry entry — DONE; RunPod invoker
+ (sleep system, worker selection, failure reassignment, H3 registry entry +
+ official-API client/executor — DONE; RunPod invoker and live H3 generation
  REQUIRES EXTERNAL CREDENTIAL) → P3 Trust plane (moderation, admin console,
  MFA, rate limits) → P4 Mobile (Expo) → P5 Launch gate (legal, payments
  decision, hosting tier). Each phase exits only on TESTED status of its exit

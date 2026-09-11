@@ -17,6 +17,8 @@ import { and, eq, inArray, sql } from "drizzle-orm";
 import type { PlatformDatabase } from "@/lib/db";
 import { jobs, liveSessions, workers } from "@/lib/db/schema";
 import { recordAudit } from "@/lib/audit";
+import { jobTypeDefinition } from "@/lib/jobs/types";
+import { rerouteRequeuedJobs } from "@/lib/workers/recovery";
 
 export const ACTIVE_WORKER_STATUSES = [
   "IDLE",
@@ -301,7 +303,9 @@ export async function markWorkerUnhealthy(
     );
 
   for (const job of inflight) {
-    const maxRetries = 3; // align with jobTypeDefinition at call sites
+    // Per-type retry budget (spec §7 step 5: "Retry if safe" — the job
+    // type defines what safe means; live transforms retry less than batch).
+    const maxRetries = jobTypeDefinition(job.type).maxRetries;
     if (job.retryCount < maxRetries) {
       await db.execute(sql`
         UPDATE jobs SET status = 'QUEUED', worker_id = NULL,
@@ -336,6 +340,12 @@ export async function markWorkerUnhealthy(
     }
   }
 
+  // Spec §7 step 6 — "Reassign when possible": the requeue above returned the
+  // jobs to the pool; rerouting requests a wake for a sleeping capable
+  // worker when no awake capacity exists (cold-start recovery). The outcomes
+  // join the incident record below.
+  const reroutes = await rerouteRequeuedJobs(db, outcome.requeuedJobs);
+
   await recordAudit(db, {
     action: "worker.unhealthy",
     targetType: "worker",
@@ -346,6 +356,12 @@ export async function markWorkerUnhealthy(
       failedJobs: outcome.failedJobs,
       degradedSessions: outcome.degradedSessions,
       failedSessions: outcome.failedSessions,
+      reroutes: reroutes.map((r) => ({
+        jobId: r.jobId,
+        outcome: r.outcome,
+        reason: r.reason,
+        ...(r.outcome !== "none" ? { workerId: r.workerId } : {}),
+      })),
     },
   });
   return outcome;
