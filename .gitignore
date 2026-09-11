@@ -37,6 +37,9 @@ yarn-error.log*
 # local embedded-Postgres (PGlite) data directory
 /db/
 
+# local-dev object store (uploaded media in development)
+/var/
+
 # sandbox infra
 /.zscripts/
 

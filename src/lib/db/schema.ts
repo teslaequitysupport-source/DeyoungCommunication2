@@ -462,6 +462,8 @@ export const jobs = pgTable(
     /** Estimated or actual cost in USD where the provider reports it. */
     costUsd: text("cost_usd"),
     createdAt: createdAt(),
+    /** Last state change (sweeper input for stale reservations). */
+    updatedAt: updatedAt(),
   },
   (t) => [
     uniqueIndex("jobs_idempotency_key_unique").on(t.idempotencyKey),
