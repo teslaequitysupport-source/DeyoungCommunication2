@@ -23,3 +23,24 @@ Stage Summary:
 - DELIVERABLE: /home/z/my-project/download/AI_Live_Character_Platform_Phase1_Architecture_Report.pdf (26 pages, A4, 523 KB) + source assets in /home/z/my-project/download/report-source/.
 - Report covers all 17 spec-mandated outputs incl. honest limitation register, cost ladder ($0 dev stack / unavoidable paid items), 6-phase implementation plan with TESTED-status exit criteria, security threat matrix, NDPA privacy plan, WCAG 2.2 AA plan, decision table (6 approval items).
 - STATUS: Phase 1 complete. STOPPED at the approval gate as the spec requires — no implementation code written. Awaiting user approval / decisions on the 6 items in Chapter 18 before Phase 0 begins.
+
+---
+Task ID: 2
+Agent: Super Z (main agent)
+Task: User replied "I Approve" (all 6 Chapter-18 decisions as proposed). Begin BUILD per approved plan: Phase 0 Foundations first.
+
+Work Log:
+- Approved: three-plane architecture + stack (Next.js, Better Auth, Drizzle/Neon Postgres, LiveKit media plane, R2 storage, RunPod workers, H3 via official API, PostHog); 6-phase plan with TESTED exit criteria; web-first, mobile P4; payments deferred to P5 with manual credits.
+- Scaffolded the Next.js 16 + TS strict + shadcn/ui project on the sandbox template.
+- Auth: Better Auth (email+password, sessions, trustedOrigins from env), role/status as non-client-settable additional fields, databaseHooks writing audit rows (sign-up/in/out).
+- Schema (Drizzle/PG): Better Auth tables + workers/characters/assets/consent_records/live_sessions/jobs/audit_log, state-machine enums, FKs, indexes, unique idempotency_key. Migration 0000 generated and committed.
+- RBAC: 5 roles, granular permissions, assertPermission server-side guard.
+- DB runtime: mini-services/pglite-db exposes ONE file-persisted PGlite over the real Postgres wire protocol (127.0.0.1:6543, 16 connections) — app uses node-postgres identically to the future Neon deployment. Rationale documented in src/lib/db/index.ts (Turbopack per-route isolation makes in-process PGlite unusable in dev).
+- Tests (vitest): schema integration (9), auth integration (11, incl. forged-cookie rejection), RBAC unit (11) — 31/31 passing. Harness: fresh in-memory PGlite per suite + migrations from drizzle/.
+- Docs: ARCHITECTURE.md, SECURITY.md, WORKER-PROTOCOL.md, DEPLOYMENT.md, detailed .env.example; CI workflow (lint+typecheck+test).
+- P0 verification console at "/" showing only observed DB state (page + auth-panel).
+
+Stage Summary:
+- P0 exit criteria MET: auth flows TESTED (integration), schema migrated on dev DB, typecheck green, 31/31 tests.
+- Deviation from report (to be documented in ARCHITECTURE.md): pgboss replaced by a jobs-table queue (SELECT ... FOR UPDATE SKIP LOCKED) — PGlite (dev Postgres) lacks LISTEN/NOTIFY that pgboss depends on; same durability/idempotency semantics, works identically on Neon. Planned inside P1.
+- Next: P1 vertical slice (characters, assets upload, consent, job system, worker protocol, dev worker, session state machine, media relay, live studio UI, failure suite).
