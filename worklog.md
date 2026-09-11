@@ -44,3 +44,20 @@ Stage Summary:
 - P0 exit criteria MET: auth flows TESTED (integration), schema migrated on dev DB, typecheck green, 31/31 tests.
 - Deviation from report (to be documented in ARCHITECTURE.md): pgboss replaced by a jobs-table queue (SELECT ... FOR UPDATE SKIP LOCKED) — PGlite (dev Postgres) lacks LISTEN/NOTIFY that pgboss depends on; same durability/idempotency semantics, works identically on Neon. Planned inside P1.
 - Next: P1 vertical slice (characters, assets upload, consent, job system, worker protocol, dev worker, session state machine, media relay, live studio UI, failure suite).
+
+---
+Task ID: 3
+Agent: Super Z (main agent)
+Task: User clarification — the Baidu AIStudio + ModelScope API keys pasted in chat were NOT intended for the platform. Delete the tokens, roll back the work they triggered, resume P2.
+
+Work Log:
+- Discovered the broken session had recovered and committed: 2c40489 (security: untrack .env — kept) and 8d9e92b (entire Baidu/ModelScope LLM layer built in response to the misdirected tokens — reverted).
+- Verified via full git-object scan that NEITHER token ever entered git history (only existed in on-disk .env).
+- git reset --hard 2c40489: removed src/lib/llm/, src/lib/brain/, src/app/api/brain/, tests/llm-unit.test.ts, .env.example LLM vars, health LLM lines, upload-route deletion (that commit had broken LOCAL_UPLOAD_PATH), chmod noise.
+- Restored .env from 3741d87:.env (7 pre-token lines: DATABASE_URL=postgres://127.0.0.1:6543, AUTH_SECRET, ticket secrets, SCHEDULER_TOKEN).
+- Token-trace sweep across workspace + logs: zero matches. Typecheck: green. Tests: 68/68.
+- Resume: P2 Compute Reality (worker sleep system §45, worker selection §8, failure recovery §7, H3 registry entry §9).
+
+Stage Summary:
+- Tokens fully scrubbed; LLM integration rolled back; repo clean at 2c40489.
+- P2 analysis starting.

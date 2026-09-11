@@ -22,7 +22,7 @@ scales (and bills) on its own axis:
    the official API only (approved decision #3: self-hosting H3 commercially
    requires written permission that we do not have).
 
-## Current implementation (Phase 0)
+## Current implementation (after Phase 2)
 
 | Component | Technology | Status |
 | --- | --- | --- |
@@ -32,24 +32,28 @@ scales (and bills) on its own axis:
 | Database | PostgreSQL — PGlite embedded (dev), Neon (deploy) | TESTED (PGlite path); Neon path REQUIRES EXTERNAL CREDENTIAL |
 | ORM / migrations | Drizzle ORM, committed SQL migrations | TESTED |
 | Audit log | Append-only table, auth events wired | TESTED (auth events) |
-| Job queue | pgboss on Postgres | NOT IMPLEMENTED (Phase 1) |
-| Media plane | LiveKit | NOT IMPLEMENTED (Phase 1) |
-| Object storage | Cloudflare R2 | NOT IMPLEMENTED (Phase 1) |
-| GPU workers | Worker protocol implementation | DESIGNED — see WORKER-PROTOCOL.md |
+| Job queue | jobs-table queue (FOR UPDATE SKIP LOCKED, idempotency keys) | TESTED |
+| Worker protocol | Pull-based claim loop + failure recovery | TESTED |
+| Compute sleep system | Idle → SLEEP, wake handshake, WORKER_IDLE_SLEEP_MS (spec §45) | TESTED |
+| Worker selection | §8 scoring: capability/health/load/latency/errors/region | TESTED |
+| H3 job routing | `video.generate.h3` registry entry, `video.h3` capability gate | TESTED (routing only) — actual generation REQUIRES EXTERNAL CREDENTIAL |
+| Media plane | LiveKit | NOT IMPLEMENTED (dev uses socket.io relay; LiveKit at deploy) |
+| Object storage | Cloudflare R2 | NOT IMPLEMENTED (dev local object store) — REQUIRES EXTERNAL CREDENTIAL |
 | Admin console | RBAC-gated routes | NOT IMPLEMENTED (Phase 3) |
 | Mobile | Expo React Native | NOT IMPLEMENTED (Phase 4, per approved order) |
 
-## Data model (Phase 0 migration)
+## Data model (Phase 2 migrations)
 
-Eleven tables, one migration (`drizzle/0000_*.sql`):
+Migrations 0000–0002:
 
 - **Auth (Better Auth shapes):** `users` (with `role`, `status` platform
   fields), `sessions`, `accounts`, `verifications`.
 - **Audit:** `audit_log` — append-only, actor denormalized (email/role
   survive actor deletion per the Ch. 12 retention rules).
 - **Worker registry:** `workers` — provider-independent identity,
-  capabilities, models, heartbeats.
-- **Platform:** `characters`, `assets` (metadata + R2 storage keys, Phase 1),
+  capabilities, models, heartbeats, plus the spec §45 sleep fields
+  (`idle_since_at`, `wake_requested_at`).
+- **Platform:** `characters`, `assets` (metadata + storage keys),
   `consent_records` (purpose-scoped, withdrawable), `live_sessions`
   (14-state machine), `jobs` (idempotency keys, usage, cost).
 
@@ -70,9 +74,10 @@ compile time as the first line of defense.
 
 ## Phase roadmap (approved, Ch. 16)
 
-P0 Foundations → P1 Vertical slice (characters, R2 uploads, job system,
-one real dev worker, LiveKit, session state machine, minimal live studio) →
-P2 Compute reality (RunPod sleep system, H3 via API, scheduler) →
-P3 Trust plane (moderation, admin console, MFA, rate limits) →
-P4 Mobile (Expo) → P5 Launch gate (legal, payments decision, hosting tier).
-Each phase exits only on TESTED status of its exit criteria.
+P0 Foundations → P1 Vertical slice (characters, uploads, job system, one real
+ dev worker, session state machine, minimal live studio) → P2 Compute reality
+ (sleep system, worker selection, H3 registry entry — DONE; RunPod invoker
+ REQUIRES EXTERNAL CREDENTIAL) → P3 Trust plane (moderation, admin console,
+ MFA, rate limits) → P4 Mobile (Expo) → P5 Launch gate (legal, payments
+ decision, hosting tier). Each phase exits only on TESTED status of its exit
+ criteria.

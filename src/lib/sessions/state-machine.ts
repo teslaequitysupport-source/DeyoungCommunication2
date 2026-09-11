@@ -22,6 +22,7 @@ import {
   liveSessions,
 } from "@/lib/db/schema";
 import { enqueueJob } from "@/lib/jobs/queue";
+import { routeJobAfterEnqueue } from "@/lib/workers/selection";
 import { recordAudit } from "@/lib/audit";
 
 /** Purpose a live session requires before it may start (Ch. 12 consent). */
@@ -123,7 +124,7 @@ export async function createLiveSession(
     .set({ status: "WAITING_FOR_WORKER", updatedAt: new Date() })
     .where(eq(liveSessions.id, session.id));
 
-  await enqueueJob(db, {
+  const liveJob = await enqueueJob(db, {
     userId: input.userId,
     type: "transform.live.colorgrade",
     idempotencyKey: `live:${session.id}`,
@@ -133,6 +134,10 @@ export async function createLiveSession(
       appearance: character.appearanceConfig ?? {},
     },
   });
+
+  // Spec §8 + §45: if no awake worker can serve this session, wake the best
+  // sleeping one — the user sees WAITING_FOR_WORKER, never fake progress.
+  await routeJobAfterEnqueue(db, liveJob);
 
   await recordAudit(db, {
     actorId: input.userId,

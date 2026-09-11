@@ -42,6 +42,9 @@ export interface WorkerRecord {
   heartbeatLatencyMs: number | null;
   activeJobs: number;
   errorCount: number;
+  /** Spec §45 sleep-system fields. */
+  idleSinceAt: Date | null;
+  wakeRequestedAt: Date | null;
 }
 
 export function hashWorkerCredential(credential: string): string {
@@ -137,6 +140,11 @@ export async function registerWorker(
       models: input.models ?? row.models,
       status: "IDLE",
       lastHeartbeatAt: new Date(),
+      // A (re-)register is the tail of a boot — cold start finished (spec
+      // §45: WAKE → HEALTH CHECK → MODEL LOAD → READY): wake fields clear,
+      // idle clock restarts.
+      wakeRequestedAt: null,
+      idleSinceAt: new Date(),
       updatedAt: new Date(),
     })
     .where(eq(workers.id, row.id))
@@ -210,21 +218,28 @@ export interface HeartbeatInput {
  * HEARTBEAT (worker → control). Updates liveness + load. A previously
  * UNHEALTHY worker whose heartbeats resumed returns to IDLE (its in-flight
  * jobs were already requeued when it went unhealthy — nothing is silently
- * resurrected). DRAINING/SHUTDOWN states are respected.
+ * resurrected). DRAINING/SHUTDOWN states are respected. A SLEEPING worker
+ * stays SLEEPING here — wake acceptance happens in the claim handshake
+ * (tryAcceptWake) so a resumed poll equals a completed health check.
+ *
+ * Idle clock (spec §45): zero active jobs stamps idle_since_at (once);
+ * non-zero clears it, so the sleep sweep only ever sleeps true idlers.
  */
 export async function workerHeartbeat(
   db: PlatformDatabase,
   input: HeartbeatInput,
 ): Promise<void> {
-  await db
-    .update(workers)
-    .set({
-      lastHeartbeatAt: new Date(),
-      activeJobs: input.activeJobs,
-      heartbeatLatencyMs: input.heartbeatLatencyMs,
-      updatedAt: new Date(),
-    })
-    .where(eq(workers.id, input.workerId));
+  await db.execute(sql`
+    UPDATE workers SET
+      last_heartbeat_at = now(),
+      active_jobs = ${input.activeJobs},
+      heartbeat_latency_ms = ${input.heartbeatLatencyMs},
+      idle_since_at = CASE
+        WHEN ${input.activeJobs} > 0 THEN NULL
+        ELSE COALESCE(idle_since_at, now()) END,
+      updated_at = now()
+    WHERE id = ${input.workerId}
+  `);
 
   await db.execute(sql`
     UPDATE workers SET status = 'IDLE', updated_at = now()

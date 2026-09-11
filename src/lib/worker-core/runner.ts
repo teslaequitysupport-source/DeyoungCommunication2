@@ -29,6 +29,8 @@ export interface RunnerOptions {
   workerName: string;
   heartbeatIntervalMs?: number;
   pollIntervalMs?: number;
+  /** Poll gap while SLEEPing (spec §45 cold-start simulation in dev). */
+  coldStartPollMs?: number;
   maxConcurrentLive?: number;
   logger?: (line: string) => void;
 }
@@ -52,6 +54,7 @@ export class WorkerRunner {
   private readonly live = new Map<string, LiveSessionState>();
   private stopped = false;
   private drainRequested = false;
+  private sleeping = false;
   private activeBatch = 0;
 
   constructor(private readonly opts: RunnerOptions) {}
@@ -110,8 +113,24 @@ export class WorkerRunner {
         if (!this.drainRequested) {
           const claimed = await this.opts.controlPlane.claim();
           if (claimed.ok) {
-            const { job, allocate } =
+            const { job, allocate, command } =
               claimed.data as { job: ClaimedJob | null; allocate?: Allocate; command?: string };
+            if (command === "sleep") {
+              // Spec §45 (dev cold start): the control plane slept this
+              // worker. Claims pause; when a job later wakes it, the same
+              // poll completes the wake handshake server-side and the job
+              // flows — observable, never simulated.
+              if (!this.sleeping) {
+                this.sleeping = true;
+                this.log("SLEEP: control plane slept this worker — claims paused");
+              }
+              await sleep(this.opts.coldStartPollMs ?? 2_000);
+              continue;
+            }
+            if (this.sleeping) {
+              this.sleeping = false;
+              this.log("wake accepted — claiming again (cold start finished)");
+            }
             if (job && allocate) {
               await this.execute(job, allocate);
             } else if (job) {

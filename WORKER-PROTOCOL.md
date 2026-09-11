@@ -1,4 +1,4 @@
-# Worker Protocol (DESIGNED — implementation lands in Phase 1)
+# Worker Protocol (IMPLEMENTED — P0 registry, P1 claim loop, P2 sleep system)
 
 The compute plane is a fleet of authenticated GPU workers speaking one
 provider-independent protocol. The control plane never knows whether a
@@ -7,9 +7,12 @@ knows a worker identity, its capabilities, and its health. This is what makes
 provider replacement (RunPod → any host) a configuration change, not a
 rewrite.
 
-**Status: DESIGNED and approved (Phase-1 report Ch. 8). No implementation
-exists yet.** The `workers` table in the Phase-0 schema is the registry this
-protocol will operate on.
+**Status: IMPLEMENTED and TESTED.** The pull-based claim loop (REGISTER /
+HEARTBEAT / CLAIM / STATUS / RESULT / ERROR) runs in `mini-services/worker-dev`
+via `src/lib/worker-core`; the sleep/wake system (spec §45) landed in Phase 2
+(`src/lib/workers/sleep.ts`, selection in `src/lib/workers/selection.ts`).
+Push-style operations (RESERVE / HEALTH / LOAD_MODEL as control-initiated
+HTTP) are deployment-tier work behind the same registry.
 
 ## Identity and credentials
 
@@ -45,15 +48,51 @@ protocol will operate on.
 taking work), `SLEEPING` (scaled to zero on RunPod — idle costs nothing),
 `UNHEALTHY` (missed heartbeats; no new assignments), and `SHUTDOWN` as
 terminal/managed states. All states exist as the `worker_status` pg enum
-in the Phase-0 schema.
+in the schema.
 
-## Scheduler selection factors (approved Ch. 8)
+## Sleep / wake protocol (spec §45 — IMPLEMENTED, TESTED)
 
-Capability match, GPU type, VRAM, model compatibility, health, load,
-latency, region, user plan, queue depth, and cost where the provider
-reports it. Hard constraints: a live face task never routes to an
-offline-only worker; an H3 generation job routes only to the H3 API
-adapter. Selection is deterministic, unit-tested code.
+```
+no job → IDLE → idle timeout (WORKER_IDLE_SLEEP_MS, default 2 min)
+      → SLEEPING            (scheduler sleep sweep, audited)
+
+job arrives → capability check → no awake worker?
+      → wake_requested_at set on best sleeping worker (audited)
+      → worker's next CLAIM poll completes the wake handshake
+        (SLEEPING → IDLE; audited as worker.woke)
+      → claim → RESERVED → RUNNING   (cold start is real state)
+```
+
+Rules that keep it honest:
+
+- A sleeping worker that polls **without** a pending wake request receives
+  `command: "sleep"` and stays asleep — nothing wakes itself by asking.
+- Heartbeats from a SLEEPING worker update liveness fields but never change
+  the status; only the wake handshake (pending request + poll) or a full
+  REGISTER (a real boot) brings it back.
+- SLEEPING is excluded from the heartbeat monitor, so a sleeping box is
+  never falsely marked UNHEALTHY.
+- The sleep sweep refuses workers with active jobs or in-flight
+  (RESERVED/RUNNING) jobs — the SQL guard is atomic with the status write.
+- Cold-start latency is surfaced, never hidden: the job stays QUEUED, the
+  live session stays WAITING_FOR_WORKER, and `/api/health` reports
+  `wakePending` so the console can say "cold start in flight".
+- The provider-level wake call (RunPod pod resume, etc.) plugs into
+  `requestWorkerWake(db, { workerId, jobId }, invokeWake)`. The dev
+  transport deliberately has none — the worker's own claim poll completes
+  the handshake.
+
+## Scheduler selection factors (spec §8 — IMPLEMENTED, TESTED)
+
+Capability match (hard), health (UNHEALTHY/SHUTDOWN/DRAINING excluded),
+availability (awake preferred over sleeping), load (`active_jobs`), error
+history, heartbeat latency, region/GPU/VRAM/model constraints where the
+caller provides them. Selection is deterministic, unit-tested code
+(`src/lib/workers/selection.ts`). Factors with no honest data yet — user
+plan, per-provider queue depth, provider cost — are P5 work, never faked.
+Hard constraints: a live face task never routes to an offline-only worker;
+`video.generate.h3` routes only to a worker that REGISTERed `video.h3`
+(verified official-API access).
 
 ## Failure recovery
 
@@ -65,11 +104,12 @@ make retries safe (unique constraint already enforced in the `jobs` table).
 
 ## Sleep system and cost control
 
-Idle timeout → DRAIN → SLEEP (pod scales to zero; idle time costs nothing).
+Idle timeout → SLEEP (pod scales to zero; idle time costs nothing).
 Wake-up is honest: capability check → wake → health check → model load →
 ready → execute. Cold start is a real delay (tens of seconds to minutes);
 the session UI presents real loading state from backend state, never a
-fabricated progress bar.
+fabricated progress bar. See the sleep/wake protocol section above for the
+implemented handshake.
 
 ## Dev-tier workers
 

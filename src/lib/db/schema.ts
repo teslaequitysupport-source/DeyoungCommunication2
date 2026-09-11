@@ -288,6 +288,20 @@ export const workers = pgTable(
     heartbeatLatencyMs: integer("heartbeat_latency_ms"),
     activeJobs: smallint("active_jobs").notNull().default(0),
     errorCount: smallint("error_count").notNull().default(0),
+    /**
+     * Sleep system (spec §45): when the worker last reported zero active
+     * jobs. The scheduler's sleep sweep moves workers whose idle_since_at is
+     * older than the idle timeout to SLEEPING.
+     */
+    idleSinceAt: timestamp("idle_since_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
+    /** Set when a job needs this sleeping worker — cold start in flight. */
+    wakeRequestedAt: timestamp("wake_requested_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

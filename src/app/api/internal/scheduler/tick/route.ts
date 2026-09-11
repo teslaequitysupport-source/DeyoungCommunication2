@@ -1,8 +1,9 @@
 /**
  * Internal scheduler tick — invoked by the control-scheduler daemon (dev)
  * or a scheduled job (deployment) with the SCHEDULER_TOKEN. One call runs:
- * heartbeat monitor → reservation sweeper → session expiry. Pure database
- * pass; all state changes land in the observable tables + audit log.
+ * heartbeat monitor → reservation sweeper → session expiry → sleep sweep.
+ * Pure database pass; all state changes land in the observable tables +
+ * audit log.
  */
 
 import { getDb } from "@/lib/db";
@@ -17,6 +18,11 @@ export async function POST(request: Request) {
   if (!expected || token !== expected) {
     return apiError(401, "unauthorized", "Scheduler token missing or invalid.");
   }
-  const result = await schedulerTick(getDb());
+  // Spec §45: idle timeout is operational config, not code — e.g. shorter in
+  // dev demos, provider-cost-tuned in production.
+  const idleSleepMs = process.env.WORKER_IDLE_SLEEP_MS
+    ? Number(process.env.WORKER_IDLE_SLEEP_MS)
+    : undefined;
+  const result = await schedulerTick(getDb(), { idleSleepMs });
   return jsonResponse(result);
 }

@@ -8,6 +8,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { assets, characters } from "@/lib/db/schema";
 import { listJobsForUser, enqueueJob, getJob } from "@/lib/jobs/queue";
+import { routeJobAfterEnqueue } from "@/lib/workers/selection";
 import { apiError, getApiUser, jsonResponse, readJson, requireUser } from "@/lib/api-helpers";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
@@ -67,6 +68,9 @@ export async function POST(request: Request) {
       appearance,
     },
   });
+  // Worker selection (spec §8): state plainly whether this job has awake
+  // capacity, triggered a cold start, or is waiting on nothing at all.
+  const routing = await routeJobAfterEnqueue(getDb(), job);
   const fresh = await getJob(getDb(), job.id);
-  return jsonResponse({ job: fresh }, { status: 201 });
+  return jsonResponse({ job: fresh, routing }, { status: 201 });
 }

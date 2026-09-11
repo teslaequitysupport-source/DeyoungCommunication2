@@ -8,10 +8,13 @@
  *
  *   1. heartbeat monitor — active workers with a stale heartbeat are marked
  *      UNHEALTHY (which requeues-or-fails their jobs and degrades their
- *      live sessions — see markWorkerUnhealthy),
+ *      live sessions — see markWorkerUnhealthy). SLEEPING workers are not
+ *      monitored: a sleeping box sends no beats by design (spec §45).
  *   2. reservation sweeper — jobs claimed but never started are requeued,
  *   3. session expiry — sessions still waiting when their TTL passes are
  *      EXPIRED (their queued job is cancelled), never left hanging.
+ *   4. sleep sweep (spec §45) — IDLE workers past the idle timeout with no
+ *      in-flight work go SLEEPING; a later job wakes them (cold start).
  *
  * Every action is observable in the jobs/live_sessions/workers tables and
  * the audit log — no silent state changes.
@@ -21,6 +24,7 @@ import { eq, inArray, sql } from "drizzle-orm";
 import type { PlatformDatabase } from "@/lib/db";
 import { liveSessions, workers } from "@/lib/db/schema";
 import { markWorkerUnhealthy } from "@/lib/workers/registry";
+import { sleepIdleWorkers } from "@/lib/workers/sleep";
 
 export interface SchedulerTickResult {
   ranAt: string;
@@ -29,6 +33,8 @@ export interface SchedulerTickResult {
   expiredSessions: string[];
   staleCompletedSessions: string[];
   staleAbandonedSessions: string[];
+  /** Spec §45: workers that hit the idle timeout and went to sleep. */
+  sleptWorkers: string[];
 }
 
 export const WORKER_HEARTBEAT_TIMEOUT_MS = 20_000;
@@ -41,7 +47,7 @@ export const SESSION_ABANDONED_MS = 5 * 60_000;
 
 export async function schedulerTick(
   db: PlatformDatabase,
-  options?: { heartbeatTimeoutMs?: number },
+  options?: { heartbeatTimeoutMs?: number; idleSleepMs?: number },
 ): Promise<SchedulerTickResult> {
   const heartbeatTimeout = options?.heartbeatTimeoutMs ?? WORKER_HEARTBEAT_TIMEOUT_MS;
   const result: SchedulerTickResult = {
@@ -51,6 +57,7 @@ export async function schedulerTick(
     expiredSessions: [],
     staleCompletedSessions: [],
     staleAbandonedSessions: [],
+    sleptWorkers: [],
   };
 
   // 1. Heartbeat monitor.
@@ -157,6 +164,11 @@ export async function schedulerTick(
         AND status IN ('QUEUED','RESERVED','RUNNING')
     `);
   }
+
+  // 6. Sleep sweep (spec §45): idle workers past the timeout go to sleep.
+  //    Claims race safely against this sweep (NOT EXISTS guard in the SQL).
+  const slept = await sleepIdleWorkers(db, { idleMs: options?.idleSleepMs });
+  result.sleptWorkers = slept.sleptWorkers;
 
   return result;
 }

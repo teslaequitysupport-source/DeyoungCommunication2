@@ -41,6 +41,21 @@ export const JOB_TYPES = {
     priority: 7,
     maxRetries: 1,
   },
+  /**
+   * H3 video generation (spec §9): H3 is a model/capability entry, not the
+   * architecture. Routing a job here requires a worker that REGISTERed the
+   * `video.h3` capability — i.e. one with verified access to the official
+   * MiniMax API. The capability itself is NOT claimed anywhere in this
+   * codebase; it only becomes real when such a worker exists (Phase 2
+   * external-credential gate per the approved report Ch. 18).
+   */
+  "video.generate.h3": {
+    requiredCapability: "video.h3",
+    live: false,
+    title: "H3 video generation (REQUIRES EXTERNAL CREDENTIAL)",
+    priority: 6,
+    maxRetries: 2,
+  },
 } as const satisfies Record<string, JobTypeDefinition>;
 
 export type JobType = keyof typeof JOB_TYPES;

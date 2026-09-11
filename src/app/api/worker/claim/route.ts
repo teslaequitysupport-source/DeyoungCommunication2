@@ -21,6 +21,7 @@ import { jobTypeDefinition } from "@/lib/jobs/types";
 import { authenticateWorker } from "@/lib/workers/registry";
 import { getSession } from "@/lib/sessions/state-machine";
 import { mintRealtimeTicket } from "@/lib/realtime/tickets";
+import { tryAcceptWake } from "@/lib/workers/sleep";
 import { apiError, jsonResponse, workerAuthFrom } from "@/lib/api-helpers";
 import { storageModeLabel } from "@/lib/storage";
 
@@ -38,6 +39,16 @@ export async function POST(request: Request) {
   }
   if (auth.worker.status === "UNHEALTHY" || auth.worker.status === "SHUTDOWN") {
     return jsonResponse({ job: null, command: "stop" });
+  }
+  if (auth.worker.status === "SLEEPING") {
+    // Spec §45 wake handshake: a sleeping worker that polls while a wake is
+    // requested passes its health check and returns to service in the same
+    // step — its next claim below executes the job that woke it. A poll
+    // with no wake pending stays asleep ("cold start" is never fabricated).
+    const woke = await tryAcceptWake(getDb(), auth.worker.id);
+    if (!woke) {
+      return jsonResponse({ job: null, command: "sleep" });
+    }
   }
 
   const deadline = Date.now() + MAX_WAIT_MS;
