@@ -45,7 +45,11 @@ export const userRoleEnum = pgEnum("user_role", [
   "SUPER_ADMIN",
 ]);
 
-export const userStatusEnum = pgEnum("user_status", ["ACTIVE", "SUSPENDED"]);
+export const userStatusEnum = pgEnum("user_status", [
+  "ACTIVE",
+  "SUSPENDED",
+  "BANNED",
+]);
 
 /** Worker lifecycle states (report Ch. 8). */
 export const workerStatusEnum = pgEnum("worker_status", [
@@ -113,6 +117,36 @@ export const auditOutcomeEnum = pgEnum("audit_outcome", [
   "SUCCESS",
   "DENIED",
   "ERROR",
+]);
+
+/** Spec §33 — the abuse categories users can report. */
+export const reportReasonEnum = pgEnum("report_reason", [
+  "IMPERSONATION",
+  "HARASSMENT",
+  "ILLEGAL_CONTENT",
+  "UNAUTHORIZED_LIKENESS",
+  "UNAUTHORIZED_VOICE",
+  "SEXUAL_ABUSE_DEEPFAKE",
+  "SCAM",
+  "FRAUD",
+  "COPYRIGHT",
+  "OTHER",
+]);
+
+export const reportStatusEnum = pgEnum("report_status", [
+  "OPEN",
+  "IN_REVIEW",
+  "RESOLVED",
+  "DISMISSED",
+]);
+
+/** Enforcement actions a moderator can attach to a decision (spec §33). */
+export const reportActionEnum = pgEnum("report_action", [
+  "NONE",
+  "WARNING",
+  "SUSPENSION",
+  "BAN",
+  "CONTENT_REMOVAL",
 ]);
 
 const createdAt = () =>
@@ -484,5 +518,55 @@ export const jobs = pgTable(
     index("jobs_user_created_idx").on(t.userId, t.createdAt),
     index("jobs_status_idx").on(t.status),
     index("jobs_worker_idx").on(t.workerId),
+  ],
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Abuse reports (spec §33) — user-facing intake + moderator queue
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Polymorphic target: `targetType` + `targetId` point at the entity being
+ * reported (user / character / asset / live_session / job). Deliberately no
+ * FK to the target row — reports must survive target deletion so decisions
+ * remain auditable. `targetUserId` is denormalized when the target belongs to
+ * a user, so ban enforcement does not need to re-resolve the polymorphic link.
+ * The reporter link is nullable + ON DELETE SET NULL for the same reason:
+ * abuse records outlive the reporting account (report Ch. 12 retention).
+ */
+export const reports = pgTable(
+  "reports",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    reporterId: text("reporter_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    reason: reportReasonEnum("reason").notNull(),
+    /** Polymorphic target — validated against known entity tables on intake. */
+    targetType: text("target_type").notNull(),
+    targetId: text("target_id").notNull(),
+    targetUserId: text("target_user_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    /** Reporter's free-text description (bounded, plain text). */
+    details: text("details"),
+    status: reportStatusEnum("status").notNull().default("OPEN"),
+    /** Moderator's documented decision (spec §33: "document decisions"). */
+    decisionAction: reportActionEnum("decision_action"),
+    decisionNotes: text("decision_notes"),
+    decidedById: text("decided_by_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    decidedAt: timestamp("decided_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    index("reports_status_created_idx").on(t.status, t.createdAt),
+    index("reports_target_user_idx").on(t.targetUserId),
+    index("reports_reporter_idx").on(t.reporterId),
   ],
 );

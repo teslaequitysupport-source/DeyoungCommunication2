@@ -22,6 +22,13 @@
       "when": 1789156868711,
       "tag": "0002_overconfident_tyger_tiger",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789260472968,
+      "tag": "0003_superb_ikaris",
+      "breakpoints": true
     }
   ]
 }

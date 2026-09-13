@@ -85,6 +85,27 @@ export function createAuth(db: PlatformDatabase) {
       },
       session: {
         create: {
+          // Sign-in gate: suspended or banned accounts never receive a
+          // session. The DB check happens at session-creation time, so a
+          // status change takes effect even if a stale cookie is replayed.
+          before: async (newSession) => {
+            const accountUser = await db.query.user.findFirst({
+              where: eq(schema.user.id, newSession.userId),
+              columns: { status: true },
+            });
+            if (accountUser && accountUser.status !== "ACTIVE") {
+              await recordAudit(db, {
+                actorId: newSession.userId,
+                action: AUDIT_ACTIONS.signInDenied,
+                targetType: "user",
+                targetId: newSession.userId,
+                outcome: "DENIED",
+                metadata: { status: accountUser.status },
+              });
+              return false;
+            }
+            return undefined;
+          },
           after: async (createdSession) => {
             const accountUser = await db.query.user.findFirst({
               where: eq(schema.user.id, createdSession.userId),

@@ -38,7 +38,7 @@ async function insertTestUser(id: string, email: string) {
 }
 
 describe("migration shape", () => {
-  it("creates all eleven tables", async () => {
+  it("creates all twelve tables", async () => {
     const result = await stack.db.execute<{ table_name: string }>(
       sql`select table_name from information_schema.tables where table_schema = 'public' order by table_name`,
     );
@@ -51,10 +51,49 @@ describe("migration shape", () => {
       "consent_records",
       "jobs",
       "live_sessions",
+      "reports",
       "sessions",
       "users",
       "verifications",
       "workers",
+    ]);
+  });
+
+  it("encodes the user status ladder incl. BANNED (spec §26)", async () => {
+    const result = await stack.db.execute<{ label: string }>(
+      sql`select unnest(enum_range(null::user_status))::text as label`,
+    );
+    expect(result.rows.map((r) => r.label)).toEqual([
+      "ACTIVE",
+      "SUSPENDED",
+      "BANNED",
+    ]);
+  });
+
+  it("encodes the spec §33 report reasons and outcomes", async () => {
+    const reasons = await stack.db.execute<{ label: string }>(
+      sql`select unnest(enum_range(null::report_reason))::text as label`,
+    );
+    expect(reasons.rows.map((r) => r.label)).toEqual([
+      "IMPERSONATION",
+      "HARASSMENT",
+      "ILLEGAL_CONTENT",
+      "UNAUTHORIZED_LIKENESS",
+      "UNAUTHORIZED_VOICE",
+      "SEXUAL_ABUSE_DEEPFAKE",
+      "SCAM",
+      "FRAUD",
+      "COPYRIGHT",
+      "OTHER",
+    ]);
+    const statuses = await stack.db.execute<{ label: string }>(
+      sql`select unnest(enum_range(null::report_status))::text as label`,
+    );
+    expect(statuses.rows.map((r) => r.label)).toEqual([
+      "OPEN",
+      "IN_REVIEW",
+      "RESOLVED",
+      "DISMISSED",
     ]);
   });
 

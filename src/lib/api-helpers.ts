@@ -56,6 +56,9 @@ export function apiError(
 
 export function requireUser(user: ApiUser | null): Response | null {
   if (!user) return apiError(401, "unauthenticated", "Sign in required.");
+  if (user.status === "BANNED") {
+    return apiError(403, "account_banned", "This account is banned.");
+  }
   if (user.status !== "ACTIVE") {
     return apiError(403, "account_suspended", "This account is suspended.");
   }
