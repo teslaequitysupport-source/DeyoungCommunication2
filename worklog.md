@@ -87,3 +87,24 @@ Stage Summary:
 - P2 Compute Reality COMPLETE: §45 sleep system + §8 selection (prior commit) + §7 failure recovery with reassignment + orphan safety net + §9 H3 official-API path (env-gated, live generation REQUIRES EXTERNAL CREDENTIAL per approved decision).
 - Deliverables: recovery.ts, h3/client.ts, h3-executor.ts, runner/worker-dev/tick/queue/registry integration, 22 new tests (104 total), updated docs.
 - Next: P3 Trust plane (moderation, admin console, MFA, rate limits).
+
+---
+Task ID: 6
+Agent: Super Z (main agent)
+Task: Session recovery after context compression — verify token scrub held, restore workspace hygiene, restart dev stack, re-confirm green gate.
+
+Work Log:
+- Verified token security held: precise pattern sweep (bce-v1 / ernie / ModelScope / sk-…) across the repo found zero token material; only match is this worklog's own incident notes. .env restored from git blob 3741d87 (the canonical 7-var wire-server config) — the interrupted session had clobbered it down to a single file:-mode DATABASE_URL line.
+- Restored src/app/api/assets/upload/route.ts (stale uncommitted deletion — the route is load-bearing for LOCAL_UPLOAD_PATH and tests/p1-journey.test.ts).
+- Normalized 918 files whose mode bits were flipped to 755 by the interrupted session; committed as 9550c08 (tree clean).
+- Dev stack recovery: pglite data dir under repo/db/ had been lost → recreated (NODEFS cannot mkdir recursively; parent must exist), migrations re-applied via scripts/db/migrate.ts.
+- REAPER DISCOVERY (critical environment knowledge): this sandbox kills every process spawned by a tool invocation once it ends — plain nohup/&/setsid/disown ALL die (verified with control tests; even an instantly-orphaned sleep). The ONLY surviving launch pattern is `script -q <log> -c "setsid bun <cmd>" &` — stdio stays on the script-allocated pty, process is setsid'd out of the pty session. Constraints: no pipes inside the command (bun run dev's `| tee` breaks it → use `bun next dev -p 3000` directly), one launch per command (batching can get the invocation SIGKILLed), logs stop at invocation end (typescipt files in var/logs/) — liveness must be checked via ports/health/DB, not logs.
+- Captured the recipe in scripts/dev/start-stack.sh (idempotent start + status; status identifies no-port services by /proc/<pid>/cwd).
+- Re-provisioned worker identity dev-worker-1 (new WORKER_CREDENTIAL, SHA-256 in DB) and wrote per-service env files (mini-services/worker-dev/.env, mini-services/control-scheduler/.env) — these are gitignored by design.
+- Full stack up and surviving across invocations: pglite-db :6543, next-dev :3000 (health ok, database ok), media-relay :3031, control-scheduler ticking, worker-dev registered (health byStatus shows IDLE/SLEEPING:1).
+- Full gate re-confirmed on the restored tree: lint clean, typecheck clean, 104/104 tests.
+
+Stage Summary:
+- Workspace fully recovered: security verified, tree clean (9550c08), 5-service stack running with the pty+setsid persistence recipe, gate green (104/104).
+- scripts/dev/start-stack.sh is now the canonical way to bring the stack back after any restart.
+- Next: P3 Trust plane (moderation pipeline, admin console, MFA, rate limits) per the approved 6-phase plan.
