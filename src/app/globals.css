@@ -369,4 +369,117 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  /* ── Device frames — photographic material rendering for the app
+     preview only. These gradients simulate brushed titanium and
+     screen glass inside the device; page chrome stays flat. ── */
+  .device {
+    position: relative;
+    border-radius: 3.4rem;
+    padding: 4px;
+    background: conic-gradient(
+      from 215deg,
+      #55555e,
+      #8d8d98,
+      #2e2e34,
+      #6a6a75,
+      #3c3c43,
+      #7a7a85,
+      #55555e
+    );
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+      inset 0 1.5px 3px rgba(255, 255, 255, 0.55),
+      inset 0 -2px 3px rgba(0, 0, 0, 0.75),
+      0 0 0 1px rgba(0, 0, 0, 0.65),
+      0 2px 3px rgba(0, 0, 0, 0.6),
+      0 16px 30px -10px rgba(0, 0, 0, 0.65),
+      0 46px 90px -28px rgba(0, 0, 0, 0.9);
+  }
+  .device-inner {
+    border-radius: 3.15rem;
+    padding: 7px;
+    background: #08080b;
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.08);
+  }
+  .device-screen {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2.7rem;
+    background: #000;
+    /* 2.5D glass: a faint bright crescent on the top edge + hairline
+       light on the perimeter reads as glass thickness over the panel. */
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.055),
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.14),
+      inset 0 -0.5px 1px rgba(255, 255, 255, 0.045);
+  }
+  .device-glare {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    background: linear-gradient(
+      112deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.055) 40%,
+      rgba(255, 255, 255, 0.13) 47%,
+      rgba(255, 255, 255, 0.04) 54%,
+      transparent 63%
+    );
+  }
+  .device-btn {
+    position: absolute;
+    width: 4px;
+    border-radius: 0 2px 2px 0;
+    background: linear-gradient(90deg, #6d6d78, #34343b);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.45),
+      0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+  .device-btn-left {
+    left: -4px;
+    border-radius: 2px 0 0 2px;
+    background: linear-gradient(270deg, #6d6d78, #34343b);
+  }
+  /* Lifelike lift on precise pointers only */
+  @media (pointer: fine) {
+    .device-lift {
+      transition:
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .device-lift:hover {
+      transform: perspective(1400px) rotateX(2.5deg) rotateY(-3deg)
+        translateY(-8px);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+        inset 0 1.5px 3px rgba(255, 255, 255, 0.55),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(0, 0, 0, 0.65),
+        0 3px 4px rgba(0, 0, 0, 0.6),
+        0 24px 44px -12px rgba(0, 0, 0, 0.68),
+        0 60px 115px -30px rgba(0, 0, 0, 0.95);
+    }
+    .device-lift:hover .device-glare {
+      background: linear-gradient(
+        122deg,
+        transparent 26%,
+        rgba(255, 255, 255, 0.07) 38%,
+        rgba(255, 255, 255, 0.15) 47%,
+        rgba(255, 255, 255, 0.045) 56%,
+        transparent 68%
+      );
+    }
+    .device-glare {
+      transition: background 0.45s ease;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .device-lift,
+    .device-lift:hover {
+      transition: none;
+      transform: none;
+    }
+  }
 }

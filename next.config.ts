@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   reactStrictMode: true,
+  // The floating dev indicator pollutes design QA screenshots (and reads
+  // as a stray badge); route errors still surface in the terminal.
+  devIndicators: false,
 };
 
 export default nextConfig;

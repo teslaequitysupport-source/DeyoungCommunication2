@@ -219,7 +219,7 @@ export function StudioStage() {
         </motion.div>
       </motion.div>
 
-      <p className="mt-4 text-center text-xs text-white/45">
+      <p className="mt-4 text-center text-xs text-white/60">
         The Live Studio, shown with a sample session.
       </p>
     </div>

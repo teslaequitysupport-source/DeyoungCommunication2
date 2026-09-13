@@ -642,32 +642,64 @@ export default async function Home() {
                   </p>
                 </RevealItem>
                 <RevealItem>
-                  <div className="grid max-w-md gap-3 pt-2 sm:flex sm:flex-wrap sm:gap-4">
-                    {/* Store buttons — drawn, not lifted, and honest about availability */}
-                    <span className="inline-flex h-14 items-center justify-center gap-3 rounded-xl border border-border bg-card px-5">
-                      <svg viewBox="0 0 24 24" className="size-6 shrink-0" fill="none" aria-hidden="true">
-                        <path d="M4 3l9 9-9 9V3z" fill="currentColor" className="text-white/85" />
-                        <path d="M16.5 8.5c1.8-1 3-2.6 3-4.5-1.9.2-3.6 1.2-4.6 2.6l1.6 1.9z" fill="currentColor" className="text-white/50" />
-                        <path d="M15 9l-4.5 3 4.5 3c.8-1.3 1.3-2.8 1.3-3s-.5-1.7-1.3-3z" fill="currentColor" className="text-white/50" />
+                  <div className="grid max-w-md gap-3.5 pt-2 sm:flex sm:flex-wrap sm:gap-4">
+                    {/* Store lockups — drawn, not lifted, honest about availability */}
+                    <span
+                      title="Coming soon"
+                      aria-label="Coming soon on Google Play"
+                      className="group inline-flex h-[56px] cursor-default items-center gap-3.5 rounded-[14px] border border-black/10 bg-[#f4f4f0] pl-[18px] pr-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_30px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[inset_0_1px_0_rgba(255,255,255,1),0_14px_36px_-12px_rgba(0,0,0,0.85)]"
+                    >
+                      <svg viewBox="0 0 24 24" className="size-[28px] shrink-0 -translate-y-px" fill="none" aria-hidden="true">
+                        {/* Play triangle — the wedge and its fold, two inks */}
+                        <path
+                          d="M5 2.8c.3-.45.9-.55 1.35-.22l12.65 8.05c.6.38.6 1.31 0 1.69L6.35 20.42c-.45.33-1.05.23-1.35-.22-.12-.2-.19-.42-.19-.65V3.45c0-.23.07-.45.19-.65z"
+                          fill="currentColor"
+                          className="text-black"
+                        />
+                        <path
+                          d="M5.8 2.7l8.6 8.6-2.55 2.55L5.5 7.5V3.45c0-.3.1-.55.3-.75z"
+                          fill="currentColor"
+                          className="text-primary"
+                        />
                       </svg>
-                      <span className="text-left">
-                        <span className="block text-[10px] uppercase tracking-wider text-white/50">Coming soon</span>
-                        <span className="block text-sm font-semibold text-white">Google Play</span>
+                      <span className="text-left leading-tight">
+                        <span className="block text-[10px] font-normal uppercase tracking-[0.18em] text-black/55">
+                          Coming soon on
+                        </span>
+                        <span className="block text-[17px] font-semibold tracking-tight text-black">
+                          Google Play
+                        </span>
                       </span>
                     </span>
-                    <span className="inline-flex h-14 items-center justify-center gap-3 rounded-xl border border-border bg-card px-5">
-                      <svg viewBox="0 0 24 24" className="size-6 shrink-0" fill="currentColor" aria-hidden="true">
-                        <path d="M16.4 12.9c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.5-.1-2.8.8-3.5.8s-1.9-.8-3.1-.8c-1.6 0-3.1.9-3.9 2.4-1.7 2.9-.4 7.2 1.2 9.5.8 1.2 1.8 2.4 3 2.4 1.2 0 1.6-.8 3.1-.8s1.9.8 3.1.7c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.6-1-2.7-3.9zM14.2 5.6c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.1 1.9-1 3 1.1.1 2.2-.6 2.8-1.5z" className="text-white/85" />
+                    <span
+                      title="Coming soon"
+                      aria-label="Coming soon on the App Store"
+                      className="group inline-flex h-[56px] cursor-default items-center gap-3.5 rounded-[14px] border border-black/10 bg-[#f4f4f0] pl-[18px] pr-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_30px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[inset_0_1px_0_rgba(255,255,255,1),0_14px_36px_-12px_rgba(0,0,0,0.85)]"
+                    >
+                      <svg viewBox="0 0 24 24" className="size-[28px] shrink-0" fill="currentColor" aria-hidden="true">
+                        {/* The apple — silhouette with leaf */}
+                        <path
+                          d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08z"
+                          className="text-black"
+                        />
+                        <path
+                          d="M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"
+                          className="text-primary"
+                        />
                       </svg>
-                      <span className="text-left">
-                        <span className="block text-[10px] uppercase tracking-wider text-white/50">Coming soon</span>
-                        <span className="block text-sm font-semibold text-white">App Store</span>
+                      <span className="text-left leading-tight">
+                        <span className="block text-[10px] font-normal uppercase tracking-[0.18em] text-black/55">
+                          Coming soon on
+                        </span>
+                        <span className="block text-[17px] font-semibold tracking-tight text-black">
+                          App Store
+                        </span>
                       </span>
                     </span>
                   </div>
                 </RevealItem>
                 <RevealItem>
-                  <p className="text-xs text-white/45">
+                  <p className="text-xs text-white/55">
                     Previews shown are the app layout in development. Not a
                     live store listing.
                   </p>
