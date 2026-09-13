@@ -1,10 +1,11 @@
 /**
- * Moderator queue view (spec §26/§33) — `moderation:queue:view`.
- * MODERATOR, ADMIN, SUPER_ADMIN hold this permission (rbac.ts).
+ * Admin audit-log view (spec §26) — `audit:read`. The audit trail is
+ * append-only; this surface is strictly read-only with paging.
  */
 
+import { desc } from "drizzle-orm";
 import { getDb } from "@/lib/db";
-import { listReports } from "@/lib/moderation";
+import { auditLog } from "@/lib/db/schema";
 import {
   apiError,
   getApiUser,
@@ -16,7 +17,6 @@ import { assertPermission } from "@/lib/rbac";
 import { z } from "zod";
 
 const querySchema = z.object({
-  status: z.enum(["OPEN", "IN_REVIEW", "RESOLVED", "DISMISSED"]).optional(),
   limit: z.coerce.number().int().min(1).max(200).optional(),
 });
 
@@ -30,20 +30,32 @@ export async function GET(request: Request) {
   const mfaDenied = requireMfa(user);
   if (mfaDenied) return mfaDenied;
   try {
-    assertPermission(user.role, "moderation:queue:view");
+    assertPermission(user.role, "audit:read");
   } catch {
-    return apiError(403, "forbidden", "moderation:queue:view permission required.");
+    return apiError(403, "forbidden", "audit:read permission required.");
   }
 
   const url = new URL(request.url);
   const parsed = querySchema.safeParse({
-    status: url.searchParams.get("status") ?? undefined,
     limit: url.searchParams.get("limit") ?? undefined,
   });
-  if (!parsed.success) {
-    return apiError(400, "invalid_input", "Invalid query parameters.");
-  }
+  const limit = parsed.success ? (parsed.data.limit ?? 50) : 50;
 
-  const rows = await listReports(getDb(), parsed.data);
-  return jsonResponse({ reports: rows });
+  const rows = await getDb()
+    .select({
+      id: auditLog.id,
+      actorEmail: auditLog.actorEmail,
+      actorRole: auditLog.actorRole,
+      action: auditLog.action,
+      targetType: auditLog.targetType,
+      targetId: auditLog.targetId,
+      outcome: auditLog.outcome,
+      metadata: auditLog.metadata,
+      createdAt: auditLog.createdAt,
+    })
+    .from(auditLog)
+    .orderBy(desc(auditLog.createdAt))
+    .limit(limit);
+
+  return jsonResponse({ entries: rows });
 }

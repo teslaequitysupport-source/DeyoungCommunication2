@@ -11,6 +11,7 @@ import {
   jsonResponse,
   readJson,
   requireUser,
+  requireMfa,
 } from "@/lib/api-helpers";
 import { assertPermission } from "@/lib/rbac";
 import { z } from "zod";
@@ -27,6 +28,11 @@ export async function POST(
   const user = await getApiUser(request);
   const denied = requireUser(user);
   if (denied || !user) return denied ?? apiError(401, "unauthenticated", "Sign in required.");
+
+  // MFA gate: elevated roles must hold a verified TOTP enrollment
+  // before touching moderation or admin surfaces (spec §26/§28).
+  const mfaDenied = requireMfa(user);
+  if (mfaDenied) return mfaDenied;
   try {
     assertPermission(user.role, "users:manage");
   } catch {

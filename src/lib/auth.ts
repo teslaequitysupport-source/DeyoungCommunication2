@@ -16,6 +16,7 @@
 
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { twoFactor } from "better-auth/plugins/two-factor";
 import { eq } from "drizzle-orm";
 import { getDb, type PlatformDatabase } from "@/lib/db";
 import { schema } from "@/lib/db";
@@ -62,8 +63,22 @@ export function createAuth(db: PlatformDatabase) {
           defaultValue: "ACTIVE",
           input: false,
         },
+        twoFactorEnabled: {
+          type: "boolean",
+          required: false,
+          defaultValue: false,
+          input: false,
+        },
       },
     },
+    plugins: [
+      // TOTP + backup codes (spec §28 "2FA"). Enforcement for elevated
+      // roles lives in requireMfa (api-helpers) — the plugin owns enrollment
+      // and verification, never the authorization policy.
+      twoFactor({
+        issuer: "Live Character Platform",
+      }),
+    ],
     databaseHooks: {
       user: {
         create: {

@@ -27,7 +27,7 @@ const { createAuth } = await import("@/lib/auth");
 const { signInCookieHeaders } = await import("./helpers");
 const db = await import("@/lib/db");
 const { drizzle } = await import("drizzle-orm/pglite");
-const { eq } = await import("drizzle-orm");
+import { eq, inArray as inArray_ } from "drizzle-orm";
 
 const BASE = "http://localhost:3000";
 
@@ -88,6 +88,9 @@ describe("P3 trust plane — reports, moderation, admin users, auth gate", () =>
     await signUp(auth, "Super", "super@p3.test");
 
     const hdb = await harnessDb();
+    // Roles first (MFA not yet enabled — sign-in must not trigger the 2FA
+    // challenge in this suite; the real enrollment round-trip is covered by
+    // p3-mfa.test.ts).
     await hdb.db.update(hdb.schema.user).set({ role: "MODERATOR" }).where(eq(hdb.schema.user.email, "mod@p3.test"));
     await hdb.db.update(hdb.schema.user).set({ role: "ADMIN" }).where(eq(hdb.schema.user.email, "admin@p3.test"));
     await hdb.db.update(hdb.schema.user).set({ role: "SUPER_ADMIN" }).where(eq(hdb.schema.user.email, "super@p3.test"));
@@ -98,6 +101,14 @@ describe("P3 trust plane — reports, moderation, admin users, auth gate", () =>
     modCookie = await signInCookieHeaders(auth as never, "mod@p3.test", "correct-horse-battery-staple");
     adminCookie = await signInCookieHeaders(auth as never, "admin@p3.test", "correct-horse-battery-staple");
     superCookie = await signInCookieHeaders(auth as never, "super@p3.test", "correct-horse-battery-staple");
+
+    // Now flip MFA on for the elevated roles (simulating completed TOTP
+    // enrollments). Sessions signed in above stay valid — the MFA gate reads
+    // the live user row at request time.
+    await hdb.db
+      .update(hdb.schema.user)
+      .set({ twoFactorEnabled: true })
+      .where(inArray_(hdb.schema.user.email, ["mod@p3.test", "admin@p3.test", "super@p3.test"]));
 
     victimId = await userIdByEmail("victim@p3.test");
   });

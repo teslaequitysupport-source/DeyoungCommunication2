@@ -108,3 +108,22 @@ Stage Summary:
 - Workspace fully recovered: security verified, tree clean (9550c08), 5-service stack running with the pty+setsid persistence recipe, gate green (104/104).
 - scripts/dev/start-stack.sh is now the canonical way to bring the stack back after any restart.
 - Next: P3 Trust plane (moderation pipeline, admin console, MFA, rate limits) per the approved 6-phase plan.
+
+---
+Task ID: 7
+Agent: Super Z (main agent)
+Task: P3 Trust plane — moderation, admin console, MFA, rate limits (spec §26/§27/§28/§30/§33).
+
+Work Log:
+- P3a (98e63e5): migration 0003 (user_status BANNED + reports table + report enums), src/lib/moderation.ts (target-validated intake, denormalized targetUserId, documented decisions, applyModerationAction shared enforcement: warn/suspend+bans with session revocation/content-removal via ARCHIVED), src/lib/admin-users.ts (search/inspect with usage counts, guarded status transitions — unban is SUPER_ADMIN-only, role changes never on self and revoke sessions), 9 routes (reports, moderation queue/decision, admin users x4, worker control MFA-gated later), sign-in gate (session.create.before blocks non-ACTIVE, audits auth.sign_in.denied), requireUser distinguishes banned/suspended. 26 integration tests.
+- P3c (9dc64cd): migration 0004 (rate_limit_hits), src/lib/rate-limits.ts — DB-backed fixed windows, atomic INSERT..ON CONFLICT counting, denied hits still count (anti-probing), lazy pruning; wired into reports/presign/jobs/sessions POST; 429 + Retry-After helper. 5 tests incl. boundary-probe and window-reset.
+- P3b: migration 0005 (twofactor table + users.two_factor_enabled), Better Auth twoFactor plugin (TOTP + backup codes) via direct subpath import (the barrel import "better-auth/plugins" hangs Turbopack), twoFactorEnabled surfaced through session/getApiUser/page shell, requireMfa gate on all 9 elevated routes, admin console UI (src/components/app/admin-view.tsx: users search/inspect/actions, moderation queue with decisions, workers table, audit trail, self-service TOTP enrollment) with staff-gated tab in app-shell.
+- MFA debugging: the plugin's totpURI carries base32.encode(rawSecret) — codes must be generated from the base32-DECODED secret (this is what authenticator apps do); enableTwoFactor/verifyTOTP rotate sessions, and enrolled users sign in through the two_factor challenge cookie → tests drive the full real round-trip (enable → real code → verify → challenge sign-in → gate passes). 5 MFA tests.
+- NEXT-DEV DETACHED-MODE BUG (environment): with stdout on a dead pty, next-server spins at ~115% CPU in source-map parsing (patch-error-inspect), never serving requests; booting foreground is fine. Diagnosed via node inspector CPU profile (scripts/dev/profile-spin.ts: 70%+ in source-map.js parseMappings/doQuickSort). Fix: launch shape keeps stdin on the script pty but appends stdout/stderr to var/logs/next-dev.log (setsid sh -c 'sleep 2; exec bun next dev… >> log 2>&1') — this both works and gives persistent next-dev logs. Recipe + explanation captured in scripts/dev/start-stack.sh.
+- Live smoke test (scripts/dev/smoke-p3.ts) against the running server: report intake 201, MFA gate 403, queue 200, decision 200, victim locked out, audit trail contains moderation.suspend/report.decide, rate limit 429 with retry-after. ALL PASSED.
+- Final gate: lint clean, typecheck clean, 142/142 tests (12 files).
+
+Stage Summary:
+- P3 Trust plane COMPLETE: moderation (§33), admin console + user management (§26), MFA enforcement (§28), rate limits (§30). Migrations 0003-0005 applied to dev DB; stack running (5 services) with the fixed next-dev launch recipe.
+- Deliverables: src/lib/{moderation,admin-users,rate-limits}.ts, 11 new routes, admin-view.tsx console, 36 new tests (142 total), live smoke script, start-stack.sh v2.
+- Next: P4 Mobile (Expo) or P5 launch-gate items (legal pages, NDPR privacy workflows, account deletion, data retention) per the approved roadmap.

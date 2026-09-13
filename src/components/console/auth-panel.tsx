@@ -25,6 +25,7 @@ export interface ConsoleUser {
   role: string;
   status: string;
   emailVerified: boolean;
+  twoFactorEnabled: boolean;
 }
 
 function AuthError({ message }: { message: string }) {

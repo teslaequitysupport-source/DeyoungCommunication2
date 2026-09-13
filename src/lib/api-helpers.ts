@@ -14,6 +14,7 @@ export interface ApiUser {
   email: string;
   role: UserRole;
   status: string;
+  twoFactorEnabled: boolean;
 }
 
 export async function getApiUser(request: Request): Promise<ApiUser | null> {
@@ -32,6 +33,7 @@ export async function getApiUser(request: Request): Promise<ApiUser | null> {
       ? (role as UserRole)
       : "USER",
     status: String(session.user.status ?? "ACTIVE"),
+    twoFactorEnabled: Boolean(session.user.twoFactorEnabled),
   };
 }
 
@@ -74,6 +76,25 @@ export function rateLimited(retryAfterSeconds: number, limit: number): Response 
       headers: { "retry-after": String(retryAfterSeconds) },
     },
   );
+}
+
+/** Roles that can act on other accounts — they must hold verified MFA. */
+const MFA_REQUIRED_ROLES: readonly UserRole[] = ["MODERATOR", "ADMIN", "SUPER_ADMIN"];
+
+/**
+ * MFA gate for elevated surfaces (spec §26/§28 "MFA where appropriate").
+ * Returns a 403 response when an elevated role has no verified TOTP
+ * enrollment, else null. USER and SUPPORT (read-only) pass without MFA.
+ */
+export function requireMfa(user: ApiUser): Response | null {
+  if (MFA_REQUIRED_ROLES.includes(user.role) && !user.twoFactorEnabled) {
+    return apiError(
+      403,
+      "mfa_required",
+      "Enable two-factor authentication before using moderation or admin surfaces.",
+    );
+  }
+  return null;
 }
 
 export async function readJson<T>(request: Request): Promise<T | null> {

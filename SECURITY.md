@@ -64,3 +64,30 @@ explicitly deferred, so nothing is believed to exist that does not.
 Security issues in this repository should be treated with the same severity
 discipline as the approved plan: a blocking regression in a critical flow
 stops a release. Disclosure guidance ships with the legal pages in Phase 5.
+
+## Trust plane (P3, spec §26/§28/§30/§33)
+
+- **Account states:** `ACTIVE / SUSPENDED / BANNED`. Suspension and ban revoke
+  every active session immediately (no waiting for cookie expiry). Un-banning
+  a BANNED account requires SUPER_ADMIN — reversing a ban is a higher bar
+  than applying it. Sign-in is refused at session-creation time for
+  non-ACTIVE accounts (`auth.sign_in.denied` audit rows), and any surviving
+  session hitting a non-ACTIVE user is rejected (`account_suspended` /
+  `account_banned`) as defense-in-depth.
+- **MFA:** Better Auth twoFactor plugin (TOTP + hashed backup codes).
+  MODERATOR, ADMIN and SUPER_ADMIN must hold a verified enrollment before
+  using moderation/admin APIs (`mfa_required`). Read-only SUPPORT is exempt.
+  Enrollment secrets are encrypted at rest with the server secret.
+- **Moderation:** abuse reports with validated polymorphic targets and
+  denormalized target users; decisions must document themselves; enforcement
+  (warn/suspend/ban/content-removal) flows through one audited code path
+  shared with admin user management. Reports survive reporter and target
+  deletion (SET NULL), decisions survive forever.
+- **Rate limits:** DB-backed fixed-window counters (`rate_limit_hits`), one
+  atomic upsert per hit, enforced on reports (10/h), presign (30/h), jobs
+  (30/h), sessions (10/h). Denied and invalid requests still count, so the
+  limit boundary cannot be probed for free; responses carry `Retry-After`.
+- **Admin surface:** search/inspect users (safe fields only — never password
+  hashes or session tokens), status transitions with a guarded transition
+  table, role changes (SUPER_ADMIN only, never on self, sessions revoked so
+  demotions apply immediately), workers view, append-only audit view.

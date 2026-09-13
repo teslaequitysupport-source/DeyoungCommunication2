@@ -176,6 +176,8 @@ export const user = pgTable(
     // Platform fields (exposed to session via Better Auth additionalFields).
     role: userRoleEnum("role").notNull().default("USER"),
     status: userStatusEnum("status").notNull().default("ACTIVE"),
+    /** True only after a verified TOTP enrollment (twoFactor plugin). */
+    twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -571,6 +573,27 @@ export const reports = pgTable(
     index("reports_reporter_idx").on(t.reporterId),
   ],
 );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Two-factor authentication — Better Auth twoFactor plugin storage (spec §28)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * TOTP enrollment state. `verified` flips true when the user proves the code;
+ * only then does the plugin set users.two_factor_enabled. Backup codes are
+ * stored hashed by the plugin.
+ */
+export const twoFactor = pgTable("twofactor", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  secret: text("secret"),
+  backupCodes: text("backup_codes"),
+  verified: boolean("verified").notNull().default(false),
+  failedVerificationCount: integer("failed_verification_count"),
+  lockedUntil: timestamp("locked_until", { withTimezone: true, mode: "date" }),
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Rate limits (spec §5/§26/§30) — DB-backed fixed-window counters

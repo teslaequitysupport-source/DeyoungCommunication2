@@ -15,6 +15,7 @@ import {
   Images,
   LayoutDashboard,
   LogOut,
+  ShieldCheck,
   Users,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
@@ -26,12 +27,14 @@ import { CharactersView } from "@/components/app/characters-view";
 import { MediaView } from "@/components/app/media-view";
 import { LiveStudioView } from "@/components/app/live-studio-view";
 import { JobsView } from "@/components/app/jobs-view";
+import { AdminView } from "@/components/app/admin-view";
 
 export interface ShellUser {
   id: string;
   name: string;
   email: string;
   role: string;
+  twoFactorEnabled: boolean;
 }
 
 export function AppShell({ user }: { user: ShellUser }) {
@@ -39,6 +42,9 @@ export function AppShell({ user }: { user: ShellUser }) {
   const [signingOut, setSigningOut] = useState(false);
   const [view, setView] = useState("overview");
   const [refreshKey, setRefreshKey] = useState(0);
+  // The tab is convenience only — every admin API re-checks the session role
+  // server-side (and elevated roles must pass the MFA gate).
+  const isStaff = ["MODERATOR", "SUPPORT", "ADMIN", "SUPER_ADMIN"].includes(user.role);
 
   const bumpRefresh = useCallback(() => {
     setRefreshKey((k) => k + 1);
@@ -64,7 +70,7 @@ export function AppShell({ user }: { user: ShellUser }) {
             Live Character Platform
           </h1>
           <Badge variant="outline" className="hidden sm:inline-flex border-emerald-300 bg-emerald-50 text-emerald-800">
-            Phase 1 · Vertical slice
+            Phase 3 · Trust plane
           </Badge>
           <div className="ml-auto flex items-center gap-3">
             <span className="text-sm text-muted-foreground hidden sm:inline">
@@ -85,7 +91,7 @@ export function AppShell({ user }: { user: ShellUser }) {
 
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-6">
         <Tabs value={view} onValueChange={setView} className="gap-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-6 h-auto">
             <TabsTrigger value="overview" className="gap-2 py-2">
               <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
               Overview
@@ -106,6 +112,12 @@ export function AppShell({ user }: { user: ShellUser }) {
               <Boxes className="h-4 w-4" aria-hidden="true" />
               Jobs
             </TabsTrigger>
+            {isStaff && (
+              <TabsTrigger value="admin" className="gap-2 py-2">
+                <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                Admin
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="overview">
@@ -123,6 +135,11 @@ export function AppShell({ user }: { user: ShellUser }) {
           <TabsContent value="jobs">
             <JobsView refreshKey={refreshKey} onChanged={bumpRefresh} onNavigate={setView} />
           </TabsContent>
+          {isStaff && (
+            <TabsContent value="admin">
+              <AdminView selfRole={user.role} mfaEnabled={user.twoFactorEnabled} />
+            </TabsContent>
+          )}
         </Tabs>
       </main>
 

@@ -11,6 +11,7 @@ import {
   jsonResponse,
   readJson,
   requireUser,
+  requireMfa,
   workerAuthFrom,
 } from "@/lib/api-helpers";
 import { assertPermission } from "@/lib/rbac";
@@ -45,6 +46,8 @@ export async function POST(request: Request) {
   const user = await getApiUser(request);
   const denied = requireUser(user);
   if (denied || !user) return denied ?? apiError(401, "unauthenticated", "Sign in required.");
+  const mfaDenied = requireMfa(user);
+  if (mfaDenied) return mfaDenied;
   try {
     assertPermission(user.role, "workers:manage");
   } catch {

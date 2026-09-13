@@ -29,6 +29,7 @@ async function getSessionUser(): Promise<ConsoleUser | null> {
     role: String(session.user.role ?? "USER"),
     status: String(session.user.status ?? "ACTIVE"),
     emailVerified: Boolean(session.user.emailVerified),
+    twoFactorEnabled: Boolean(session.user.twoFactorEnabled),
   };
 }
 
@@ -61,7 +62,13 @@ export default async function Home() {
   if (user) {
     return (
       <AppShell
-        user={{ id: user.id, name: user.name, email: user.email, role: user.role }}
+        user={{
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          twoFactorEnabled: user.twoFactorEnabled,
+        }}
       />
     );
   }
@@ -75,7 +82,7 @@ export default async function Home() {
               Live Character Platform
             </h1>
             <Badge variant="outline" className="border-emerald-300 bg-emerald-50 text-emerald-800">
-              Phase 1 · Vertical slice
+              Phase 3 · Trust plane
             </Badge>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl">

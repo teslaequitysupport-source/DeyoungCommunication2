@@ -16,6 +16,12 @@
 #     `bun next dev` directly instead of `bun run dev` for next-dev.
 #   ⚠ Start services one per `script` line; batching several in one command
 #     can get the whole invocation SIGKILLed by the wrapper.
+#   ⚠ NEXT-DEV IS SPECIAL: with its stdout on a dead pty it spins forever in
+#     source-map parsing of error stacks (observed Sept 2026 — boot loop at
+#     ~115% CPU, no requests served). The working shape for next-dev keeps
+#     STDIN on the pty (so the reaper spares it) but appends stdout/stderr to
+#     a real log file — which also means next-dev logs PERSIST after the
+#     launching invocation ends, unlike the other services.
 #
 # Usage:
 #   bash scripts/dev/start-stack.sh          # start whatever is missing
@@ -65,7 +71,7 @@ case "${1:-start}" in
     svc pglite-db 6543 mini-services/pglite-db bun --hot index.ts
     sleep 4
     if ! port_open 3000; then
-      ( cd "$ROOT" && script -q "$LOGS/next-dev.log" -c "setsid bun next dev -p 3000" >/dev/null 2>&1 & )
+      ( cd "$ROOT" && script -q /dev/null -c "setsid sh -c 'sleep 2; exec bun next dev -p 3000 >> $LOGS/next-dev.log 2>&1'" >/dev/null 2>&1 & )
       echo "→ started next-dev"
     else echo "✓ next-dev already up (:3000)"; fi
     sleep 6
@@ -76,8 +82,9 @@ case "${1:-start}" in
     sleep 5
     echo "---- status ----"
     bash "$0" status
-    echo "Note: logs in $LOGS/*.log stop growing once the launching shell exits —"
-    echo "      that is expected; check ports/health for liveness."
+    echo "Note: service logs in $LOGS/*.log stop growing once the launching shell"
+    echo "      exits — that is expected (except next-dev, which appends to its"
+    echo "      log file); check ports/health for liveness."
     ;;
   *)
     echo "unknown subcommand: $1 (use 'start' or 'status')"; exit 1 ;;

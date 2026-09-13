@@ -41,7 +41,10 @@ scales (and bills) on its own axis:
 | H3 official-API client | Env-gated worker-side client + executor (submit/poll/retrieve) | TESTED (faked transport) — live calls REQUIRE EXTERNAL CREDENTIAL |
 | Media plane | LiveKit | NOT IMPLEMENTED (dev uses socket.io relay; LiveKit at deploy) |
 | Object storage | Cloudflare R2 | NOT IMPLEMENTED (dev local object store) — REQUIRES EXTERNAL CREDENTIAL |
-| Admin console | RBAC-gated routes | NOT IMPLEMENTED (Phase 3) |
+| Admin console | RBAC-gated routes + console UI (users, moderation, workers, audit, MFA) | TESTED (integration + live smoke) |
+| Moderation | Abuse reports (§33), moderator decisions with enforcement, documented outcomes | TESTED |
+| MFA (TOTP) | Better Auth twoFactor plugin; required for MODERATOR/ADMIN/SUPER_ADMIN surfaces | TESTED (real TOTP round-trip) |
+| Rate limits | DB-backed fixed windows on reports/presign/jobs/sessions; denied hits still count | TESTED |
 | Mobile | Expo React Native | NOT IMPLEMENTED (Phase 4, per approved order) |
 
 ## Data model (Phase 2 migrations)
@@ -81,6 +84,6 @@ P0 Foundations → P1 Vertical slice (characters, uploads, job system, one real
  (sleep system, worker selection, failure reassignment, H3 registry entry +
  official-API client/executor — DONE; RunPod invoker and live H3 generation
  REQUIRES EXTERNAL CREDENTIAL) → P3 Trust plane (moderation, admin console,
- MFA, rate limits) → P4 Mobile (Expo) → P5 Launch gate (legal, payments
+ MFA, rate limits — DONE) → P4 Mobile (Expo) → P5 Launch gate (legal, payments
  decision, hosting tier). Each phase exits only on TESTED status of its exit
  criteria.
