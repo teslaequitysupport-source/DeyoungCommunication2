@@ -220,3 +220,25 @@ Stage Summary:
 - Landing page upgraded C-grade → A- (VLM art-director verdict): real product imagery, one WebGL signature moment, editorial register rhythm, strict red/white/black spec tokens, no new dependencies
 - Committed as "Premium editorial upgrade: real imagery, WebGL transform, register rhythm"
 - Open items for next task: fix 46 pre-existing test failures (test-harness prepared-statement issue from Brain/LLM session); finish/commit Brain/LLM layer; consider --max-old-space-size cap for next dev server
+
+---
+Task ID: 12
+Agent: Super Z (main)
+Task: User-requested expansion: man-to-woman demo, OBS/social guides, support page, skeletons, validation, cookie consent, app coming soon, data section, em-dash removal
+
+Work Log:
+- Generated new demo imagery: realistic webcam man -> cinematic 3D woman character (VLM-verified pair 9/10 + 10/10, transformation reads clearly); regenerated public/studio assets + avatar
+- Landing page: new "Take it live" section (OBS 3-step guide + social creation cards), "The studio goes pocket" app section with CSS phone mockups (characters grid + live studio with full-frame character and camera PiP; studio screen restructured to video-call layout after overflow was found), "Where your data goes" 4-stage lifecycle on paper register; section marks renumbered 01-08
+- Support: /support route + SupportForm (mirror-of-server validation, honeypot, reference success panel), POST /api/support, support_tickets table (drizzle migration 0007), support rate-limit policy (5/h per IP), route loading.tsx skeleton; tests/support-api.test.ts 5/5 standalone
+- CookieConsent banner in layout (essential-only vs accept, localStorage), Support link in nav + LEGAL_LINKS
+- Skeletons: TransformCanvas texture-load skeleton, overview stat skeletons, /support loading skeleton
+- Auth panel: live inline validation (email format, name length, password >= 8), aria-invalid, invalid submits blocked
+- Em-dash sweep: scripts/em-dash-sweep.py cleaned 86 user-facing lines across landing/legal/help/app views; layout titles use middot
+- Verification: typecheck clean, lint clean (fixed setState-in-effect via rAF deferral, removed empty JSX fragments from lint --fix), VLM gates: hero/OBS/app/data SHIP, support e2e verified (validation errors -> real ticket DY-4F9K2Q1C), mobile no overflow
+- Test suite: 155 tests, 108/47 in full run vs 104/46 baseline + 5 new (one support test flakes under the KNOWN pre-existing cross-file harness interference; passes 5/5 standalone twice)
+- Dev server OOM-killed 3x during heavy runs; now runs with NODE_OPTIONS=--max-old-space-size=1024
+
+Stage Summary:
+- Committed as "User-requested expansion: transform demo, guides, support, app preview"
+- Everything user asked for delivered: man->woman imagery, OBS + social how-tos, support page, skeleton loading, form validation, cookies banner + policies surfaced, data usage section, app coming soon with phone layouts, em dashes removed
+- Open items: pre-existing 46-test cross-file interference (next on queue with Brain/LLM layer); GitHub push; Railway readiness
