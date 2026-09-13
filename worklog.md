@@ -198,3 +198,25 @@ Stage Summary:
 - All functionality preserved (routes, auth, APIs, DB, workers); UI-only diff across 31 files.
 - Railway config unchanged and still valid (production build re-verified).
 - Known remaining: Google Fonts download can fail on flaky network during build (retry works); intermittent vitest teardown error pre-exists this change.
+
+---
+Task ID: 11
+Agent: Super Z (main)
+Task: Premium UI upgrade — fix "sloppy and generic" landing page
+
+Work Log:
+- Audited live render via headless browser + VLM art-director critique (grade: D+/B- — "high-fidelity Figma template", wireframe mockup, flat void)
+- Generated matched sample imagery (webcam input + stylized character output, verified same-person by VLM), optimized to 3 web assets (~60KB total) in public/studio/
+- Built src/components/fx/transform-canvas.tsx: real WebGL shader (noise dissolve + red scan + slice glitch + red-only channel split) looping camera→character; fallbacks: static img (no WebGL), held frame (reduced-motion), IntersectionObserver pause
+- Rebuilt studio-stage.tsx on real imagery, ticking session clock, pulsing on-air dots
+- page.tsx restructure: editorial SectionMark indices, red accent word in hero, slash-separated trust chips, red broadcast ticker, paper (light) how-it-works with 2.5px outlined numerals + closing row, red CTA block "Your character is waiting.", auth section retitle
+- globals.css: film grain overlay, ticker/on-air keyframes, paper/band/outline utilities, hero scale to 5.5rem
+- Fixed pay-per-render hyphenation; nav CTA to 48px control height; lint --fix cleaned directives
+- Verified: typecheck clean, lint clean, mobile 390px no overflow (scrollWidth 390), VLM final gate 2×SHIP + stroke fix applied, dev 200
+- Test suite: 150 tests → 104 pass / 46 fail IDENTICAL on clean HEAD (git stash -u proof) — zero UI regressions; the 46 are pre-existing from interrupted Brain/LLM session ("unnamed prepared statement" errors, also visible in old dev logs)
+- Note: next-server was OOM-killed twice during the session (2GB+ RSS, 4GB container); restarted, services paused during heavy test runs
+
+Stage Summary:
+- Landing page upgraded C-grade → A- (VLM art-director verdict): real product imagery, one WebGL signature moment, editorial register rhythm, strict red/white/black spec tokens, no new dependencies
+- Committed as "Premium editorial upgrade: real imagery, WebGL transform, register rhythm"
+- Open items for next task: fix 46 pre-existing test failures (test-harness prepared-statement issue from Brain/LLM session); finish/commit Brain/LLM layer; consider --max-old-space-size cap for next dev server
