@@ -77,3 +77,28 @@ Kaggle for non-commercial GPU experiments.
 - Roll back a deploy → platform-level (Vercel instant rollback / VPS redeploy)
 - Restore database → Neon point-in-time recovery
 - Emergency controls → admin console with mandatory audit entries (Phase 3)
+
+## Mobile app (P4)
+
+The Expo app lives in `mobile/` (see its README). Deployment notes:
+
+- Point it at the platform via `API_URL` (`mobile/app.config.js` reads it;
+  default targets the Android emulator host `10.0.2.2:3000`).
+- The app authenticates with the platform's signed session cookie stored in
+  `expo-secure-store`. Add the app origin (Expo Go `exp://…` URL or the
+  `livechar://` scheme on a dev build) to `TRUSTED_ORIGINS` exactly like
+  any other trusted client.
+- The dev media relay is expected on the API host's port 3031; in
+  production, put the relay behind the same domain (path or subdomain) and
+  update `relayUrl()` in `mobile/src/lib/api.ts`.
+- Builds: `npx expo prebuild` + native build (EAS or local). The code has
+  NOT been compiled in the sandbox environment — run one `expo start`
+  integration pass before shipping (honest status, per the build spec).
+
+## Production build gate (P6)
+
+`bun run build` (Next.js 16 + Turbopack) compiles all routes, type-checks
+the app, and emits the standalone server. It is part of the per-deploy
+gate alongside lint and the full test suite. The `mobile/` tree is
+excluded from the web app's tsconfig/eslint on purpose — it has its own
+toolchain and its own `tsc --noEmit`.
