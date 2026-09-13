@@ -242,3 +242,27 @@ Stage Summary:
 - Committed as "User-requested expansion: transform demo, guides, support, app preview"
 - Everything user asked for delivered: man->woman imagery, OBS + social how-tos, support page, skeleton loading, form validation, cookies banner + policies surfaced, data usage section, app coming soon with phone layouts, em dashes removed
 - Open items: pre-existing 46-test cross-file interference (next on queue with Brain/LLM layer); GitHub push; Railway readiness
+
+---
+Task ID: 13
+Agent: Super Z (main agent)
+Task: Ultrarealistic premium upgrade — imagery, phone mockups, store badges, cookie banner fix
+
+Work Log:
+- VLM baseline review confirmed: phones 6/10 (vector outlines), store badges 4/10 (weakest link), letter placeholders in character grid
+- Regenerated demo pair with image-to-image editing (scripts/edit-pair.ts, z-ai SDK edit endpoint): webcam man -> woman version of the SAME person. First attempts (text-to-image with "sibling" prompts, long edit prompts) scored 3-4/10 match; a SHORT surgical prompt anchored on identity ("Same exact person, now a woman...") hit 8/10 pair match with 10/10 + 9/10 photorealism (VLM-verified)
+- Generated three supporting portraits (Kamal, Zara, Ada 2.0 — the last as an image-edit restyle of the main woman) replacing the Figma-letter grid placeholders; prep script now cuts 6 optimized assets (~110KB total)
+- Rebuilt PhoneMockups as photoreal devices: brushed-titanium conic frame (device/device-inner/device-screen/device-glare/device-btn classes in globals.css — material rendering confined inside the device, page chrome stays flat), 2.5D glass edge crescent, dynamic island with lens glint, side hardware buttons, refined SVG status glyphs (cellular/wifi/battery), layered contact+ambient shadows, pointer-fine hover lift with glare shift, reduced-motion respected
+- Store badges redesigned as paper-white plates (echoes the paper register): "COMING SOON ON" light caps + bold store name, black+red two-tone drawn glyphs (still NOT official badges — honesty about not being listed), refined shadows/hover; disclaimer contrast raised to white/55
+- CookieConsent "keeps beeping" fixed: choice now written to BOTH a 365-day first-party cookie AND localStorage (either survives the other being cleared/partitioned), explicit X dismiss (= essential-only), banner never returns after any decision — verified end-to-end in browser incl. reload
+- next.config.ts: devIndicators disabled (dev overlay "N"/"1 Issue" pill was polluting screenshots; production never shows it)
+- Hero caption contrast bumped white/45 -> /60; phone screen spacing fixed (no overflow, DOM-verified scrollH==clientH)
+- Environment: next-dev OOM-killed 2x during QA (compile storm from worker/scheduler hammering dev) — paused mini-services during heavy runs, restored full 5-service stack at the end via start-stack.sh + manual `script`-pty launches (reaper kills some shapes; pglite/worker/relay/scheduler all confirmed alive)
+- Gates: typecheck clean, lint clean, em-dash check clean (comments only), mobile 390px zero overflow, console zero errors
+- VLM verdicts: hero 9/10 SHIP; app section 8/10 SHIP (after 3 fix iterations: badges dark->white plates, materials amplified, island hardware glow); mobile 9/10 + 10/10 SHIP; full page holistic 8.5/10 SHIP (sole condition was the dev-overlay pill — dev-only artifact)
+- Tests: 155 -> 108 pass / 47 fail, IDENTICAL to Task 12 baseline — zero regressions
+
+Stage Summary:
+- Committed as 5c29dc0 "Ultrarealistic imagery and premium app preview: image-to-image gender transform pair, photoreal device frames, paper-white store badges, cookie banner dual persistence"
+- Key learning: identity-preserving edits need short, surgical, identity-anchored prompts; long descriptive prompts drift the subject entirely
+- Open items unchanged: 47 pre-existing test failures (Brain/LLM harness), GitHub push, Railway readiness
