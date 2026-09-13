@@ -91,6 +91,13 @@
   /* Natural weighted easing for interface motion */
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 
+  /* Editorial section surfaces (flat — never gradients) */
+  --paper: var(--color-white-soft);   /* light sections: #f4f4f0 */
+  --paper-ink: var(--color-black);    /* ink on paper */
+  --band: var(--color-red);           /* the one red block */
+  --band-ink: var(--color-black);     /* ink on red (4.9:1) */
+  --border-ink: rgba(10, 10, 13, 0.18); /* hairlines on paper */
+
   /* Semantic mapping (shadcn) → spec palette */
   --background: #0a0a0d;
   --foreground: #ffffff;
@@ -171,6 +178,20 @@
     color-scheme: dark;
   }
 
+  /* Film grain — the crafted surface. Fixed, inert, whisper-quiet. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 90;
+    opacity: 0.028;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     text-rendering: optimizeLegibility;
@@ -238,9 +259,9 @@
   /* Headline scale — controlled line heights and negative tracking */
   .display-hero {
     font-family: var(--font-space-grotesk), var(--font-geist-sans), sans-serif;
-    font-size: clamp(2.625rem, 1.2rem + 5.2vw, 4.5rem);
-    line-height: 1.02;
-    letter-spacing: -0.035em;
+    font-size: clamp(3rem, 1.4rem + 6.4vw, 5.5rem);
+    line-height: 0.99;
+    letter-spacing: -0.04em;
     font-weight: 700;
     text-wrap: balance;
   }
@@ -288,5 +309,64 @@
   }
   .backface-hidden {
     backface-visibility: hidden;
+  }
+
+  /* ── The broadcast ticker ── constant velocity, printing-press motion */
+  @keyframes ticker-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    animation: ticker-scroll 32s linear infinite;
+  }
+
+  /* On-air pulse — the only looping UI beat */
+  @keyframes on-air {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+  .on-air-dot {
+    animation: on-air 1.6s ease-in-out infinite;
+  }
+
+  /* Outlined display numerals — ink on paper */
+  .text-outline-ink {
+    color: transparent;
+    -webkit-text-stroke: 2.5px var(--color-black);
+  }
+
+  /* Paper sections — the light register */
+  .paper {
+    background: var(--paper);
+    color: var(--paper-ink);
+  }
+  .paper .text-muted-ink {
+    color: rgba(10, 10, 13, 0.72);
+  }
+
+  /* The red block — the one shout */
+  .band {
+    background: var(--band);
+    color: var(--band-ink);
+  }
+
+  /* Hide scrollbar for in-place scroll strips (tabs on mobile) */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }

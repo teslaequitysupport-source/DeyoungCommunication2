@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useRef, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   motion,
   useMotionValue,
   useReducedMotion,
   useSpring,
 } from "framer-motion";
-import { ShieldCheck, User } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
+import { TransformCanvas } from "@/components/fx/transform-canvas";
 import { Badge } from "@/components/ui/badge";
 
 /** Subscribes to a media query the React way (SSR-safe). */
@@ -23,13 +24,29 @@ function useMediaQuery(query: string, serverSnapshot = true) {
   );
 }
 
+/** A session timer that actually ticks — the mockup breathes. */
+function useSessionClock(reduced: boolean) {
+  const [secs, setSecs] = useState(724); // 12:04
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => setSecs((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [reduced]);
+  const m = Math.floor(secs / 60)
+    .toString()
+    .padStart(2, "0");
+  const s = (secs % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
 /**
  * StudioStage — the one 3D moment of the site.
  *
- * The actual Live Studio interface, presented in a window that
- * settles into place on page load and answers the pointer with a
- * few degrees of tilt. Real product, real states, real language —
- * no decorative geometry. Static and complete with
+ * The actual Live Studio interface, in a window that settles onto
+ * the stage and answers the pointer with a few degrees of tilt.
+ * The render panel runs a real WebGL pass — the camera frame
+ * dissolving into the character through a red scan, on loop.
+ * Sample imagery, honestly labelled. Static with
  * prefers-reduced-motion or on touch devices.
  */
 export function StudioStage() {
@@ -37,6 +54,7 @@ export function StudioStage() {
   const reduced = useReducedMotion();
   // Fine-pointer check — touch devices get the still composition.
   const finePointer = useMediaQuery("(pointer: fine)");
+  const clock = useSessionClock(Boolean(reduced));
 
   const canTilt = !reduced && finePointer;
 
@@ -89,7 +107,10 @@ export function StudioStage() {
                 deyoung.live/studio
               </span>
               <span className="hidden items-center gap-1.5 text-[11px] font-medium text-white/70 sm:inline-flex">
-                <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
+                <span
+                  className="on-air-dot size-1.5 rounded-full bg-primary"
+                  aria-hidden="true"
+                />
                 Live
               </span>
             </div>
@@ -98,26 +119,37 @@ export function StudioStage() {
             <div className="grid gap-3 p-4 sm:grid-cols-[1fr_200px] sm:p-5">
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
-                  {/* Camera input */}
-                  <figure className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-lg border border-border bg-black">
-                    <User
-                      className="size-10 text-white/15"
-                      aria-hidden="true"
+                  {/* Camera input — the raw frame */}
+                  <figure className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border bg-black">
+                    { }
+                    <img
+                      src="/studio/camera-input.jpg"
+                      alt="Camera input — sample frame of the performer"
+                      className="h-full w-full object-cover"
+                      loading="lazy"
                     />
                     <figcaption className="absolute bottom-2 left-2 inline-flex items-center gap-1.5 rounded-md border border-border bg-black/70 px-2 py-1 text-[10px] font-medium text-white/60">
-                      <span className="size-1.5 rounded-full bg-white/40" aria-hidden="true" />
-                      Camera preview
+                      <span
+                        className="on-air-dot size-1.5 rounded-full bg-white/50"
+                        aria-hidden="true"
+                      />
+                      Camera — live input
                     </figcaption>
                   </figure>
-                  {/* Rendered output */}
-                  <figure className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-lg border border-primary/50 bg-black">
-                    <User
-                      className="size-10 text-primary/40"
-                      aria-hidden="true"
+
+                  {/* Render output — the WebGL transform, on loop */}
+                  <figure className="relative aspect-[4/3] overflow-hidden rounded-lg border border-primary/50 bg-black">
+                    <TransformCanvas
+                      cameraSrc="/studio/camera-input.jpg"
+                      characterSrc="/studio/character-output.jpg"
+                      alt="Character render output — the live transform, shown as a looping sample"
                     />
-                    <figcaption className="absolute bottom-2 left-2 inline-flex items-center gap-1.5 rounded-md border border-border bg-black/70 px-2 py-1 text-[10px] font-medium text-white/60">
-                      <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
-                      Character output
+                    <figcaption className="absolute bottom-2 left-2 inline-flex items-center gap-1.5 rounded-md border border-primary/40 bg-black/70 px-2 py-1 text-[10px] font-medium text-white/70">
+                      <span
+                        className="on-air-dot size-1.5 rounded-full bg-primary"
+                        aria-hidden="true"
+                      />
+                      Character — render
                     </figcaption>
                     <span className="absolute bottom-2 right-2 rounded-md border border-border bg-black/70 px-2 py-1 text-[10px] font-medium text-white/60">
                       24 fps
@@ -128,7 +160,9 @@ export function StudioStage() {
                 {/* Session bar */}
                 <div className="flex items-center gap-3 rounded-lg border border-border bg-black/40 px-3 py-2.5">
                   <Badge>Connected</Badge>
-                  <span className="text-xs text-white/60">Session 12:04</span>
+                  <span className="text-xs tabular-nums text-white/60">
+                    Session {clock}
+                  </span>
                   <span className="ml-auto inline-flex h-8 items-center rounded-md bg-primary px-3 text-xs font-semibold text-white">
                     End session
                   </span>
@@ -139,9 +173,13 @@ export function StudioStage() {
               <div className="hidden space-y-3 sm:block">
                 <div className="rounded-lg border border-border bg-black/30 p-3">
                   <div className="flex items-center gap-2.5">
-                    <span className="grid size-9 shrink-0 place-items-center rounded-full border border-primary/50 bg-primary/15 font-display text-sm font-bold text-white">
-                      A
-                    </span>
+                    { }
+                    <img
+                      src="/studio/character-avatar.jpg"
+                      alt="Ada — sample live character"
+                      className="size-9 shrink-0 rounded-full border border-primary/50 object-cover"
+                      loading="lazy"
+                    />
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-white">
                         Ada
@@ -184,7 +222,7 @@ export function StudioStage() {
       </motion.div>
 
       <p className="mt-4 text-center text-xs text-white/45">
-        The Live Studio — shown with a sample session.
+        The Live Studio — sample session.
       </p>
     </div>
   );

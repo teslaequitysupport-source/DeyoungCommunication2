@@ -66,7 +66,7 @@ export function SiteNav({ brandName, tagline }: { brandName: string; tagline: st
 
         <a
           href="#start"
-          className="ml-auto inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-red-dark)] active:translate-y-px md:ml-7"
+          className="ml-auto inline-flex h-11 items-center rounded-xl bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-red-dark)] active:translate-y-px md:ml-7"
         >
           Get started
         </a>
@@ -74,7 +74,7 @@ export function SiteNav({ brandName, tagline }: { brandName: string; tagline: st
         {/* Mobile disclosure */}
         <button
           type="button"
-          className="grid size-10 place-items-center rounded-lg border border-border text-white/80 md:hidden"
+          className="grid size-11 place-items-center rounded-xl border border-border text-white/80 md:hidden"
           aria-expanded={open}
           aria-controls="site-nav-mobile"
           aria-label={open ? "Close menu" : "Open menu"}
