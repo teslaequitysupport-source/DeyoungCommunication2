@@ -65,6 +65,17 @@ export function requireUser(user: ApiUser | null): Response | null {
   return null;
 }
 
+/** Standard 429 with Retry-After (spec §30 rate limits). */
+export function rateLimited(retryAfterSeconds: number, limit: number): Response {
+  return jsonResponse(
+    { error: "rate_limited", message: `Rate limit exceeded (${limit} per window).` },
+    {
+      status: 429,
+      headers: { "retry-after": String(retryAfterSeconds) },
+    },
+  );
+}
+
 export async function readJson<T>(request: Request): Promise<T | null> {
   try {
     return (await request.json()) as T;

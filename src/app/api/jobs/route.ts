@@ -9,7 +9,8 @@ import { getDb } from "@/lib/db";
 import { assets, characters } from "@/lib/db/schema";
 import { listJobsForUser, enqueueJob, getJob } from "@/lib/jobs/queue";
 import { routeJobAfterEnqueue } from "@/lib/workers/selection";
-import { apiError, getApiUser, jsonResponse, readJson, requireUser } from "@/lib/api-helpers";
+import { checkRateLimit } from "@/lib/rate-limits";
+import { apiError, getApiUser, jsonResponse, rateLimited, readJson, requireUser } from "@/lib/api-helpers";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 
@@ -31,6 +32,9 @@ export async function POST(request: Request) {
   const user = await getApiUser(request);
   const denied = requireUser(user);
   if (denied || !user) return denied ?? apiError(401, "unauthenticated", "Sign in required.");
+
+  const rate = await checkRateLimit(getDb(), "jobs", user.id);
+  if (!rate.allowed) return rateLimited(rate.retryAfterSeconds, rate.limit);
 
   const parsed = createSchema.safeParse(await readJson(request));
   if (!parsed.success) {

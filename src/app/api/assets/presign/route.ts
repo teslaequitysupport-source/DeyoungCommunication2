@@ -12,9 +12,11 @@ import {
   apiError,
   getApiUser,
   jsonResponse,
+  rateLimited,
   readJson,
   requireUser,
 } from "@/lib/api-helpers";
+import { checkRateLimit } from "@/lib/rate-limits";
 import { characterExistsForUser } from "@/lib/assets";
 import { z } from "zod";
 
@@ -29,6 +31,9 @@ export async function POST(request: Request) {
   const user = await getApiUser(request);
   const denied = requireUser(user);
   if (denied || !user) return denied ?? apiError(401, "unauthenticated", "Sign in required.");
+
+  const rate = await checkRateLimit(getDb(), "presign", user.id);
+  if (!rate.allowed) return rateLimited(rate.retryAfterSeconds, rate.limit);
 
   const parsed = presignSchema.safeParse(await readJson(request));
   if (!parsed.success) {

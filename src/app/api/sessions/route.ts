@@ -6,10 +6,12 @@
 import { getDb } from "@/lib/db";
 import { createLiveSession, listUserSessions } from "@/lib/sessions/state-machine";
 import { latestJobForSession } from "@/lib/jobs/queue";
+import { checkRateLimit } from "@/lib/rate-limits";
 import {
   apiError,
   getApiUser,
   jsonResponse,
+  rateLimited,
   readJson,
   requireUser,
 } from "@/lib/api-helpers";
@@ -36,6 +38,9 @@ export async function POST(request: Request) {
   const user = await getApiUser(request);
   const denied = requireUser(user);
   if (denied || !user) return denied ?? apiError(401, "unauthenticated", "Sign in required.");
+
+  const rate = await checkRateLimit(getDb(), "sessions", user.id);
+  if (!rate.allowed) return rateLimited(rate.retryAfterSeconds, rate.limit);
 
   const parsed = createSchema.safeParse(await readJson(request));
   if (!parsed.success) {

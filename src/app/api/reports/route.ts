@@ -12,10 +12,12 @@ import {
   REPORT_REASONS,
   REPORT_TARGET_TYPES,
 } from "@/lib/moderation";
+import { checkRateLimit } from "@/lib/rate-limits";
 import {
   apiError,
   getApiUser,
   jsonResponse,
+  rateLimited,
   readJson,
   requireUser,
 } from "@/lib/api-helpers";
@@ -32,6 +34,11 @@ export async function POST(request: Request) {
   const user = await getApiUser(request);
   const denied = requireUser(user);
   if (denied || !user) return denied ?? apiError(401, "unauthenticated", "Sign in required.");
+
+  // Rate limit FIRST: counting happens even for invalid payloads, so abusers
+  // cannot probe the boundary with cheap invalid requests.
+  const rate = await checkRateLimit(getDb(), "reports", user.id);
+  if (!rate.allowed) return rateLimited(rate.retryAfterSeconds, rate.limit);
 
   const parsed = reportSchema.safeParse(await readJson(request));
   if (!parsed.success) {

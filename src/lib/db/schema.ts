@@ -29,6 +29,7 @@ import {
   jsonb,
   uuid,
   index,
+  primaryKey,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 
@@ -569,4 +570,28 @@ export const reports = pgTable(
     index("reports_target_user_idx").on(t.targetUserId),
     index("reports_reporter_idx").on(t.reporterId),
   ],
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Rate limits (spec §5/§26/§30) — DB-backed fixed-window counters
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * One row per (key, window). `key` scopes the limit, e.g.
+ * "reports:user:<userId>" or "presign:user:<userId>". Counting is a single
+ * atomic INSERT .. ON CONFLICT DO UPDATE (see src/lib/rate-limits.ts), so the
+ * limiter is correct across instances and survives restarts — the same
+ * semantics carry to the Neon deployment unchanged.
+ */
+export const rateLimitHits = pgTable(
+  "rate_limit_hits",
+  {
+    key: text("key").notNull(),
+    windowStart: timestamp("window_start", {
+      withTimezone: true,
+      mode: "date",
+    }).notNull(),
+    count: integer("count").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.key, t.windowStart] })],
 );
