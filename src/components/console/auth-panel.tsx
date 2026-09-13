@@ -8,7 +8,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, CheckCircle2, Loader2, LogIn, LogOut, UserPlus } from "lucide-react";
+import { AlertCircle, CheckCircle2, LogIn, LogOut, UserPlus } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,9 +31,9 @@ function AuthError({ message }: { message: string }) {
   return (
     <div
       role="alert"
-      className="flex items-start gap-2 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-[oklch(0.8_0.14_24)]"
+      className="flex items-start gap-2 rounded-lg border border-primary/50 bg-primary/10 p-3 text-sm"
     >
-      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" aria-hidden="true" />
+      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
       <div>
         <p className="font-medium text-foreground">We couldn't complete that</p>
         <p className="text-white/60">{message}</p>
@@ -67,12 +67,7 @@ function SessionCard({ user }: { user: ConsoleUser }) {
       </div>
       <p className="text-sm text-white/55">{user.email}</p>
       {signOutError ? <AuthError message={signOutError} /> : null}
-      <Button onClick={signOut} disabled={isSigningOut} variant="outline" className="w-full sm:w-auto">
-        {isSigningOut ? (
-          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-        ) : (
-          <LogOut className="h-4 w-4" aria-hidden="true" />
-        )}
+      <Button onClick={signOut} disabled={isSigningOut} variant="outline" loading={isSigningOut} className="w-full sm:w-auto">
         Sign out
       </Button>
     </div>
@@ -160,8 +155,7 @@ function AuthForms() {
               placeholder="Your password"
             />
           </div>
-          <Button type="submit" variant="ignite" size="lg" className="w-full" disabled={isPending}>
-            {isPending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
+          <Button type="submit" variant="default" size="lg" className="w-full" disabled={isPending} loading={isPending}>
             Sign in
           </Button>
         </form>
@@ -205,8 +199,7 @@ function AuthForms() {
               placeholder="At least 8 characters"
             />
           </div>
-          <Button type="submit" variant="ignite" size="lg" className="w-full" disabled={isPending}>
-            {isPending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
+          <Button type="submit" variant="default" size="lg" className="w-full" disabled={isPending} loading={isPending}>
             Create account
           </Button>
           <p className="text-center text-xs text-white/40">
@@ -231,7 +224,7 @@ function AuthForms() {
 
 export function AuthPanel({ user }: { user: ConsoleUser | null }) {
   return (
-    <Card className="border-primary/20 bg-gradient-to-b from-primary/[0.05] to-transparent shadow-[0_1px_0_0_oklch(1_0_0/0.06)_inset,inset_0_0_40px_oklch(0.62_0.235_22/0.04),0_28px_72px_-24px_oklch(0_0_0/0.85)]">
+    <Card elevated>
       <CardHeader>
         <CardTitle className="font-display text-xl">
           {user ? "Welcome back" : "Step inside"}

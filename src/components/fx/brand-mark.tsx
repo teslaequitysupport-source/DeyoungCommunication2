@@ -2,8 +2,11 @@ import { cn } from "@/lib/utils";
 
 /**
  * BrandMark — the Deyoung Live sigil.
- * Three stacked diamonds receding in Z: a gem catching crimson light.
- * Rendered inline so it inherits CSS animations (e.g. animate-spin-slow).
+ *
+ * One flat idea: a red diamond with a light core — the character
+ * emerging on the dark stage. Solid colours only, legible from
+ * 16 px up. Works on black, white and red backgrounds (the core
+ * separates on all three).
  */
 export function BrandMark({
   className,
@@ -22,53 +25,29 @@ export function BrandMark({
       className={cn("shrink-0", className)}
       aria-hidden="true"
     >
-      <defs>
-        <linearGradient id="dy-gem-a" x1="24" y1="4" x2="24" y2="44" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#FF5A5F" />
-          <stop offset="1" stopColor="#C81E28" />
-        </linearGradient>
-        <linearGradient id="dy-gem-b" x1="24" y1="12" x2="24" y2="40" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#FFFFFF" stopOpacity="0.92" />
-          <stop offset="1" stopColor="#FF5A5F" stopOpacity="0.9" />
-        </linearGradient>
-      </defs>
-      {/* Outer gem */}
+      {/* Stage frame */}
       <rect
-        x="9.6"
-        y="9.6"
-        width="28.8"
-        height="28.8"
+        x="10.5"
+        y="10.5"
+        width="27"
+        height="27"
         rx="3"
         transform="rotate(45 24 24)"
-        stroke="url(#dy-gem-a)"
-        strokeWidth="2.6"
+        stroke="#e11d2e"
+        strokeWidth="2.4"
       />
-      {/* Mid layer */}
+      {/* The character plate */}
       <rect
-        x="14.8"
-        y="14.8"
-        width="18.4"
-        height="18.4"
-        rx="1.6"
+        x="17.5"
+        y="17.5"
+        width="13"
+        height="13"
+        rx="1.5"
         transform="rotate(45 24 24)"
-        fill="url(#dy-gem-a)"
-        fillOpacity="0.16"
-        stroke="url(#dy-gem-a)"
-        strokeOpacity="0.45"
-        strokeWidth="1.4"
+        fill="#e11d2e"
       />
-      {/* Core */}
-      <rect
-        x="19.4"
-        y="19.4"
-        width="9.2"
-        height="9.2"
-        rx="1"
-        transform="rotate(45 24 24)"
-        fill="url(#dy-gem-b)"
-      />
-      {/* Light catch */}
-      <circle cx="24" cy="24" r="1.7" fill="#FFFFFF" />
+      {/* The light — live */}
+      <circle cx="24" cy="24" r="2" fill="#ffffff" />
     </svg>
   );
 }

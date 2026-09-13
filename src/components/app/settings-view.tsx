@@ -228,7 +228,13 @@ export function SettingsView({
                       key={type}
                       className="flex items-center justify-between gap-2 rounded-md border px-3 py-1.5"
                     >
-                      <code className="text-xs">{type}</code>
+                      <span>
+                        {type === "session.live"
+                          ? "Live studio session"
+                          : type === "video.generate.h3"
+                            ? "Character video render"
+                            : type}
+                      </span>
                       <span className="tabular-nums">
                         {cost === 0 ? "free" : `${cost} credits`}
                       </span>

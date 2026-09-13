@@ -437,7 +437,7 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
       </div>
 
       {error ? (
-        <div role="alert" className="flex items-start gap-2 rounded-lg border border-destructive/45 bg-destructive/12 p-3 text-sm text-[oklch(0.8_0.14_24)]">
+        <div role="alert" className="flex items-start gap-2 rounded-lg border border-primary/50 bg-primary/10 p-3 text-sm text-white/90">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           <span>{error}</span>
         </div>
@@ -514,7 +514,7 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
                       Stop &amp; save
                     </Button>
                     {recording ? (
-                      <Badge variant="outline" className="border-destructive/50 bg-destructive/15 text-[oklch(0.8_0.14_24)] gap-1">
+                      <Badge variant="outline" className="border-primary/50 bg-primary/10 text-white/90 gap-1">
                         <Circle className="h-3 w-3 fill-current" aria-hidden="true" />
                         recording
                       </Badge>

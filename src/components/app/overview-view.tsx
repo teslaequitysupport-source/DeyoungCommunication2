@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Clapperboard, HardDrive, Images, ShieldCheck, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TiltCard } from "@/components/fx/tilt-card";
 import type { AssetRecord, CharacterRecord, JobView, SessionView } from "@/lib/types";
 
 interface Props {
@@ -112,27 +111,25 @@ export function OverviewView({ refreshKey, onNavigate }: Props) {
     <div className="space-y-8">
       <section aria-label="Your studio" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {STATS.map(({ icon: Icon, label, value, cta, view }) => (
-          <TiltCard key={label} className="h-full" intensity={6}>
-            <Card interactive className="h-full gap-4 py-5">
-              <CardHeader className="px-5 pb-0">
-                <CardDescription className="flex items-center gap-2 text-xs uppercase tracking-[0.14em] text-white/45">
-                  <Icon className="h-4 w-4 text-primary" aria-hidden="true" />
-                  {label}
-                </CardDescription>
-                <CardTitle className="text-3xl tabular-nums">{value}</CardTitle>
-              </CardHeader>
-              <CardContent className="px-5">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-auto p-0 text-sm text-white/55 hover:text-white"
-                  onClick={() => onNavigate(view)}
-                >
-                  {cta} <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
-                </Button>
-              </CardContent>
-            </Card>
-          </TiltCard>
+          <Card key={label} interactive className="h-full gap-4 py-5">
+            <CardHeader className="px-5 pb-0">
+              <CardDescription className="flex items-center gap-2 text-xs uppercase tracking-[0.14em] text-white/45">
+                <Icon className="h-4 w-4 text-primary" aria-hidden="true" />
+                {label}
+              </CardDescription>
+              <CardTitle className="text-3xl tabular-nums">{value}</CardTitle>
+            </CardHeader>
+            <CardContent className="px-5">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-auto p-0 text-sm text-white/55 hover:text-white"
+                onClick={() => onNavigate(view)}
+              >
+                {cta} <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
+              </Button>
+            </CardContent>
+          </Card>
         ))}
       </section>
 
@@ -204,7 +201,7 @@ export function OverviewView({ refreshKey, onNavigate }: Props) {
         ) : null}
         {error ? (
           <CardContent>
-            <p role="alert" className="text-sm text-[oklch(0.75_0.16_24)]">
+            <p role="alert" className="text-sm text-primary">
               {error}
             </p>
           </CardContent>

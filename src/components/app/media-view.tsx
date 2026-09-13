@@ -192,7 +192,7 @@ export function MediaView({ onChanged, onNavigate }: Props) {
       </div>
 
       {error ? (
-        <p role="alert" className="text-sm text-[oklch(0.78_0.15_24)]">
+        <p role="alert" className="text-sm text-white/90">
           {error}
         </p>
       ) : null}

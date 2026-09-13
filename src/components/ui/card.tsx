@@ -3,28 +3,31 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 /**
- * Crimson Noir card system.
+ * Card — the container of the system.
  *
- * Cards are elevated glass plates on the black canvas: a hairline
- * white border, a subtle inner top highlight (as if lit from above),
- * deep layered shadows below, and an optional crimson aura that
- * breathes on hover. `Card` accepts an `interactive` prop that adds
- * the lift + glow choreography used by feature and dashboard cards.
+ * A solid black-soft surface with a hairline border and the single
+ * elevation shadow when it floats. No glass, no gradients. The
+ * `interactive` prop adds the quiet hover response: the border
+ * brightens, the surface lifts two pixels.
  */
 function Card({
   className,
   interactive = false,
+  elevated = false,
   ...props
-}: React.ComponentProps<"div"> & { interactive?: boolean }) {
+}: React.ComponentProps<"div"> & {
+  interactive?: boolean
+  /** Applies the single elevation shadow */
+  elevated?: boolean
+}) {
   return (
     <div
       data-slot="card"
       className={cn(
-        "relative bg-card/85 text-card-foreground flex flex-col gap-6 rounded-xl border border-white/[0.07] py-6 backdrop-blur-md",
-        "shadow-[0_1px_0_0_oklch(1_0_0/0.05)_inset,0_8px_24px_-12px_oklch(0_0_0/0.6)]",
-        "bg-gradient-to-b from-white/[0.035] to-transparent",
+        "flex flex-col gap-6 rounded-xl border border-border bg-card py-6 text-card-foreground",
+        elevated && "shadow-[var(--shadow)]",
         interactive &&
-          "transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-primary/35 hover:shadow-[0_1px_0_0_oklch(1_0_0/0.07)_inset,0_16px_40px_-12px_oklch(0_0_0/0.7),0_8px_36px_-10px_oklch(0.62_0.235_22/0.28)]",
+          "transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-white/28",
         className
       )}
       {...props}

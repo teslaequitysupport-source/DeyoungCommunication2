@@ -5,32 +5,38 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 /**
- * Crimson Noir badges. Positive states read as white ink on glass
- * (never green — the palette is red, white and black only);
- * attention states carry the crimson.
+ * Badge — small status labels.
+ *
+ * The red carries meaning (active, attention); neutral chips are
+ * white ink on quiet plates. Text on the red plate is always white
+ * (4.9:1). Meaning is never carried by color alone — badges are
+ * always labelled with words.
  */
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium tracking-tight w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] transition-[color,box-shadow,border-color] overflow-hidden",
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md border px-2 py-0.5 text-xs font-medium tracking-tight whitespace-nowrap [&>svg]:pointer-events-none [&>svg]:size-3 transition-[color,background,border-color]",
   {
     variants: {
       variant: {
+        /** Solid red plate, white ink — active/attention */
         default:
-          "border-primary/40 bg-primary/12 text-primary shadow-[0_0_16px_-6px_oklch(0.62_0.235_22/0.55)] [a&]:hover:bg-primary/20",
-        secondary:
-          "border-white/10 bg-white/[0.06] text-foreground/90 [a&]:hover:bg-white/[0.1]",
+          "border-transparent bg-primary text-primary-foreground font-semibold [a&]:hover:bg-[var(--color-red-dark)]",
+        /** Solid red plate — the same red, for destructive labels */
         destructive:
-          "border-destructive/50 bg-destructive/15 text-[oklch(0.75_0.16_24)] [a&]:hover:bg-destructive/25",
+          "border-transparent bg-primary text-primary-foreground font-semibold [a&]:hover:bg-[var(--color-red-dark)]",
+        /** Quiet neutral chip */
+        secondary:
+          "border-border bg-secondary text-secondary-foreground [a&]:hover:bg-[#202028]",
         outline:
-          "text-foreground/85 border-white/12 [a&]:hover:bg-white/[0.06] [a&]:hover:text-foreground",
-        /** Solid crimson plate — the premium chip */
+          "border-border bg-transparent text-foreground/85 [a&]:hover:bg-white/[0.06] [a&]:hover:text-foreground",
+        /** Solid red plate, semibold — the emphasis chip */
         solid:
-          "border-transparent bg-gradient-to-b from-primary to-[oklch(0.53_0.225_22)] text-primary-foreground font-semibold shadow-[0_4px_16px_-6px_oklch(0.62_0.235_22/0.7)]",
+          "border-transparent bg-primary text-primary-foreground font-semibold [a&]:hover:bg-[var(--color-red-dark)]",
         /** White plate — maximum contrast */
         invert:
-          "border-transparent bg-white text-black [a&]:hover:bg-white/90",
-        /** Positive/neutral status — white ink, no colour invention */
+          "border-transparent bg-white text-black [a&]:hover:bg-white-soft",
+        /** Neutral status — white ink, no invented colour */
         status:
-          "border-white/12 bg-white/[0.05] text-white/95 shadow-[0_1px_0_oklch(1_0_0/0.08)_inset]",
+          "border-border bg-white/[0.05] text-white/95",
       },
     },
     defaultVariants: {

@@ -28,7 +28,7 @@ interface Props {
 
 const STATUS_STYLES: Record<string, string | undefined> = {
   SUCCEEDED: "border-white/15 bg-white/[0.06] text-white/90",
-  FAILED: "border-destructive/50 bg-destructive/15 text-[oklch(0.75_0.16_24)]",
+  FAILED: "border-primary/50 bg-primary/10 text-white/90",
   RUNNING: "border-primary/45 bg-primary/12 text-primary",
   RESERVED: "border-white/10 bg-white/[0.03] text-white/60",
   EXPIRED: "border-white/10 bg-white/[0.03] text-white/45",
@@ -105,7 +105,7 @@ export function JobsView({ refreshKey, onChanged, onNavigate }: Props) {
       </p>
 
       {error ? (
-        <p role="alert" className="text-sm text-[oklch(0.78_0.15_24)]">
+        <p role="alert" className="text-sm text-white/90">
           {error}
         </p>
       ) : null}

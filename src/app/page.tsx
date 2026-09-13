@@ -1,25 +1,30 @@
 /**
- * The platform surface — one route (sandbox constraint), two states:
+ * The landing surface — one route (sandbox constraint), two states:
  *
- *   signed out → the premium product story + real auth panel
+ *   signed out → the product story + real auth panel
  *   signed in  → the app shell (characters / media & consent /
- *                live studio / jobs)
+ *                live studio / renders)
  *
  * The story speaks the user's language only. Build-phase detail,
  * transport internals and provider notes live on the staff help page.
  */
 
 import { headers } from "next/headers";
-import { Clapperboard, Sparkles, ShieldCheck, Wand2 } from "lucide-react";
+import { ArrowRight, Clapperboard, ShieldCheck, Sparkles, Wand2 } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { AuthPanel, type ConsoleUser } from "@/components/console/auth-panel";
 import { AppShell } from "@/components/app/app-shell";
-import { HeroFX } from "@/components/fx/hero-fx";
-import { HeroGem } from "@/components/fx/hero-gem";
-import { TiltCard } from "@/components/fx/tilt-card";
+import { SiteNav } from "@/components/site/site-nav";
+import { StudioStage } from "@/components/fx/studio-stage";
 import { Reveal, RevealItem } from "@/components/fx/reveal";
 import { BrandMark } from "@/components/fx/brand-mark";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { BRAND, LEGAL_LINKS } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
@@ -86,6 +91,63 @@ const TRUST_CHIPS = [
   "Built for NDPR",
 ];
 
+const ACCOUNT_BENEFITS = [
+  "Welcome credits to run your first renders",
+  "Characters, media and consent in one place",
+  "Live studio for real-time sessions",
+  "Export or delete your data whenever you choose",
+];
+
+const TRUST_PAGES = [
+  {
+    href: "/privacy",
+    title: "Privacy & the NDPR data map",
+    body: "Every category of data we hold, what it's used for, and how long it stays — published in full.",
+  },
+  {
+    href: "/refunds",
+    title: "Refunds",
+    body: "How credit refunds happen automatically when a render can't be delivered.",
+  },
+  {
+    href: "/voice-rights",
+    title: "Voice & likeness rights",
+    body: "The rules for faces and voices on this platform — and how to report misuse.",
+  },
+  {
+    href: "/accessibility",
+    title: "Accessibility",
+    body: "Our accessibility commitment, and how to reach us if something gets in your way.",
+  },
+];
+
+const FAQS = [
+  {
+    q: "What does it cost?",
+    a: "Creating an account is free and comes with welcome credits. Every render is priced in credits before it runs — and if a job can't be delivered, the credits return to your balance automatically. The full policy is on the refunds page.",
+  },
+  {
+    q: "What do I need to use it?",
+    a: "A modern browser and a camera. The studio runs on desktop and mobile web — no download — and it adapts to slow connections by pacing frame quality.",
+  },
+  {
+    q: "Whose face can I use?",
+    a: "Only a face you have the right to use — in practice, your own. Every face asset requires an explicit, recorded consent grant scoped to one purpose, and withdrawing consent stops new sessions immediately.",
+  },
+  {
+    q: "What happens to my face and voice data?",
+    a: "They're treated as sensitive data under Nigeria's NDPR. You can export everything from Settings at any time, and account deletion removes your media. The exact data map is published on the privacy page.",
+  },
+  {
+    q: "Do credits expire?",
+    a: "No. Your balance and full history are visible in Settings, and every spend and refund is listed there.",
+  },
+  {
+    q: "Can I stop mid-session?",
+    a: "Yes. Ending a session stops all processing at once — live transforms only run while a session is active.",
+  },
+];
+
 export default async function Home() {
   const user = await getSessionUser();
 
@@ -104,71 +166,39 @@ export default async function Home() {
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-background text-foreground">
-      {/* ─── Navigation ─────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-background/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-3 px-4 sm:px-6">
-          <BrandMark size={30} />
-          <span className="font-display text-lg font-semibold tracking-tight">
-            {BRAND.name}
-          </span>
-          <span className="ml-3 hidden rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-white/60 sm:inline-flex">
-            {BRAND.tagline}
-          </span>
-          <nav className="ml-auto hidden items-center gap-6 text-sm text-white/60 md:flex">
-            <a href="#how" className="transition-colors hover:text-white">
-              How it works
-            </a>
-            <a href="/help" className="transition-colors hover:text-white">
-              Help
-            </a>
-            <a href="#start" className="transition-colors hover:text-white">
-              Sign in
-            </a>
-          </nav>
-          <a
-            href="#start"
-            className="ml-auto rounded-lg bg-gradient-to-b from-primary to-[oklch(0.53_0.225_22)] px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_oklch(0.62_0.235_22/0.65)] transition-all hover:shadow-[0_12px_36px_-6px_oklch(0.62_0.235_22/0.85)] hover:brightness-110 active:translate-y-px active:shadow-none md:ml-6"
-          >
-            Get started
-          </a>
-        </div>
-      </header>
+    <div
+      id="top"
+      className="relative flex min-h-screen flex-col bg-background text-foreground"
+    >
+      <SiteNav brandName={BRAND.name} tagline={BRAND.tagline} />
 
-      {/* ─── Hero ───────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden">
-        <HeroFX />
-        <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 px-4 pb-20 pt-16 sm:px-6 lg:grid-cols-2 lg:pb-28 lg:pt-24">
+      {/* ─── Hero — the promise and the product ─────────────────────── */}
+      <section className="container-x px-4 pb-20 pt-14 sm:px-6 lg:pb-28 lg:pt-20">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="space-y-8">
             <Reveal className="space-y-8">
               <RevealItem>
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 text-xs font-medium tracking-wide text-white/85">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-70" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-                  </span>
-                  Live character rendering — now in open beta
-                </div>
+                <p className="inline-flex items-center gap-2 rounded-full border border-border bg-white/[0.04] px-3.5 py-1.5 text-xs font-medium tracking-wide text-white/75">
+                  <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
+                  Now in open beta — free to start
+                </p>
               </RevealItem>
 
               <RevealItem>
-                <h1 className="font-display text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl lg:text-[4.25rem]">
+                <h1 className="display-hero">
                   Your camera.
                   <br />
                   Your character.
                   <br />
-                  <span className="animate-shine bg-gradient-to-r from-white via-white to-primary bg-[position:0%_center] text-transparent [background-repeat:no-repeat]">
-                    Rendered live.
-                  </span>
+                  Live.
                 </h1>
               </RevealItem>
 
               <RevealItem>
-                <p className="max-w-xl text-lg leading-relaxed text-white/60">
-                  Create a character, grant consent once, and watch your
-                  live camera transform in real time. Credits you control,
-                  refunds that are automatic, and data you can export or
-                  delete — always.
+                <p className="measure text-lg leading-relaxed text-white/68">
+                  Deyoung Live turns your live video into the character you
+                  create — as you stream, call and record. Consent-first,
+                  pay-per-render, built for Nigeria.
                 </p>
               </RevealItem>
 
@@ -176,16 +206,14 @@ export default async function Home() {
                 <div className="flex flex-wrap items-center gap-4">
                   <a
                     href="#start"
-                    className="group relative inline-flex h-12 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-b from-primary to-[oklch(0.53_0.225_22)] px-7 text-[0.95rem] font-semibold text-white shadow-[0_1px_0_oklch(1_0_0/0.25)_inset,0_10px_32px_-8px_oklch(0.62_0.235_22/0.75)] transition-all hover:shadow-[0_1px_0_oklch(1_0_0/0.3)_inset,0_16px_44px_-6px_oklch(0.62_0.235_22/0.9)] hover:brightness-110 active:translate-y-px active:shadow-none"
+                    className="inline-flex h-12 items-center gap-2 rounded-xl bg-primary px-7 text-[0.95rem] font-semibold text-white transition-colors hover:bg-[var(--color-red-dark)] active:translate-y-px"
                   >
-                    <span className="pointer-events-none absolute -inset-y-8 -left-3/4 w-1/2 rotate-[18deg] bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 blur-[6px] transition-opacity duration-300 group-hover:opacity-100" />
-                    <Sparkles className="relative z-10 h-4 w-4" aria-hidden="true" />
-                    <span className="relative z-10">Create free account</span>
-                    <span className="pointer-events-none absolute -inset-y-8 left-full w-1/2 -translate-x-[340%] rotate-[18deg] bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 blur-[6px] transition-all duration-[900ms] ease-out group-hover:translate-x-[340%] group-hover:opacity-100" />
+                    Create free account
+                    <ArrowRight className="size-4" aria-hidden="true" />
                   </a>
                   <a
                     href="#how"
-                    className="inline-flex h-12 items-center rounded-xl border border-white/12 bg-white/[0.03] px-7 text-[0.95rem] font-medium text-white/85 backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-white/[0.06] hover:shadow-[0_0_0_1px_oklch(0.62_0.235_22/0.35),0_8px_28px_-10px_oklch(0.62_0.235_22/0.4)] active:translate-y-px"
+                    className="inline-flex h-12 items-center rounded-xl border border-border bg-transparent px-7 text-[0.95rem] font-medium text-white/85 transition-colors hover:border-white/28 hover:bg-white/[0.06] active:translate-y-px"
                   >
                     See how it works
                   </a>
@@ -193,144 +221,289 @@ export default async function Home() {
               </RevealItem>
 
               <RevealItem>
-                <div className="flex flex-wrap gap-x-5 gap-y-2">
+                <ul className="flex flex-wrap gap-x-5 gap-y-2">
                   {TRUST_CHIPS.map((chip) => (
-                    <span
+                    <li
                       key={chip}
                       className="inline-flex items-center gap-1.5 text-[13px] text-white/50"
                     >
-                      <span className="h-1 w-1 rounded-full bg-primary" aria-hidden="true" />
+                      <span className="size-1 rounded-full bg-primary" aria-hidden="true" />
                       {chip}
-                    </span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </RevealItem>
             </Reveal>
           </div>
 
-          <HeroGem />
+          <StudioStage />
         </div>
       </section>
 
-      {/* ─── Start / Auth + Value ───────────────────────────────────── */}
-      <section
-        id="start"
-        className="relative border-t border-white/[0.06] bg-gradient-to-b from-transparent via-black/40 to-transparent"
-      >
-        <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-5">
-          <div className="lg:col-span-2">
-            <AuthPanel user={null} />
-          </div>
+      {/* ─── The problem — why this exists ───────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="container-x grid gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-24">
+          <Reveal>
+            <RevealItem>
+              <h2 className="display-1">On camera, you get you.</h2>
+            </RevealItem>
+          </Reveal>
+          <Reveal className="space-y-5 text-white/68 sm:mt-2 lg:mt-3">
+            <RevealItem>
+              <p className="leading-relaxed">
+                Streaming or calling as yourself every day means your actual
+                face travels to strangers, recorded and forwarded without
+                your say. The alternative — pre-recorded clips — loses the
+                one thing that makes live video worth watching: it's live.
+              </p>
+            </RevealItem>
+            <RevealItem>
+              <p className="leading-relaxed">
+                Deyoung Live is the third option. You perform; the character
+                renders in real time. Your face powers the performance
+                without being the performance.
+              </p>
+            </RevealItem>
+          </Reveal>
+        </div>
+      </section>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:col-span-3">
+      {/* ─── Features — what you get ────────────────────────────────── */}
+      <section id="product" className="border-t border-border">
+        <div className="container-x px-4 py-20 sm:px-6 lg:py-24">
+          <Reveal className="mb-12 max-w-2xl space-y-4">
+            <RevealItem>
+              <h2 className="display-1">Made for live. Built for trust.</h2>
+            </RevealItem>
+            <RevealItem>
+              <p className="text-white/68">
+                Four things this platform will not compromise on — because
+                a live character is only worth running if it's worth
+                trusting.
+              </p>
+            </RevealItem>
+          </Reveal>
+
+          <div className="grid sm:grid-cols-2 sm:gap-5 [&>*:last-child_[data-slot=card]]:border-b-0">
             {VALUE_PROPS.map(({ icon: Icon, title, body }) => (
-              <TiltCard key={title} className="h-full">
-                <Card interactive className="h-full gap-4">
-                  <CardContent className="space-y-3">
-                    <div className="grid size-11 place-items-center rounded-xl border border-primary/25 bg-primary/10 text-primary shadow-[0_0_20px_-6px_oklch(0.62_0.235_22/0.5)]">
-                      <Icon className="h-5 w-5" aria-hidden="true" />
-                    </div>
+              <RevealItem key={title}>
+                <Card
+                  interactive
+                  className="h-full gap-4 rounded-none border-0 border-b border-border bg-transparent py-5 sm:rounded-xl sm:border sm:bg-card sm:py-6"
+                >
+                  <CardContent className="space-y-3 px-0 sm:px-6">
+                    <span className="grid size-11 place-items-center rounded-lg border border-primary/40 bg-primary/15 text-primary">
+                      <Icon className="size-5" aria-hidden="true" />
+                    </span>
                     <h3 className="font-display text-lg font-semibold tracking-tight">
                       {title}
                     </h3>
-                    <p className="text-sm leading-relaxed text-white/55">{body}</p>
+                    <p className="text-sm leading-relaxed text-white/68">
+                      {body}
+                    </p>
                   </CardContent>
                 </Card>
-              </TiltCard>
+              </RevealItem>
             ))}
           </div>
         </div>
       </section>
 
       {/* ─── How it works ───────────────────────────────────────────── */}
-      <section id="how" className="relative overflow-hidden border-t border-white/[0.06]">
-        <HeroFX dense />
-        <div className="relative mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
-          <Reveal className="space-y-3 text-center">
+      <section id="how" className="border-t border-border">
+        <div className="container-x px-4 py-20 sm:px-6 lg:py-24">
+          <Reveal className="mx-auto max-w-2xl space-y-4 text-center">
             <RevealItem>
-              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-                Three steps.{" "}
-                <span className="text-primary">That's the whole ritual.</span>
-              </h2>
+              <h2 className="display-1">Three steps. That's all.</h2>
             </RevealItem>
             <RevealItem>
-              <p className="mx-auto max-w-2xl text-white/55">
-                No setup marathons, no settings mazes. The platform was
-                designed so the only decisions you make are the ones that
-                matter to you.
+              <p className="text-white/68">
+                No setup marathons, no settings mazes. The only decisions
+                you make are the ones that matter to you.
               </p>
             </RevealItem>
           </Reveal>
 
-          <div className="mt-14 grid gap-8 md:grid-cols-3">
-            {STEPS.map(({ n, title, body }, i) => (
+          <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
+            {STEPS.map(({ n, title, body }) => (
               <RevealItem key={n}>
-                <div className="group relative">
-                  {i < STEPS.length - 1 ? (
-                    <div className="absolute left-[calc(50%+3.5rem)] top-8 hidden h-px w-[calc(100%-7rem)] bg-gradient-to-r from-primary/40 via-white/10 to-transparent md:block" />
-                  ) : null}
-                  <div className="relative space-y-4 text-center md:text-left">
-                    <div className="relative mx-auto grid size-[4.5rem] place-items-center md:mx-0">
-                      <span className="absolute inset-0 rounded-2xl border border-primary/25 bg-primary/[0.07] shadow-[inset_0_0_32px_oklch(0.62_0.235_22/0.08)] transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-[0_0_36px_-6px_oklch(0.62_0.235_22/0.6),inset_0_0_32px_oklch(0.62_0.235_22/0.14)]" />
-                      <span className="font-display text-[1.7rem] font-bold text-primary text-glow">{n}</span>
-                    </div>
-                    <h3 className="font-display text-xl font-semibold tracking-tight">{title}</h3>
-                    <p className="mx-auto max-w-xs text-sm leading-relaxed text-white/55 md:mx-0">
-                      {body}
-                    </p>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <span className="font-display text-2xl font-bold text-primary">
+                      {n}
+                    </span>
+                    <span className="h-px flex-1 bg-border" aria-hidden="true" />
                   </div>
+                  <h3 className="font-display text-xl font-semibold tracking-tight">
+                    {title}
+                  </h3>
+                  <p className="max-w-xs text-sm leading-relaxed text-white/68">
+                    {body}
+                  </p>
                 </div>
               </RevealItem>
             ))}
           </div>
+        </div>
+      </section>
 
-          <Reveal className="mt-16 flex justify-center">
+      {/* ─── Trust — the real pages ─────────────────────────────────── */}
+      <section className="border-t border-border">
+        <div className="container-x px-4 py-20 sm:px-6 lg:py-24">
+          <Reveal className="mb-12 max-w-2xl space-y-4">
             <RevealItem>
-              <a
-                href="#start"
-                className="group relative inline-flex h-14 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-b from-primary to-[oklch(0.53_0.225_22)] px-9 text-base font-semibold text-white shadow-[0_1px_0_oklch(1_0_0/0.25)_inset,0_12px_36px_-8px_oklch(0.62_0.235_22/0.8)] transition-all hover:shadow-[0_1px_0_oklch(1_0_0/0.3)_inset,0_18px_48px_-6px_oklch(0.62_0.235_22/1)] hover:brightness-110 active:translate-y-px active:shadow-none"
-              >
-                <Clapperboard className="relative z-10 h-5 w-5" aria-hidden="true" />
-                <span className="relative z-10">Enter the studio</span>
-              </a>
+              <h2 className="display-1">The fine print, in plain sight</h2>
+            </RevealItem>
+            <RevealItem>
+              <p className="text-white/68">
+                These aren't links to nowhere — every page below is a real
+                document on this platform.
+              </p>
             </RevealItem>
           </Reveal>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            {TRUST_PAGES.map((page) => (
+              <RevealItem key={page.href}>
+                <a
+                  href={page.href}
+                  className="group flex h-full flex-col gap-2 rounded-xl border border-border bg-card p-6 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-white/28"
+                >
+                  <h3 className="font-display text-lg font-semibold tracking-tight">
+                    {page.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-white/68">
+                    {page.body}
+                  </p>
+                  <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium text-primary underline-offset-4 group-hover:underline">
+                    Read
+                    <ArrowRight
+                      className="size-4 transition-transform group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </a>
+              </RevealItem>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FAQ — the honest answers ───────────────────────────────── */}
+      <section id="faq" className="border-t border-border">
+        <div className="container-x grid gap-10 px-4 py-20 sm:px-6 lg:grid-cols-5 lg:py-24">
+          <Reveal className="lg:col-span-2">
+            <RevealItem>
+              <h2 className="display-1">Questions, answered</h2>
+            </RevealItem>
+            <RevealItem>
+              <p className="mt-4 text-white/68">
+                Anything else?{" "}
+                <a
+                  href="/help"
+                  className="font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  The help centre
+                </a>{" "}
+                has the full guide.
+              </p>
+            </RevealItem>
+          </Reveal>
+          <div className="lg:col-span-3">
+            <Accordion type="single" collapsible className="w-full">
+              {FAQS.map((faq, i) => (
+                <AccordionItem key={faq.q} value={`q-${i}`}>
+                  <AccordionTrigger className="text-left font-display text-base font-semibold tracking-tight hover:text-white [&>svg]:text-primary">
+                    {faq.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="leading-relaxed text-white/68">
+                    {faq.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Get started — the auth panel and final call ───────────── */}
+      <section id="start" className="border-t border-border">
+        <div className="container-x grid gap-10 px-4 py-20 sm:px-6 lg:grid-cols-5 lg:gap-16 lg:py-24">
+          <div className="lg:col-span-2">
+            <AuthPanel user={null} />
+          </div>
+          <div className="lg:col-span-3">
+            <Reveal className="space-y-6">
+              <RevealItem>
+                <BrandMark size={40} />
+              </RevealItem>
+              <RevealItem>
+                <h2 className="display-1">Your character is waiting.</h2>
+              </RevealItem>
+              <RevealItem>
+                <p className="measure text-white/68">
+                  Create a free account, grant your first consent, and see
+                  your camera transform. No card, no commitment — welcome
+                  credits included.
+                </p>
+              </RevealItem>
+              <RevealItem>
+                <ul className="space-y-3">
+                  {ACCOUNT_BENEFITS.map((benefit) => (
+                    <li
+                      key={benefit}
+                      className="flex items-start gap-3 text-sm text-white/75"
+                    >
+                      <span
+                        className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary"
+                        aria-hidden="true"
+                      />
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </RevealItem>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       {/* ─── Footer ─────────────────────────────────────────────────── */}
-      <footer className="relative mt-auto border-t border-white/[0.06] bg-black/50">
-        <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
+      <footer className="mt-auto border-t border-border bg-black">
+        <div className="container-x px-4 py-12 sm:px-6">
           <div className="flex flex-col items-start justify-between gap-8 md:flex-row">
             <div className="flex items-center gap-3">
-              <BrandMark size={28} />
+              <BrandMark size={26} />
               <div>
-                <p className="font-display font-semibold tracking-tight">{BRAND.name}</p>
-                <p className="text-xs text-white/45">
+                <p className="font-display font-semibold tracking-tight">
+                  {BRAND.name}
+                </p>
+                <p className="text-xs text-white/50">
                   Live characters, rendered responsibly.
                 </p>
               </div>
             </div>
-            <div className="divider-glow w-full md:hidden" />
             <nav
               aria-label="Legal"
-              className="flex max-w-xl flex-wrap gap-x-5 gap-y-2 text-xs"
+              className="flex max-w-xl flex-wrap gap-x-6 gap-y-2 text-xs"
             >
               {LEGAL_LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-white/45 transition-colors hover:text-white"
+                  className="inline-block py-0.5 text-white/50 underline-offset-4 transition-colors hover:text-white hover:underline"
                 >
                   {link.label}
                 </a>
               ))}
             </nav>
           </div>
-          <div className="divider-glow mt-10" />
-          <p className="mt-6 text-xs text-white/35">
-            © {new Date().getFullYear()} {BRAND.name}. Your face, your voice, your rules.
-          </p>
+          <div className="mt-10 border-t border-border pt-6">
+            <p className="text-xs text-white/40">
+              © {new Date().getFullYear()} {BRAND.name}. Your face, your
+              voice, your rules.
+            </p>
+          </div>
         </div>
       </footer>
     </div>

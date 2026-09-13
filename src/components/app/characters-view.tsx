@@ -159,7 +159,7 @@ export function CharactersView({ onChanged }: Props) {
       </p>
 
       {error ? (
-        <p role="alert" className="text-sm text-[oklch(0.78_0.15_24)]">
+        <p role="alert" className="text-sm text-white/90">
           {error}
         </p>
       ) : null}
@@ -233,7 +233,7 @@ export function CharactersView({ onChanged }: Props) {
                     size="sm"
                     onClick={() => removeCharacter(c.id)}
                     disabled={busyId === c.id}
-                    className="text-[oklch(0.78_0.15_24)] hover:bg-destructive/15"
+                    className="text-white/90 hover:bg-primary/10"
                   >
                     <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
                     Delete

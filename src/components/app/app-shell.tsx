@@ -14,7 +14,6 @@ import {
   Clapperboard,
   Images,
   LayoutDashboard,
-  LogOut,
   Settings,
   ShieldCheck,
   UserCircle2,
@@ -67,14 +66,14 @@ export function AppShell({ user }: { user: ShellUser }) {
 
   return (
     <div className="relative min-h-screen flex flex-col bg-background text-foreground">
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-background/75 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-3 px-4 sm:px-6">
-          <BrandMark size={28} />
+      <header className="sticky top-0 z-50 border-b border-border bg-black">
+        <div className="container-x flex h-16 items-center gap-3 px-4 sm:px-6">
+          <BrandMark size={26} />
           <h1 className="font-display text-lg font-semibold tracking-tight">{BRAND.name}</h1>
 
           <div className="ml-auto flex items-center gap-3">
             <span
-              className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] py-1 pl-1 pr-3 text-xs text-white/70 sm:inline-flex"
+              className="hidden items-center gap-2 rounded-full border border-border bg-white/[0.04] py-1 pl-1 pr-3 text-xs text-white/70 sm:inline-flex"
               title={user.email}
             >
               <span className="grid size-5 place-items-center rounded-full bg-primary/15 text-primary">
@@ -87,69 +86,48 @@ export function AppShell({ user }: { user: ShellUser }) {
               size="sm"
               onClick={signOut}
               disabled={signingOut}
-              className="border-white/12 bg-white/[0.03] hover:border-primary/40 hover:bg-white/[0.06]"
+              loading={signingOut}
             >
-              <LogOut className="h-4 w-4" aria-hidden="true" />
               Sign out
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="relative flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
-        {/* Ambient page glow */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,oklch(0.62_0.235_22/0.07),transparent)]"
-        />
+      <main className="relative flex-1 container-x px-4 sm:px-6 py-8">
         <Tabs value={view} onValueChange={setView} className="relative gap-8">
-          <TabsList className="h-auto w-full max-w-2xl gap-1 rounded-xl border border-white/[0.07] bg-white/[0.03] p-1.5 backdrop-blur-md">
-            <TabsTrigger
-              value="overview"
-              className="gap-2 rounded-lg py-2 data-[state=active]:bg-gradient-to-b data-[state=active]:from-primary data-[state=active]:to-[oklch(0.53_0.225_22)] data-[state=active]:text-white data-[state=active]:shadow-[0_6px_20px_-6px_oklch(0.62_0.235_22/0.6)]"
-            >
+          <TabsList
+            aria-label="App sections"
+            className="no-scrollbar h-auto w-full flex-nowrap justify-start overflow-x-auto"
+          >
+            <TabsTrigger value="overview" className="gap-2 py-2.5">
               <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
               Overview
             </TabsTrigger>
-            <TabsTrigger
-              value="characters"
-              className="gap-2 rounded-lg py-2 data-[state=active]:bg-gradient-to-b data-[state=active]:from-primary data-[state=active]:to-[oklch(0.53_0.225_22)] data-[state=active]:text-white data-[state=active]:shadow-[0_6px_20px_-6px_oklch(0.62_0.235_22/0.6)]"
-            >
+            <TabsTrigger value="characters" className="gap-2 py-2.5">
               <Users className="h-4 w-4" aria-hidden="true" />
               Characters
             </TabsTrigger>
-            <TabsTrigger
-              value="media"
-              className="gap-2 rounded-lg py-2 data-[state=active]:bg-gradient-to-b data-[state=active]:from-primary data-[state=active]:to-[oklch(0.53_0.225_22)] data-[state=active]:text-white data-[state=active]:shadow-[0_6px_20px_-6px_oklch(0.62_0.235_22/0.6)]"
-            >
+            <TabsTrigger value="media" className="gap-2 py-2.5">
               <Images className="h-4 w-4" aria-hidden="true" />
               Media & Consent
             </TabsTrigger>
-            <TabsTrigger
-              value="studio"
-              className="gap-2 rounded-lg py-2 data-[state=active]:bg-gradient-to-b data-[state=active]:from-primary data-[state=active]:to-[oklch(0.53_0.225_22)] data-[state=active]:text-white data-[state=active]:shadow-[0_6px_20px_-6px_oklch(0.62_0.235_22/0.6)]"
-            >
+            <TabsTrigger value="studio" className="gap-2 py-2.5">
               <Clapperboard className="h-4 w-4" aria-hidden="true" />
               Live Studio
             </TabsTrigger>
-            <TabsTrigger
-              value="jobs"
-              className="gap-2 rounded-lg py-2 data-[state=active]:bg-gradient-to-b data-[state=active]:from-primary data-[state=active]:to-[oklch(0.53_0.225_22)] data-[state=active]:text-white data-[state=active]:shadow-[0_6px_20px_-6px_oklch(0.62_0.235_22/0.6)]"
-            >
+            <TabsTrigger value="jobs" className="gap-2 py-2.5">
               <Boxes className="h-4 w-4" aria-hidden="true" />
               Renders
             </TabsTrigger>
-            <TabsTrigger
-              value="settings"
-              className="gap-2 rounded-lg py-2 data-[state=active]:bg-gradient-to-b data-[state=active]:from-primary data-[state=active]:to-[oklch(0.53_0.225_22)] data-[state=active]:text-white data-[state=active]:shadow-[0_6px_20px_-6px_oklch(0.62_0.235_22/0.6)]"
-            >
+            <TabsTrigger value="settings" className="gap-2 py-2.5">
               <Settings className="h-4 w-4" aria-hidden="true" />
               Settings
             </TabsTrigger>
             {isStaff && (
               <TabsTrigger
                 value="admin"
-                className="gap-2 rounded-lg py-2 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-[0_6px_20px_-6px_oklch(1_0_0/0.4)]"
+                className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-semibold"
               >
                 <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                 Admin
@@ -183,24 +161,24 @@ export function AppShell({ user }: { user: ShellUser }) {
         </Tabs>
       </main>
 
-      <footer className="mt-auto border-t border-white/[0.06] bg-black/50">
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
+      <footer className="mt-auto border-t border-border bg-black">
+        <div className="container-x px-4 sm:px-6 py-8">
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <div className="flex items-center gap-3">
-              <BrandMark size={24} />
+              <BrandMark size={22} />
               <div>
                 <p className="font-display text-sm font-semibold tracking-tight">{BRAND.name}</p>
-                <p className="text-[11px] text-white/40">
+                <p className="text-[11px] text-white/45">
                   Live characters, rendered responsibly.
                 </p>
               </div>
             </div>
-            <nav aria-label="Legal" className="flex max-w-xl flex-wrap gap-x-4 gap-y-1.5 text-xs">
+            <nav aria-label="Legal" className="flex max-w-xl flex-wrap gap-x-5 gap-y-2.5 text-xs">
               {LEGAL_LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-white/40 transition-colors hover:text-white"
+                  className="inline-block py-0.5 text-white/45 underline-offset-4 transition-colors hover:text-white hover:underline"
                 >
                   {link.label}
                 </a>

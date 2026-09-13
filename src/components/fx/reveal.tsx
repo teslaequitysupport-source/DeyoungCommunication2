@@ -1,27 +1,32 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion, type Variants } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 
 /**
- * Reveal — framer-motion choreography for premium entrances.
- * Staggers children upward with a soft blur-to-focus, as if each
- * element steps out of the dark. The platform never animates
- * anything the user must wait on; entrances are decoration only.
+ * Reveal — quiet section entrances.
+ *
+ * A short rise with natural easing, once per section, never
+ * re-triggered. With prefers-reduced-motion the content is simply
+ * there — the animation is decoration, never information.
  */
 const container: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } },
+  show: { transition: { staggerChildren: 0.07, delayChildren: 0.04 } },
 };
 
 const item: Variants = {
-  hidden: { opacity: 0, y: 22, filter: "blur(6px)" },
+  hidden: { opacity: 0, y: 14 },
   show: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.45, ease: [0.25, 1, 0.5, 1] },
   },
+};
+
+const itemStatic: Variants = {
+  hidden: {},
+  show: {},
 };
 
 export function Reveal({
@@ -31,6 +36,7 @@ export function Reveal({
   children: ReactNode;
   className?: string;
 }) {
+  const reduced = useReducedMotion();
   return (
     <motion.div
       className={className}
@@ -51,8 +57,9 @@ export function RevealItem({
   children: ReactNode;
   className?: string;
 }) {
+  const reduced = useReducedMotion();
   return (
-    <motion.div className={className} variants={item}>
+    <motion.div className={className} variants={reduced ? itemStatic : item}>
       {children}
     </motion.div>
   );
