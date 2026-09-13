@@ -176,3 +176,25 @@ Stage Summary:
 - Repo is Railway-ready (Dockerfile + railway.json + healthcheck + migrate-on-boot + runbook) and carries the Crimson Noir premium design system (red/white/black only) with real 3D interactions (tilt cards, orbiting gem hero, parallax depth), shine-sweep buttons, glass cards, and a clean user/staff visibility split.
 - All gates green on fade986: lint, typecheck, 160/160 tests, production build, e2e smoke, VLM reviews.
 - Deploy notes live in DEPLOYMENT.md (Railway quick start + optional services); operator must set LEGAL_* + secrets as Railway variables before public launch.
+
+---
+Task ID: 10
+Agent: Super Z (main agent)
+Task: Apply the new art-direction specification as an in-place upgrade: restrained editorial visual system (exact tokens, no gradients/glass/decoration), product-related 3D, full narrative landing, states, a11y, responsive QA — then re-gate and push.
+
+Work Log:
+- Audit (Phase 1): current Crimson Noir implementation violated the new spec — gradient CTAs + shine sweeps, glassmorphism (backdrop-blur cards/inputs/tabs/headers), HeroFX orbs/grid/grain, HeroGem decorative orbit, 3 shadow systems, ad-hoc oklch colors. Typography (Space Grotesk + Geist) and 12px radius already compliant → kept. Copy discipline + real-API views preserved.
+- Foundation (Phase 3): globals.css rewritten to exact spec tokens (#0a0a0d/#131318/#fff/#f4f4f0/#e11d2e/#b91524, border rgba(255,255,255,.16), muted rgba(255,255,255,.68), 4px spacing scale, radius 12px, shadow 0 16px 48px rgba(0,0,0,.28), control-height 48px, container 1200px); deleted gradient/glow/noise/grid keyframes + utilities; global red :focus-visible outline; display-1/2/hero type scale with negative tracking; container-x + no-scrollbar utilities.
+- Atoms: button (solid red, hover red-dark, press, loading prop + aria-busy, neutral disabled plate, ignite kept as alias), card (solid surface + hairline border + optional single elevation shadow, quiet interactive hover), badge (white ink on red, contrast-safe), input (48px, black well, red focus ring, placeholder /50), tabs (solid red active, no gradient), accordion (red chevron, hover:text-white).
+- 3D discipline (Phase 4): ONE moment = new StudioStage — the real Live Studio UI replica (real enum language: ACTIVE/GRANTED/Connected/24fps/credits) in a perspective window; page-load settle + ±7°/5° spring tilt on fine pointers; static under prefers-reduced-motion and on touch; side rail hidden on mobile for legibility; honest "sample session" caption. Deleted hero-fx, hero-gem, tilt-card.
+- Landing narrative per spec: nav (new mobile disclosure menu w/ Escape close) → hero promise + CTA + StudioStage → problem/tension → features (mobile-flat hairline rhythm) → how it works → trust pages (real links) → FAQ (6 honest answers, accordion) → merged auth + final CTA → footer. Specific copy throughout; no invented metrics/testimonials.
+- App + legal (Phase 5): solid header/tab strip (fixed a real center-clip overflow bug where justify-center + max-w-2xl clipped the first tab), overview stat cards without per-card tilt, settings job costs translated to user language (no raw job-type codes), legal chrome de-gradiented + links switched to white ink with red underline (4.5:1), flat BrandMark + matching favicon, app-shell legal links touch rhythm.
+- Fixes from measured/VLM review: FAQ chevron visibility, footer spacing, red-underlined "Read" links, disabled-button neutral plate (contrast), settings table labels, tab clipping (DOM-verified), mobile studio legibility, placeholder contrast, auth section moved after FAQ per narrative order.
+- Verification (Phases 7–8): lint clean, typecheck clean, 160/160 tests (one intermittent pre-existing teardown race noted once, not reproducible), production build green (after freeing memory by stopping next-dev; Google Fonts fetch retried once), Playwright: desktop+mobile overflow 0px, mobile menu opens, FAQ opens, zero console/page errors; reduced-motion emulated: content static + visible (transform none, opacity 1); feature-grid card geometry measured pixel-equal per row; contrast computed (white/red 4.78:1, white/black 19.3:1, muted 8.3:1, red/black 4.04:1 large-text-only rule followed); VLM final QA PASS on all 5 screenshots (landing desktop 8.5→PASS, mobile 8→PASS after fixes, app 9→PASS).
+- Committed 602b8d9; pushed to github.com/teslaequitysupport-source/DeyoungCommunication2 (main) with the PAT used only as a transient per-invocation credential helper — verified: no remote stored, no credential config, token absent from tree.
+
+Stage Summary:
+- The site now implements the art-direction spec exactly: three colours, flat editorial surfaces, one disciplined red, one product-related 3D moment, complete state machine on controls, semantic/keyboard/touch-ready a11y, intentional mobile compositions.
+- All functionality preserved (routes, auth, APIs, DB, workers); UI-only diff across 31 files.
+- Railway config unchanged and still valid (production build re-verified).
+- Known remaining: Google Fonts download can fail on flaky network during build (retry works); intermittent vitest teardown error pre-exists this change.
