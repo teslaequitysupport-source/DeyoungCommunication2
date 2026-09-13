@@ -163,3 +163,6 @@ main().catch((e) => {
   console.error("SMOKE FAILED:", e.message);
   process.exit(1);
 });
+
+// Module scope (see smoke-p3.ts).
+export {};

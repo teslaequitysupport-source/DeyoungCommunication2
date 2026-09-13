@@ -137,3 +137,7 @@ main().catch((e) => {
   console.error("SMOKE FAILED:", e.message);
   process.exit(1);
 });
+
+// Module scope: keeps this script’s top-level consts out of the global
+// namespace (production-build TypeScript check treats scripts as one scope).
+export {};

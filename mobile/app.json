@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Live Character Platform",
+    "slug": "live-character-platform",
+    "version": "1.0.0",
+    "scheme": "livechar",
+    "orientation": "default",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "app.livecharacter.mobile",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "The camera stream is sent to a platform worker to be transformed and returned to you during a live session.",
+        "NSMicrophoneUsageDescription": "Microphone access is requested for future voice-transform sessions; the current live transform uses video only.",
+        "NSPhotoLibraryUsageDescription": "Pick a face image to upload for character transforms."
+      }
+    },
+    "android": {
+      "package": "app.livecharacter.mobile",
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "The camera stream is sent to a platform worker to be transformed and returned to you during a live session."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Pick a face image to upload for character transforms."
+        }
+      ]
+    ]
+  }
+}
