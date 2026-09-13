@@ -1,10 +1,9 @@
 "use client";
 
 /**
- * Interactive auth surface for the P0 verification console.
- * Real Better Auth calls against /api/auth — no mocks. Errors display the
- * server's actual message; success triggers a server re-render so the
- * audit trail below reflects real database state.
+ * The entry gate — sign in or create an account. Real authentication
+ * (email + password, optional two-factor), every attempt audited
+ * server-side. Errors shown are the server's actual responses.
  */
 
 import { useState, useTransition } from "react";
@@ -32,12 +31,12 @@ function AuthError({ message }: { message: string }) {
   return (
     <div
       role="alert"
-      className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+      className="flex items-start gap-2 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-[oklch(0.8_0.14_24)]"
     >
-      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" aria-hidden="true" />
       <div>
-        <p className="font-medium">Request rejected by the server</p>
-        <p className="text-red-700">{message}</p>
+        <p className="font-medium text-foreground">We couldn't complete that</p>
+        <p className="text-white/60">{message}</p>
       </div>
     </div>
   );
@@ -61,22 +60,18 @@ function SessionCard({ user }: { user: ConsoleUser }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <p className="text-lg font-semibold text-foreground">{user.name}</p>
-        <Badge variant="outline" className="border-emerald-300 bg-emerald-50 text-emerald-800">
-          {user.role}
-        </Badge>
-        <Badge variant="outline">{user.status}</Badge>
-        <Badge variant="outline">
-          {user.emailVerified ? "email verified" : "email unverified"}
-        </Badge>
+        <p className="font-display text-lg font-semibold text-foreground">{user.name}</p>
+        {user.role !== "USER" ? <Badge variant="default">{user.role}</Badge> : null}
+        <Badge variant="status">{user.status}</Badge>
+        {user.twoFactorEnabled ? <Badge variant="outline">2FA on</Badge> : null}
       </div>
-      <p className="text-sm text-muted-foreground">{user.email}</p>
+      <p className="text-sm text-white/55">{user.email}</p>
       {signOutError ? <AuthError message={signOutError} /> : null}
       <Button onClick={signOut} disabled={isSigningOut} variant="outline" className="w-full sm:w-auto">
         {isSigningOut ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
         ) : (
-          <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+          <LogOut className="h-4 w-4" aria-hidden="true" />
         )}
         Sign out
       </Button>
@@ -122,7 +117,7 @@ function AuthForms() {
       setError(error.message ?? "Sign-up was rejected");
       return;
     }
-    setNotice(`Account created for ${data?.user?.email ?? "user"} with role USER.`);
+    setNotice(`Welcome aboard, ${data?.user?.name ?? "friend"}.`);
     startTransition(() => router.refresh());
   }
 
@@ -139,7 +134,7 @@ function AuthForms() {
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="signin" className="mt-4">
+      <TabsContent value="signin" className="mt-5">
         <form onSubmit={handleSignIn} className="space-y-4" noValidate>
           <div className="space-y-2">
             <Label htmlFor="signin-email">Email</Label>
@@ -165,16 +160,14 @@ function AuthForms() {
               placeholder="Your password"
             />
           </div>
-          <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-            ) : null}
+          <Button type="submit" variant="ignite" size="lg" className="w-full" disabled={isPending}>
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
             Sign in
           </Button>
         </form>
       </TabsContent>
 
-      <TabsContent value="signup" className="mt-4">
+      <TabsContent value="signup" className="mt-5">
         <form onSubmit={handleSignUp} className="space-y-4" noValidate>
           <div className="space-y-2">
             <Label htmlFor="signup-name">Name</Label>
@@ -211,16 +204,14 @@ function AuthForms() {
               onChange={(e) => setSignUp((s) => ({ ...s, password: e.target.value }))}
               placeholder="At least 8 characters"
             />
-            <p className="text-xs text-muted-foreground">
-              Minimum 8 characters, enforced by the server.
-            </p>
           </div>
-          <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-            ) : null}
+          <Button type="submit" variant="ignite" size="lg" className="w-full" disabled={isPending}>
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
             Create account
           </Button>
+          <p className="text-center text-xs text-white/40">
+            Free to start — includes welcome credits.
+          </p>
         </form>
       </TabsContent>
 
@@ -228,9 +219,9 @@ function AuthForms() {
       {notice ? (
         <div
           role="status"
-          className="mt-4 flex items-start gap-2 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800"
+          className="mt-4 flex items-start gap-2 rounded-lg border border-primary/35 bg-primary/10 p-3 text-sm text-white/85"
         >
-          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
           <p>{notice}</p>
         </div>
       ) : null}
@@ -240,13 +231,15 @@ function AuthForms() {
 
 export function AuthPanel({ user }: { user: ConsoleUser | null }) {
   return (
-    <Card>
+    <Card className="border-primary/20 bg-gradient-to-b from-primary/[0.05] to-transparent shadow-[0_1px_0_0_oklch(1_0_0/0.06)_inset,inset_0_0_40px_oklch(0.62_0.235_22/0.04),0_28px_72px_-24px_oklch(0_0_0/0.85)]">
       <CardHeader>
-        <CardTitle>Authentication</CardTitle>
+        <CardTitle className="font-display text-xl">
+          {user ? "Welcome back" : "Step inside"}
+        </CardTitle>
         <CardDescription>
           {user
-            ? "You are signed in with a real session stored in Postgres."
-            : "Real Better Auth flows (email + password) against the local database. Every attempt is audited."}
+            ? "You're signed in with a secure session."
+            : "Sign in or create your account — it takes less than a minute."}
         </CardDescription>
       </CardHeader>
       <CardContent>{user ? <SessionCard user={user} /> : <AuthForms />}</CardContent>

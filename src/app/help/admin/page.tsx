@@ -13,6 +13,30 @@ const STAFF_ROLES = new Set(["MODERATOR", "SUPPORT", "ADMIN", "SUPER_ADMIN"]);
 
 const SECTIONS: Array<{ id: string; title: string; body: React.ReactNode }> = [
   {
+    id: "build-status",
+    title: "Current build status",
+    body: (
+      <>
+        <p>
+          Tested and green: auth + RBAC + the job queue + the worker protocol
+          (automated suite), the end-to-end journey (signup → upload →
+          consent → session → saved result), and compute sleep/wake
+          (idle → SLEEP, job → wake → health check → execute).
+        </p>
+        <p>
+          Environment-bound, stated honestly: live frames currently ride
+          the socket.io relay (WebRTC/LiveKit arrives at deploy time — a
+          configuration change, not an application rewrite); R2 uploads wait
+          for the R2_* credential block (running on the local-dev object
+          store); the H3 video-generation path is implemented against the
+          official API and waits for an external credential. No payments are
+          integrated — credits are manual, per the approved decision. No
+          simulated metrics exist anywhere in the build.
+        </p>
+      </>
+    ),
+  },
+  {
     id: "users",
     title: "Users",
     body: (
@@ -290,11 +314,11 @@ export default async function AdminHelpPage() {
         <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 py-8">
           <Link
             href="/help"
-            className="text-sm text-emerald-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="text-sm text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             ← User documentation
           </Link>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight">
+          <h1 className="font-display mt-4 text-3xl font-bold tracking-tight">
             Administrator Documentation
           </h1>
           <p className="mt-3 text-muted-foreground">

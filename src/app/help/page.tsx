@@ -225,7 +225,7 @@ const SECTIONS: Array<{
           typed confirmation — final and real). Consent withdrawal lives in
           Media &amp; Consent. The full data inventory — every category,
           purpose, retention window, and deletion path — is published in the{" "}
-          <Link href="/privacy" className="text-emerald-700 underline">Privacy Policy</Link>{" "}
+          <Link href="/privacy" className="text-primary underline">Privacy Policy</Link>{" "}
           and generated from the platform&apos;s actual data map.
         </p>
       </>
@@ -257,7 +257,7 @@ const SECTIONS: Array<{
           Report any content via its context menu (ten categories) or email.
           The full process — review, decisions, enforcement — is described in
           the{" "}
-          <Link href="/abuse" className="text-emerald-700 underline">Abuse &amp; Reporting</Link>{" "}
+          <Link href="/abuse" className="text-primary underline">Abuse &amp; Reporting</Link>{" "}
           policy.
         </p>
       </>
@@ -270,7 +270,7 @@ const SECTIONS: Array<{
       <>
         <p>
           See the{" "}
-          <Link href="/copyright" className="text-emerald-700 underline">Copyright Policy</Link>{" "}
+          <Link href="/copyright" className="text-primary underline">Copyright Policy</Link>{" "}
           for what a valid complaint contains and how it is handled.
         </p>
       </>
@@ -285,7 +285,7 @@ const SECTIONS: Array<{
           Credits for undelivered work are refunded automatically. The full
           policy — including what happens when payments are introduced — is
           the{" "}
-          <Link href="/refunds" className="text-emerald-700 underline">Refund Policy</Link>.
+          <Link href="/refunds" className="text-primary underline">Refund Policy</Link>.
         </p>
       </>
     ),
@@ -299,11 +299,11 @@ export default function HelpPage() {
         <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 py-8">
           <Link
             href="/"
-            className="text-sm text-emerald-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="text-sm text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             ← Back to the platform
           </Link>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight">
+          <h1 className="font-display mt-4 text-3xl font-bold tracking-tight">
             Help &amp; Documentation
           </h1>
           <p className="mt-3 text-muted-foreground">

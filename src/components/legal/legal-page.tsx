@@ -11,6 +11,8 @@ import {
   LEGAL_PAGES,
   operatorInfo,
 } from "@/lib/legal/operator";
+import { BrandMark } from "@/components/fx/brand-mark";
+import { BRAND } from "@/lib/brand";
 
 export function LegalPage({
   title,
@@ -23,72 +25,91 @@ export function LegalPage({
 }) {
   const op = operatorInfo();
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b bg-card/50">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 py-8">
+    <div className="relative min-h-screen bg-background text-foreground">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,oklch(0.62_0.235_22/0.09),transparent)]"
+      />
+      <header className="relative border-b border-white/[0.06]">
+        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 py-10">
           <Link
             href="/"
-            className="text-sm text-emerald-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="group inline-flex items-center gap-2.5 rounded-lg text-sm text-white/60 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2"
           >
-            ← Back to the platform
+            <BrandMark size={20} />
+            <span className="transition-transform group-hover:-translate-x-0.5">←</span>
+            Back to {BRAND.name}
           </Link>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight">{title}</h1>
-          <p className="mt-3 text-muted-foreground">{intro}</p>
-          <dl className="mt-6 grid gap-2 text-sm sm:grid-cols-2">
+          <h1 className="font-display mt-6 text-3xl font-bold tracking-tight sm:text-4xl">
+            {title}
+          </h1>
+          <p className="mt-3 leading-relaxed text-white/60">{intro}</p>
+          <dl className="mt-8 grid gap-3 rounded-xl border border-white/[0.07] bg-white/[0.02] p-5 text-sm sm:grid-cols-2">
             <div>
-              <dt className="font-medium">Effective date</dt>
-              <dd className="text-muted-foreground">{LEGAL_EFFECTIVE_DATE}</dd>
+              <dt className="text-xs uppercase tracking-[0.14em] text-white/40">Effective date</dt>
+              <dd className="mt-1 font-medium">{LEGAL_EFFECTIVE_DATE}</dd>
             </div>
             <div>
-              <dt className="font-medium">Last updated</dt>
-              <dd className="text-muted-foreground">{LEGAL_LAST_UPDATED}</dd>
+              <dt className="text-xs uppercase tracking-[0.14em] text-white/40">Last updated</dt>
+              <dd className="mt-1 font-medium">{LEGAL_LAST_UPDATED}</dd>
             </div>
             <div>
-              <dt className="font-medium">Operated by</dt>
-              <dd className="text-muted-foreground">{op.name}</dd>
+              <dt className="text-xs uppercase tracking-[0.14em] text-white/40">Operated by</dt>
+              <dd className="mt-1 font-medium">{op.name}</dd>
             </div>
             <div>
-              <dt className="font-medium">Contact</dt>
-              <dd className="text-muted-foreground">{op.contactEmail}</dd>
+              <dt className="text-xs uppercase tracking-[0.14em] text-white/40">Contact</dt>
+              <dd className="mt-1 font-medium">
+                <a href={`mailto:${op.contactEmail}`} className="text-primary hover:underline">
+                  {op.contactEmail}
+                </a>
+              </dd>
             </div>
           </dl>
           {!op.configured && (
             <p
               role="note"
-              className="mt-4 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900"
+              className="mt-4 rounded-lg border border-primary/35 bg-primary/10 px-4 py-3 text-sm text-white/85"
             >
-              Operator identity is not configured yet. Before launch, set{" "}
-              <code>LEGAL_OPERATOR_NAME</code>, <code>LEGAL_CONTACT_EMAIL</code>{" "}
-              and <code>LEGAL_JURISDICTION</code> — this platform does not
-              invent company details.
+              The operator identity for this deployment is being finalized.
+              Full company details will appear here before public launch —
+              this platform does not invent them.
             </p>
           )}
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl px-4 sm:px-6 py-10">
-        <div className="space-y-6 leading-relaxed [&_h2]:mt-10 [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-medium [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_a]:text-emerald-700 [&_a]:underline">
+      <main className="relative mx-auto w-full max-w-3xl px-4 sm:px-6 py-12">
+        <div className="space-y-6 leading-relaxed text-white/75 [&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-white [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-medium [&_h3]:text-white [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_a]:text-primary [&_a]:underline [&_table]:w-full [&_td]:py-1.5 [&_th]:py-1.5 [&_th]:text-left">
           {children}
         </div>
 
-        <nav aria-label="Legal pages" className="mt-16 border-t pt-8">
-          <h2 className="text-sm font-semibold">All legal pages</h2>
-          <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
+        <nav aria-label="Legal pages" className="mt-20 border-t border-white/[0.07] pt-10">
+          <h2 className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-white/50">
+            All legal pages
+          </h2>
+          <ul className="mt-5 grid gap-2.5 text-sm sm:grid-cols-3">
             {LEGAL_PAGES.map((page) => (
               <li key={page.slug}>
                 <Link
                   href={page.slug}
-                  className="text-emerald-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+                  className="text-white/70 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
                   {page.title}
                 </Link>
               </li>
             ))}
           </ul>
-          <p className="mt-6 text-sm text-muted-foreground">
+          <p className="mt-8 text-sm text-white/50">
             Questions about this page? Contact{" "}
-            <a href={`mailto:${op.contactEmail}`}>{op.contactEmail}</a>. In-app
-            guides live in <Link href="/help" className="text-emerald-700 underline">Help</Link>.
+            <a href={`mailto:${op.contactEmail}`} className="text-primary hover:underline">
+              {op.contactEmail}
+            </a>
+            . In-app guides live in{" "}
+            <Link href="/help" className="text-primary hover:underline">
+              Help
+            </Link>
+            .
           </p>
         </nav>
       </main>

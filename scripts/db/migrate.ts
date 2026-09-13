@@ -80,7 +80,15 @@ async function main() {
   const url = new URL(resolveDatabaseUrl());
   await ensureLocalService(url);
 
-  const pool = new pg.Pool({ connectionString: url.toString(), max: 1 });
+  const pool = new pg.Pool({
+    connectionString: url.toString(),
+    max: 1,
+    // Honor ?sslmode=require in the URL (node-postgres ignores it natively).
+    ssl: url.searchParams.get("sslmode") &&
+      url.searchParams.get("sslmode") !== "disable"
+      ? { rejectUnauthorized: false }
+      : undefined,
+  });
   const db = drizzle(pool);
   await migrate(db, { migrationsFolder: MIGRATIONS_FOLDER });
   console.log(`[migrate] migrations applied to ${url.hostname}:${url.port || 5432}`);

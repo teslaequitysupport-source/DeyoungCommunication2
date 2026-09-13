@@ -51,10 +51,37 @@ export function resolveDatabaseUrl(): string {
   return LOCAL_SOCKET_DATABASE_URL;
 }
 
+/**
+ * Derive node-postgres `ssl` options from the DATABASE_URL. node-postgres
+ * ignores a `sslmode=` query parameter (that is a libpq feature), so URLs
+ * like Railway's external `...?sslmode=require` would silently connect in
+ * cleartext or fail. Internal URLs without sslmode stay plain — the common
+ * Railway/Neon internal-network case.
+ */
+export function sslForUrl(url: string):
+  | undefined
+  | { rejectUnauthorized: false } {
+  try {
+    const parsed = new URL(url);
+    const sslmode = parsed.searchParams.get("sslmode");
+    if (sslmode && sslmode !== "disable") {
+      // Managed providers (Railway / Neon) issue certificates that do not
+      // match the hostname for internal routes; require encryption but do
+      // not pin the CA — the documented setting for both providers.
+      return { rejectUnauthorized: false };
+    }
+  } catch {
+    // Not a parseable URL — let the driver handle it.
+  }
+  return undefined;
+}
+
 function createDb() {
+  const url = resolveDatabaseUrl();
   const pool = new pg.Pool({
-    connectionString: resolveDatabaseUrl(),
+    connectionString: url,
     max: 5,
+    ssl: sslForUrl(url),
   });
   return drizzle(pool, { schema });
 }

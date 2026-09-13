@@ -186,7 +186,7 @@ export function SettingsView({
       {notice && (
         <div
           role="status"
-          className="rounded-md border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-900"
+          className="rounded-lg border border-primary/35 bg-primary/10 px-4 py-3 text-sm text-white/90"
         >
           {notice}
         </div>
@@ -195,7 +195,7 @@ export function SettingsView({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <BadgeCent className="h-5 w-5 text-emerald-700" aria-hidden="true" />
+            <BadgeCent className="h-5 w-5 text-primary" aria-hidden="true" />
             Credits
           </CardTitle>
           <CardDescription>
@@ -203,7 +203,7 @@ export function SettingsView({
             staff; every job type has a published cost; jobs that end without
             delivering work are refunded automatically. No payment provider is
             integrated in this phase — the{" "}
-            <Link href="/refunds" className="text-emerald-700 underline">
+            <Link href="/refunds" className="text-primary underline">
               Refund Policy
             </Link>{" "}
             describes the system as it actually is.
@@ -266,7 +266,7 @@ export function SettingsView({
                         </div>
                         <span
                           className={`tabular-nums font-semibold ${
-                            h.delta > 0 ? "text-emerald-700" : "text-foreground"
+                            h.delta > 0 ? "text-primary" : "text-white/90"
                           }`}
                         >
                           {h.delta > 0 ? `+${h.delta}` : h.delta}
@@ -288,7 +288,7 @@ export function SettingsView({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <KeyRound className="h-5 w-5 text-emerald-700" aria-hidden="true" />
+            <KeyRound className="h-5 w-5 text-primary" aria-hidden="true" />
             Security
           </CardTitle>
           <CardDescription>
@@ -299,7 +299,7 @@ export function SettingsView({
         <CardContent className="space-y-3">
           {mfaEnrolled ? (
             <div className="flex items-center gap-2 text-sm">
-              <Badge className="border-emerald-300 bg-emerald-50 text-emerald-800">
+              <Badge variant="status">
                 Enabled
               </Badge>
               <span className="text-muted-foreground">
@@ -348,12 +348,12 @@ export function SettingsView({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Download className="h-5 w-5 text-emerald-700" aria-hidden="true" />
+            <Download className="h-5 w-5 text-primary" aria-hidden="true" />
             Privacy
           </CardTitle>
           <CardDescription>
             Your data, your call. The{" "}
-            <Link href="/privacy" className="text-emerald-700 underline">
+            <Link href="/privacy" className="text-primary underline">
               Privacy Policy
             </Link>{" "}
             shows the complete data inventory this platform holds.
@@ -389,7 +389,7 @@ export function SettingsView({
           {isStaff ? (
             <div role="note" className="flex items-start gap-2 text-sm">
               <ShieldAlert
-                className="mt-0.5 h-4 w-4 shrink-0 text-amber-600"
+                className="mt-0.5 h-4 w-4 shrink-0 text-primary"
                 aria-hidden="true"
               />
               <span>

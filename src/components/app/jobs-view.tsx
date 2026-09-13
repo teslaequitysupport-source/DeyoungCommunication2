@@ -27,11 +27,11 @@ interface Props {
 }
 
 const STATUS_STYLES: Record<string, string | undefined> = {
-  SUCCEEDED: "border-emerald-300 bg-emerald-50 text-emerald-800",
-  FAILED: "border-red-300 bg-red-50 text-red-800",
-  RUNNING: "border-blue-300 bg-blue-50 text-blue-800",
-  RESERVED: "border-amber-300 bg-amber-50 text-amber-800",
-  EXPIRED: "border-red-300 bg-red-50 text-red-800",
+  SUCCEEDED: "border-white/15 bg-white/[0.06] text-white/90",
+  FAILED: "border-destructive/50 bg-destructive/15 text-[oklch(0.75_0.16_24)]",
+  RUNNING: "border-primary/45 bg-primary/12 text-primary",
+  RESERVED: "border-white/10 bg-white/[0.03] text-white/60",
+  EXPIRED: "border-white/10 bg-white/[0.03] text-white/45",
   CANCELLED: undefined,
 };
 
@@ -98,14 +98,14 @@ export function JobsView({ refreshKey, onChanged, onNavigate }: Props) {
         </div>
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl">
-        Every asynchronous task has a durable record — claimed atomically,
-        retried safely (idempotency keys), and observable end to end. Job
-        creation happens in the Live Studio (live transforms) and the Media
-        view (batch image transforms).
+        Every render is tracked from the moment you start it to the moment
+        it's delivered — safely resumable, never billed twice. Renders are
+        started from the Live Studio (live sessions) and the Media view
+        (image transformations).
       </p>
 
       {error ? (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-[oklch(0.78_0.15_24)]">
           {error}
         </p>
       ) : null}

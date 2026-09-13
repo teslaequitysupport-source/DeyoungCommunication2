@@ -152,14 +152,14 @@ export function CharactersView({ onChanged }: Props) {
         </Button>
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl">
-        A character carries the appearance configuration the worker applies to
-        your frames and images in this phase: a color grade (hue, saturation)
-        and optional vignette. Face and voice model capabilities arrive in
-        Phase 2 through verified provider APIs.
+        A character carries the look you want on screen — a color grade
+        (hue, saturation) and an optional vignette, applied to your live
+        camera and image renders. More appearance powers arrive as they
+        clear our quality bar.
       </p>
 
       {error ? (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-[oklch(0.78_0.15_24)]">
           {error}
         </p>
       ) : null}
@@ -200,7 +200,7 @@ export function CharactersView({ onChanged }: Props) {
                     variant="outline"
                     className={
                       c.status === "ACTIVE"
-                        ? "border-emerald-300 bg-emerald-50 text-emerald-800"
+                        ? "border-white/15 bg-white/[0.06] text-white/90"
                         : undefined
                     }
                   >
@@ -233,7 +233,7 @@ export function CharactersView({ onChanged }: Props) {
                     size="sm"
                     onClick={() => removeCharacter(c.id)}
                     disabled={busyId === c.id}
-                    className="text-red-700 hover:bg-red-50"
+                    className="text-[oklch(0.78_0.15_24)] hover:bg-destructive/15"
                   >
                     <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
                     Delete
@@ -250,8 +250,8 @@ export function CharactersView({ onChanged }: Props) {
           <DialogHeader>
             <DialogTitle>New character</DialogTitle>
             <DialogDescription>
-              The appearance controls below drive the real transform the
-              worker applies.
+              Set the look — it's applied to your camera and renders in
+              real time.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">

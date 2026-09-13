@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { BRAND } from "@/lib/brand";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,26 +14,29 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "AI Live Character Platform",
-    template: "%s · AI Live Character Platform",
+    default: `${BRAND.name} — ${BRAND.tagline}`,
+    template: `%s · ${BRAND.name}`,
   },
-  description:
-    "Create characters, grant explicit consent for face and voice transforms, stream live transformed video, and keep control of your data — export or delete it any time.",
-  applicationName: "AI Live Character Platform",
+  description: BRAND.description,
+  applicationName: BRAND.name,
   openGraph: {
     type: "website",
-    siteName: "AI Live Character Platform",
-    title: "AI Live Character Platform",
-    description:
-      "Consent-first live character transformation: real workers, real job system, honest status. Credits with automatic refunds for undelivered work.",
+    siteName: BRAND.name,
+    title: `${BRAND.name} — ${BRAND.tagline}`,
+    description: BRAND.description,
   },
   twitter: {
     card: "summary",
-    title: "AI Live Character Platform",
-    description:
-      "Consent-first live character transformation: real workers, real job system, honest status.",
+    title: `${BRAND.name} — ${BRAND.tagline}`,
+    description: BRAND.description,
   },
   icons: {
     icon: [
@@ -44,15 +48,19 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0a0a0b",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />

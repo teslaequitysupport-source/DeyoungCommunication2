@@ -5,6 +5,63 @@ approved one: **$0 upfront → free tiers → pay-as-you-go → user-funded
 usage; paid infrastructure only when justified** — and every cost that
 cannot be engineered away is stated, not hidden.
 
+## Railway deployment (primary — repo is Railway-ready)
+
+The repository ships a complete Railway deployment set: `Dockerfile`
+(Bun, multi-stage, standalone output), `railway.json` (build + health
+check + restart policy), `.dockerignore`, and the container entrypoint
+`scripts/deploy/start-web.sh` (migrations, then the standalone server).
+
+### Quick start (web service)
+
+1. Push this repo to GitHub, then in Railway: **New Project → Deploy from
+   GitHub repo**. Railway detects the `Dockerfile` via `railway.json`.
+2. Add the **Postgres** plugin to the same project. Railway exposes
+   `DATABASE_URL` — use the internal URL
+   (`postgres://…@postgres.railway.internal:5432/railway`, no SSL needed)
+   or the external one (its `?sslmode=require` is honored by the app and
+   the migrate script).
+3. Set the service variables (Variables tab — or Redact/bulk import):
+
+   | Variable | Value |
+   | --- | --- |
+   | `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` (reference) |
+   | `AUTH_SECRET` | `openssl rand -hex 32` |
+   | `BETTER_AUTH_URL` | your public Railway domain (`https://…up.railway.app`) |
+   | `TRUSTED_ORIGINS` | same domain (comma-separated for extra origins) |
+   | `STORAGE_TICKET_SECRET` | `openssl rand -hex 32` (local storage mode) |
+   | `REALTIME_TICKET_SECRET` | `openssl rand -hex 32` (shared with the relay service) |
+   | `SCHEDULER_TOKEN` | `openssl rand -hex 32` (shared with the scheduler service) |
+   | `LEGAL_OPERATOR_NAME` / `LEGAL_CONTACT_EMAIL` / `LEGAL_JURISDICTION` | real operator identity (spec §40 — never invented) |
+
+4. Deploy. The container applies migrations on boot, then serves on
+   `PORT` (set by Railway). Health: `GET /api/health` (Railway pings it
+   per `railway.json`; the platform reports observed state only).
+5. First admin: create an account, then promote the row in the `users`
+   table (`role = 'SUPER_ADMIN'`) via SQL — role changes are audited.
+   Enable MFA immediately after (required for elevated routes).
+
+### Optional services from the same repo (Railway "New Service → GitHub",
+same branch, different start command)
+
+| Service | Start command | Notes |
+| --- | --- | --- |
+| media-relay (live studio transport) | `bun mini-services/media-relay/index.ts` | set `REALTIME_TICKET_SECRET` (same value as web); expose its port |
+| control-scheduler (worker lifecycle) | `bun mini-services/control-scheduler/index.ts` | set `SCHEDULER_TOKEN` + `CONTROL_PLANE_URL` (the web service's internal URL) |
+| worker (dev transform worker) | `bun mini-services/worker-dev/index.ts` | set `WORKER_NAME`, `WORKER_CREDENTIAL` (hash provisioned via `scripts/db/provision-worker.ts`), `CONTROL_PLANE_URL`, `MEDIA_RELAY_URL` |
+
+Production GPU workers run off-platform on RunPod per WORKER-PROTOCOL.md;
+the dev worker above is a capability-honest fallback.
+
+### Notes
+
+- Storage defaults to the local-dev object store (ticketed uploads) until
+  `R2_*` variables are set — then uploads go direct to Cloudflare R2.
+- `NEXT_PUBLIC_APP_URL` should match the public domain for canonical links.
+- Single replica by default (`numReplicas: 1`) — the migration-on-boot
+  pattern is safe at one replica; scale via Railway's release phase if
+  you go multi-replica.
+
 ## Environments
 
 | Environment | App | Database | Object storage | Media | GPU |

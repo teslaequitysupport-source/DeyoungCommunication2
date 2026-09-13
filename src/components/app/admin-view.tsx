@@ -81,12 +81,12 @@ function StatusBadge({ status }: { status: string }) {
     status === "ACTIVE" ? "default"
     : status === "SUSPENDED" ? "secondary"
     : "destructive";
-  return <Badge variant={variant === "default" ? "secondary" : variant} className={status === "ACTIVE" ? "border-emerald-300 bg-emerald-50 text-emerald-800" : undefined}>{status}</Badge>;
+  return <Badge variant={variant === "default" ? "secondary" : variant} className={status === "ACTIVE" ? "border-white/15 bg-white/[0.06] text-white/90" : undefined}>{status}</Badge>;
 }
 
 function OutcomeBadge({ outcome }: { outcome: string }) {
   return (
-    <Badge variant="outline" className={outcome === "DENIED" ? "border-amber-300 bg-amber-50 text-amber-800" : undefined}>
+    <Badge variant="outline" className={outcome === "DENIED" ? "border-primary/35 bg-primary/10 text-white/85" : undefined}>
       {outcome}
     </Badge>
   );
@@ -485,7 +485,7 @@ export function AdminView({ selfRole, mfaEnabled }: { selfRole: string; mfaEnabl
               <p className="text-sm">
                 Status:{" "}
                 {mfaEnrolled ? (
-                  <Badge variant="secondary" className="border-emerald-300 bg-emerald-50 text-emerald-800">Enabled</Badge>
+                  <Badge variant="status">Enabled</Badge>
                 ) : (
                   <Badge variant="destructive">Not enrolled</Badge>
                 )}

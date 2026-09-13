@@ -1,0 +1,42 @@
+# Keep the production image lean and secret-free.
+
+# ── Version control / CI
+.git
+.github
+.gitignore
+
+# ── Secrets — NEVER bake into any layer
+.env
+.env.*
+!.env.example
+
+# ── Build artifacts
+node_modules
+.next
+out
+server.log
+dev.log
+
+# ── Dev-only runtime state
+db
+var
+agent-ctx
+
+# ── Non-web subprojects (deployed separately if at all)
+mobile
+
+# ── Documentation & research artifacts (not needed at runtime)
+download
+research
+tool-results
+upload
+tests
+scripts/p0-verification
+scripts/verify
+scripts/report
+*.md
+!README.md
+
+# ── OS noise
+.DS_Store
+*.log

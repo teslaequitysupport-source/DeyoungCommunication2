@@ -192,7 +192,7 @@ export function MediaView({ onChanged, onNavigate }: Props) {
       </div>
 
       {error ? (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-[oklch(0.78_0.15_24)]">
           {error}
         </p>
       ) : null}
@@ -278,7 +278,7 @@ export function MediaView({ onChanged, onNavigate }: Props) {
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="text-sm font-medium">{p.label}</p>
                     {active ? (
-                      <Badge variant="outline" className="border-emerald-300 bg-emerald-50 text-emerald-800">
+                      <Badge variant="outline" className="border-white/15 bg-white/[0.06] text-white/90">
                         granted {new Date(active.grantedAt).toLocaleDateString()}
                       </Badge>
                     ) : (
@@ -332,14 +332,14 @@ export function MediaView({ onChanged, onNavigate }: Props) {
         <CardHeader>
           <CardTitle className="text-base">Asset library</CardTitle>
           <CardDescription>
-            {assets === null ? "Loading…" : `${assets.length} assets — served after an ownership check`}
+            {assets === null ? "Loading…" : `${assets.length} items — private to you`}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {assets !== null && assets.length === 0 ? (
             <p className="text-sm text-muted-foreground py-6 text-center">
-              Nothing uploaded yet. Face images you upload and worker render
-              outputs appear here.
+              Nothing uploaded yet. Face images you upload and finished
+              renders appear here.
             </p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -387,7 +387,7 @@ export function MediaView({ onChanged, onNavigate }: Props) {
                       ) : null}
                     </div>
                     <p className="text-xs text-muted-foreground flex items-center gap-1">
-                      <CheckCircle2 className="h-3 w-3 text-emerald-600" aria-hidden="true" />
+                      <CheckCircle2 className="h-3 w-3 text-primary" aria-hidden="true" />
                       {new Date(asset.createdAt).toLocaleString()}
                     </p>
                   </div>

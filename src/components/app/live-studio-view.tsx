@@ -233,8 +233,8 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
       } catch (e) {
         setCameraError(
           e instanceof Error && e.name === "NotAllowedError"
-            ? "Camera permission was denied. Allow camera access, or use the batch image transform instead (Media view → Transform)."
-            : "No camera is available in this browser context. The session will keep its real state, but frames cannot flow without a camera — use the batch image transform (Media view) to exercise the same worker pipeline.",
+            ? "Camera permission was denied. Allow camera access, or transform a still image instead (Media view → Transform)."
+            : "No camera is available in this browser. Your session stays safe — but a live camera is needed for live transforms. You can still transform still images from the Media view.",
         );
       }
 
@@ -429,22 +429,22 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
       <div>
         <h2 className="text-xl font-semibold tracking-tight">Live Studio</h2>
         <p className="text-sm text-muted-foreground mt-1 max-w-3xl">
-          Your camera frames stream through the media relay to an assigned
-          worker, which applies the character&apos;s color grade and returns
-          the transformed frames. Status below is backend truth — including
-          cold-start waits while a worker claims the job.
+          Your camera streams into the studio, your character&apos;s look is
+          applied in real time, and the transformed frames come back to you
+          live. What you see below is exactly what&apos;s happening — if the
+          render layer is warming up, you&apos;ll see that too.
         </p>
       </div>
 
       {error ? (
-        <div role="alert" className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        <div role="alert" className="flex items-start gap-2 rounded-lg border border-destructive/45 bg-destructive/12 p-3 text-sm text-[oklch(0.8_0.14_24)]">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           <span>{error}</span>
         </div>
       ) : null}
 
       {cameraError && active ? (
-        <div role="status" className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+        <div role="status" className="flex items-start gap-2 rounded-lg border border-primary/35 bg-primary/10 p-3 text-sm text-white/90">
           <Camera className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           <span>{cameraError}</span>
         </div>
@@ -471,7 +471,7 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Session</CardTitle>
               <CardDescription>
-                Pick the character whose appearance config the worker applies.
+                Choose the character you want to become on camera.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -514,7 +514,7 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
                       Stop &amp; save
                     </Button>
                     {recording ? (
-                      <Badge variant="outline" className="border-red-300 bg-red-50 text-red-800 gap-1">
+                      <Badge variant="outline" className="border-destructive/50 bg-destructive/15 text-[oklch(0.8_0.14_24)] gap-1">
                         <Circle className="h-3 w-3 fill-current" aria-hidden="true" />
                         recording
                       </Badge>
@@ -533,7 +533,7 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
               </div>
 
               {savedRecording ? (
-                <p className="text-sm text-emerald-700">{savedRecording}</p>
+                <p className="text-sm text-primary">{savedRecording}</p>
               ) : null}
             </CardContent>
           </Card>
@@ -541,13 +541,13 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
           {/* Status timeline */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Session status (backend truth)</CardTitle>
+              <CardTitle className="text-base">Session status</CardTitle>
               <CardDescription>
-                Relay:{" "}
+                Studio link:{" "}
                 {relayState === "connected" ? (
-                  <span className="text-emerald-700">connected</span>
+                  <span className="text-primary">connected</span>
                 ) : relayState === "offline" ? (
-                  <span className="text-amber-700">offline — reconnecting</span>
+                  <span className="text-primary">offline — reconnecting</span>
                 ) : (
                   relayState
                 )}
@@ -567,7 +567,7 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
                       <span
                         aria-hidden="true"
                         className={`inline-block h-2 w-2 rounded-full ${
-                          i === statusLog.length - 1 ? "bg-emerald-600" : "bg-muted-foreground/40"
+                          i === statusLog.length - 1 ? "bg-primary" : "bg-white/30"
                         }`}
                       />
                       <span className="font-medium">{stateLabel(entry.status)}</span>
@@ -584,7 +584,7 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
           {/* Worker stats */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Worker throughput (reported)</CardTitle>
+              <CardTitle className="text-base">Live performance</CardTitle>
             </CardHeader>
             <CardContent>
               {stats ? (
@@ -602,13 +602,14 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
                     <dd className="tabular-nums">{stats.transformMs} ms</dd>
                   </div>
                   <div>
-                    <dt className="text-muted-foreground text-xs">unparseable frames</dt>
+                    <dt className="text-muted-foreground text-xs">dropped frames</dt>
                     <dd className="tabular-nums">{stats.framesCorrupt}</dd>
                   </div>
                 </dl>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  Stats arrive from the worker every 2 s while a live session runs.
+                  Live numbers appear here every couple of seconds while a
+                  session runs.
                 </p>
               )}
             </CardContent>
@@ -646,11 +647,6 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
               </figure>
             </div>
             <canvas ref={captureCanvasRef} className="hidden" aria-hidden="true" />
-            <p className="text-xs text-muted-foreground">
-              Dev transport: socket.io relay (browser → worker → browser).
-              Production swaps the same interface to LiveKit WebRTC — a
-              deployment configuration change, not an application rewrite.
-            </p>
           </CardContent>
         </Card>
       </div>
