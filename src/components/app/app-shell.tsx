@@ -15,6 +15,7 @@ import {
   Images,
   LayoutDashboard,
   LogOut,
+  Settings,
   ShieldCheck,
   Users,
 } from "lucide-react";
@@ -28,6 +29,7 @@ import { MediaView } from "@/components/app/media-view";
 import { LiveStudioView } from "@/components/app/live-studio-view";
 import { JobsView } from "@/components/app/jobs-view";
 import { AdminView } from "@/components/app/admin-view";
+import { SettingsView } from "@/components/app/settings-view";
 
 export interface ShellUser {
   id: string;
@@ -70,7 +72,7 @@ export function AppShell({ user }: { user: ShellUser }) {
             Live Character Platform
           </h1>
           <Badge variant="outline" className="hidden sm:inline-flex border-emerald-300 bg-emerald-50 text-emerald-800">
-            Phase 3 · Trust plane
+            Phase 5 · Launch gates
           </Badge>
           <div className="ml-auto flex items-center gap-3">
             <span className="text-sm text-muted-foreground hidden sm:inline">
@@ -91,7 +93,7 @@ export function AppShell({ user }: { user: ShellUser }) {
 
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-6">
         <Tabs value={view} onValueChange={setView} className="gap-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-6 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-7 h-auto">
             <TabsTrigger value="overview" className="gap-2 py-2">
               <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
               Overview
@@ -111,6 +113,10 @@ export function AppShell({ user }: { user: ShellUser }) {
             <TabsTrigger value="jobs" className="gap-2 py-2">
               <Boxes className="h-4 w-4" aria-hidden="true" />
               Jobs
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-2 py-2">
+              <Settings className="h-4 w-4" aria-hidden="true" />
+              Settings
             </TabsTrigger>
             {isStaff && (
               <TabsTrigger value="admin" className="gap-2 py-2">
@@ -135,6 +141,9 @@ export function AppShell({ user }: { user: ShellUser }) {
           <TabsContent value="jobs">
             <JobsView refreshKey={refreshKey} onChanged={bumpRefresh} onNavigate={setView} />
           </TabsContent>
+          <TabsContent value="settings">
+            <SettingsView mfaEnabled={user.twoFactorEnabled} isStaff={isStaff} />
+          </TabsContent>
           {isStaff && (
             <TabsContent value="admin">
               <AdminView selfRole={user.role} mfaEnabled={user.twoFactorEnabled} />
@@ -144,14 +153,25 @@ export function AppShell({ user }: { user: ShellUser }) {
       </main>
 
       <footer className="mt-auto border-t bg-muted/40">
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4 space-y-2">
           <p className="text-xs text-muted-foreground">
             Every status on this page comes from the running backend — the
-            Postgres database, the worker fleet, and the media relay. The
-            current transform is an honest CPU color grade (dev worker);
-            AI model capabilities arrive in Phase 2 through verified provider
-            APIs.
+            Postgres database, the worker fleet, and the media relay. AI
+            model capabilities arrive through verified provider APIs and are
+            labeled as such when they exist.
           </p>
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+            <a href="/help" className="text-muted-foreground hover:text-foreground hover:underline">Help</a>
+            <a href="/terms" className="text-muted-foreground hover:text-foreground hover:underline">Terms</a>
+            <a href="/privacy" className="text-muted-foreground hover:text-foreground hover:underline">Privacy</a>
+            <a href="/cookies" className="text-muted-foreground hover:text-foreground hover:underline">Cookies</a>
+            <a href="/refunds" className="text-muted-foreground hover:text-foreground hover:underline">Refunds</a>
+            <a href="/acceptable-use" className="text-muted-foreground hover:text-foreground hover:underline">Acceptable use</a>
+            <a href="/copyright" className="text-muted-foreground hover:text-foreground hover:underline">Copyright</a>
+            <a href="/accessibility" className="text-muted-foreground hover:text-foreground hover:underline">Accessibility</a>
+            <a href="/voice-rights" className="text-muted-foreground hover:text-foreground hover:underline">Voice &amp; likeness</a>
+            <a href="/abuse" className="text-muted-foreground hover:text-foreground hover:underline">Abuse</a>
+          </nav>
         </div>
       </footer>
     </div>

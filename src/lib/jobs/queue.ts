@@ -20,6 +20,7 @@ import type { PlatformDatabase } from "@/lib/db";
 import { jobs, liveSessions, workers } from "@/lib/db/schema";
 import { claimableJobTypes, jobTypeDefinition } from "@/lib/jobs/types";
 import { rerouteRequeuedJobs } from "@/lib/workers/recovery";
+import { refundJobCredits } from "@/lib/credits";
 
 export interface JobRecord {
   id: string;
@@ -330,6 +331,10 @@ export async function failJob(
   const row = updated.rows[0];
   if (!row) return null;
   const record = toRecord(row);
+  // Terminal failure without delivered work → the spend is refunded
+  // (spec §41: "failed generations" must not cost the user). Idempotent,
+  // and a no-op for free job types.
+  await refundJobCredits(db, { jobId: record.id });
   if (record.liveSessionId) {
     await db.execute(sql`
       UPDATE live_sessions SET
@@ -352,6 +357,31 @@ export async function cancelJob(
     UPDATE jobs SET status = 'CANCELLED', completed_at = now()
     WHERE id = ${args.jobId} AND user_id = ${args.userId}
       AND status IN ('QUEUED','RESERVED')
+    RETURNING *
+  `);
+  const row = updated.rows[0] ?? null;
+  if (row) {
+    // Cancelled before completion → nothing was delivered → refund.
+    await refundJobCredits(db, { jobId: row.id });
+  }
+  return row ? toRecord(row) : null;
+}
+
+/**
+ * Reject a job terminally at intake (before any worker sees it) — used by
+ * the credits gate when the account cannot pay. No refund: nothing was
+ * spent (the gate runs before the spend insert).
+ */
+export async function rejectJob(
+  db: PlatformDatabase,
+  args: { jobId: string; failureInfo: Record<string, unknown> },
+): Promise<JobRecord | null> {
+  const updated = await db.execute<RawJobRow>(sql`
+    UPDATE jobs SET
+      status = 'FAILED',
+      completed_at = now(),
+      failure_info = ${JSON.stringify(args.failureInfo)}
+    WHERE id = ${args.jobId} AND status = 'QUEUED'
     RETURNING *
   `);
   const row = updated.rows[0] ?? null;
@@ -415,12 +445,14 @@ export async function latestJobForSession(
 /**
  * Sweeper slice: requeue jobs left RESERVED (claimed but never started).
  * Crashes between claim and start are recovered here instead of leaking.
+ * Jobs whose retries are exhausted go EXPIRED — and are refunded, because
+ * the user never received the work.
  */
 export async function expireStaleReservations(
   db: PlatformDatabase,
   olderThanMs: number,
 ): Promise<string[]> {
-  const updated = await db.execute<{ id: string }>(sql`
+  const updated = await db.execute<{ id: string; status: string }>(sql`
     UPDATE jobs SET
       status = CASE WHEN retry_count < 3 THEN 'QUEUED'::job_status ELSE 'EXPIRED'::job_status END,
       worker_id = NULL,
@@ -428,8 +460,13 @@ export async function expireStaleReservations(
       failure_info = ${JSON.stringify({ reason: "reservation_expired" })}
     WHERE status = 'RESERVED'
       AND updated_at < now() - (${olderThanMs} || ' milliseconds')::interval
-    RETURNING id
+    RETURNING id, status
   `);
+  for (const row of updated.rows) {
+    if (row.status === "EXPIRED") {
+      await refundJobCredits(db, { jobId: row.id });
+    }
+  }
   return updated.rows.map((r) => r.id);
 }
 

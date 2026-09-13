@@ -39,6 +39,10 @@ export const RATE_LIMIT_POLICIES = {
   jobs: { name: "jobs", limit: 30, windowMs: 60 * 60 * 1000 },
   /** Live-session creation. */
   sessions: { name: "sessions", limit: 10, windowMs: 60 * 60 * 1000 },
+  /** Data export (spec §35 export method): heavy by nature, rarely needed. */
+  export: { name: "export", limit: 3, windowMs: 60 * 60 * 1000 },
+  /** Account deletion attempts: strict — wrong passwords must not be free. */
+  accountDelete: { name: "accountDelete", limit: 5, windowMs: 60 * 60 * 1000 },
 } as const satisfies Record<string, RateLimitPolicy>;
 
 export type RateLimitPolicyName = keyof typeof RATE_LIMIT_POLICIES;

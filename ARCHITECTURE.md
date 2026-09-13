@@ -44,8 +44,14 @@ scales (and bills) on its own axis:
 | Admin console | RBAC-gated routes + console UI (users, moderation, workers, audit, MFA) | TESTED (integration + live smoke) |
 | Moderation | Abuse reports (§33), moderator decisions with enforcement, documented outcomes | TESTED |
 | MFA (TOTP) | Better Auth twoFactor plugin; required for MODERATOR/ADMIN/SUPER_ADMIN surfaces | TESTED (real TOTP round-trip) |
-| Rate limits | DB-backed fixed windows on reports/presign/jobs/sessions; denied hits still count | TESTED |
-| Mobile | Expo React Native | NOT IMPLEMENTED (Phase 4, per approved order) |
+| Rate limits | DB-backed fixed windows on reports/presign/jobs/sessions/export/delete; denied hits still count | TESTED |
+| Credits (§41) | Append-only `credit_ledger` (advisory-locked, exactly-once), signup bonus, job spend gate, automatic refunds on terminal failure/cancel/expiry, audited admin grants | TESTED (integration + live smoke) |
+| Account deletion (§35) | Real hard delete: storage objects + cascade; reports/audit survive de-linked; final audit row | TESTED (integration + live smoke) |
+| Data export (§35) | Full subject-access JSON incl. media links; secrets excluded; rate-limited + audited | TESTED |
+| Retention (§35) | Env-configured windows; scheduler-throttled sweep (~daily); consent evidence outlives media | TESTED |
+| Legal pages (§40) | 9 pages, env-driven operator block (never invented), privacy page renders the real data map | TESTED (structure + live smoke) |
+| In-app docs (§49/§50) | /help (16 topics) + staff-only /help/admin | TESTED (live smoke) |
+| Mobile | Expo React Native | Phase 4 — see mobile/ (code delivered; device build/run requires the Expo toolchain, not verifiable in this sandbox) |
 
 ## Data model (Phase 2 migrations)
 
@@ -84,6 +90,34 @@ P0 Foundations → P1 Vertical slice (characters, uploads, job system, one real
  (sleep system, worker selection, failure reassignment, H3 registry entry +
  official-API client/executor — DONE; RunPod invoker and live H3 generation
  REQUIRES EXTERNAL CREDENTIAL) → P3 Trust plane (moderation, admin console,
- MFA, rate limits — DONE) → P4 Mobile (Expo) → P5 Launch gate (legal, payments
- decision, hosting tier). Each phase exits only on TESTED status of its exit
- criteria.
+ MFA, rate limits — DONE) → P5 Launch gates (legal pages, privacy workflows:
+ deletion/export/retention, credits with manual grants + automatic refunds,
+ in-app docs — DONE) → P4 Mobile (Expo app delivered under mobile/; device
+ verification pending the Expo toolchain). Each phase exits only on TESTED
+ status of its exit criteria.
+
+## Credits & privacy subsystems (P5)
+
+- **Credits** (`src/lib/credits.ts`): append-only ledger; balance is always
+  `SUM(delta)`; every mutation runs under a per-user transaction advisory
+  lock with a unique idempotency key (spends `spend:<jobId>`, refunds
+  `refund:<jobId>`, grants `admin-grant:<clientKey>`), so concurrent submits
+  cannot overdraw and retries never double-charge. Costs are env-overridable
+  (`CREDITS_COST_*`); the signup bonus (`SIGNUP_BONUS_CREDITS`) is granted by
+  the auth user-create hook.
+- **Refund wiring:** terminal `failJob`, `cancelJob`, reservation-expiry
+  exhaustion, session-expiry cancels, and abandoned-session expiries all
+  refund the job's spend exactly once. The credits gate at job intake rejects
+  unpaid jobs terminally (`insufficient_credits`) WITHOUT charging.
+- **Account deletion** (`src/lib/privacy/account.ts`): password + typed
+  confirmation via Better Auth `verifyPassword`; storage objects deleted
+  first (best-effort, counted), user row cascades the rest; reports/audit
+  survive de-linked (`ON DELETE SET NULL`); one final `account.delete` audit
+  row proves the action.
+- **Retention** (`src/lib/privacy/retention.ts`): env windows
+  (`RETENTION_*_DAYS`, 0 = keep forever); sweep deletes old assets
+  (objects first), ended sessions, terminal jobs, closed reports, audit rows,
+  expired sessions/verifications. `consent_records.asset_id` was migrated to
+  `ON DELETE SET NULL` (0006) so consent evidence outlives media — a
+  deliberate privacy-accountability tradeoff. The scheduler tick runs the
+  sweep throttled (~23h) and audits each run.

@@ -22,6 +22,7 @@ import { getDb, type PlatformDatabase } from "@/lib/db";
 import { schema } from "@/lib/db";
 import { recordAudit, AUDIT_ACTIONS } from "@/lib/audit";
 import { isUserRole, type UserRole } from "@/lib/rbac";
+import { grantCredits, signupBonusCredits } from "@/lib/credits";
 
 const SEVEN_DAYS_SECONDS = 60 * 60 * 24 * 7;
 const ONE_DAY_SECONDS = 60 * 60 * 24;
@@ -95,6 +96,19 @@ export function createAuth(db: PlatformDatabase) {
                 emailVerified: Boolean(user.emailVerified),
               },
             });
+            // Free-tier signup bonus (spec §41 credits, approved manual
+            // billing): exactly-once via the stable idempotency key, so a
+            // retried hook can never double-grant.
+            const bonus = signupBonusCredits();
+            if (bonus > 0) {
+              await grantCredits(db, {
+                userId: user.id,
+                amount: bonus,
+                kind: "SIGNUP_BONUS",
+                reason: "Welcome credits (free tier)",
+                idempotencyKey: `signup-bonus:${user.id}`,
+              });
+            }
           },
         },
       },

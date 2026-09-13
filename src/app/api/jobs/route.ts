@@ -7,9 +7,15 @@
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { assets, characters } from "@/lib/db/schema";
-import { listJobsForUser, enqueueJob, getJob } from "@/lib/jobs/queue";
+import {
+  listJobsForUser,
+  enqueueJob,
+  getJob,
+  rejectJob,
+} from "@/lib/jobs/queue";
 import { routeJobAfterEnqueue } from "@/lib/workers/selection";
 import { checkRateLimit } from "@/lib/rate-limits";
+import { jobCreditCost, spendCreditsForJob } from "@/lib/credits";
 import { apiError, getApiUser, jsonResponse, rateLimited, readJson, requireUser } from "@/lib/api-helpers";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
@@ -72,9 +78,42 @@ export async function POST(request: Request) {
       appearance,
     },
   });
+
+  // Credits gate (spec §41): charge before any worker can claim. The spend
+  // is exactly-once per job id; a refusal fails the job terminally without
+  // charging anything, and failures/cancellations later refund the spend.
+  const cost = jobCreditCost(job.type);
+  const spend = await spendCreditsForJob(getDb(), {
+    userId: user.id,
+    jobId: job.id,
+    cost,
+  });
+  if (!spend.ok) {
+    await rejectJob(getDb(), {
+      jobId: job.id,
+      failureInfo: {
+        reason: "insufficient_credits",
+        cost,
+        balance: spend.balance,
+      },
+    });
+    return jsonResponse(
+      {
+        error: "insufficient_credits",
+        message: `This job costs ${cost} credits; your balance is ${spend.balance}.`,
+        cost,
+        balance: spend.balance,
+      },
+      { status: 402 },
+    );
+  }
+
   // Worker selection (spec §8): state plainly whether this job has awake
   // capacity, triggered a cold start, or is waiting on nothing at all.
   const routing = await routeJobAfterEnqueue(getDb(), job);
   const fresh = await getJob(getDb(), job.id);
-  return jsonResponse({ job: fresh, routing }, { status: 201 });
+  return jsonResponse(
+    { job: fresh, routing, credits: { cost, balanceAfter: spend.balanceAfter } },
+    { status: 201 },
+  );
 }

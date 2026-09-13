@@ -49,6 +49,7 @@ export const PERMISSIONS = [
   "workers:manage",
   "workers:drain",
   "audit:read",
+  "credits:grant",
   // Super-admin only.
   "system:emergency",
   "roles:assign",
@@ -89,6 +90,7 @@ const ADMIN_PERMISSIONS: readonly Permission[] = [
   "workers:manage",
   "workers:drain",
   "audit:read",
+  "credits:grant",
 ];
 
 const SUPER_ADMIN_PERMISSIONS: readonly Permission[] = [

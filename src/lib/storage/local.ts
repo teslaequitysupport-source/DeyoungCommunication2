@@ -10,7 +10,7 @@
  *   check, or with a short-lived download ticket for assigned workers.
  */
 
-import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join, normalize } from "node:path";
 import type {
   StorageAdapter,
@@ -96,6 +96,11 @@ export function createLocalStorage(): StorageAdapter {
       const path = safeKeyPath(key);
       await mkdir(dirname(path), { recursive: true });
       await writeFile(path, bytes);
+    },
+
+    async deleteObject(key: string): Promise<void> {
+      // Missing objects are fine — the metadata row may outlive the object.
+      await rm(safeKeyPath(key), { force: true });
     },
   };
 }

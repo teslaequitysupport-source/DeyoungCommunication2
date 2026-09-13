@@ -82,15 +82,14 @@ export default async function Home() {
               Live Character Platform
             </h1>
             <Badge variant="outline" className="border-emerald-300 bg-emerald-50 text-emerald-800">
-              Phase 3 · Trust plane
+              Phase 5 · Launch gates
             </Badge>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl">
             Create a character, grant consent, and have your live camera
-            frames transformed by a real worker — then stop, save the output,
-            and see the whole job history. This is the working vertical slice
-            of the platform: real accounts, real storage, real workers, real
-            state.
+            frames transformed by a real worker — with credits, automatic
+            refunds for undelivered work, and your data always exportable or
+            deletable. Real accounts, real storage, real workers, real state.
           </p>
         </header>
 
@@ -121,20 +120,35 @@ export default async function Home() {
             Live video currently flows over a WebSocket dev transport because
             this environment cannot forward WebRTC media; production swaps the
             same interface to LiveKit. The current worker runs an honest CPU
-            color grade — AI face/voice model capabilities (MiniMax H3 via the
-            official API) arrive in Phase 2. Mobile apps are Phase 4. No fake
-            metrics, no simulated activity, anywhere in this build.
+            color grade; the H3 video-generation path is implemented against
+            the official API but waits for an external credential before any
+            such job can run. Payments are not integrated — credits are
+            manual in this phase, per the Refund Policy. Mobile apps ship next.
+            No fake metrics, no simulated activity, anywhere in this build.
           </p>
         </section>
       </main>
 
       <footer className="mt-auto border-t bg-muted/40">
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4 space-y-2">
           <p className="text-xs text-muted-foreground">
             Phased build per the approved architecture: foundations (P0,
-            done) → this vertical slice (P1) → compute reality (P2) → trust
-            plane (P3) → mobile (P4) → launch gate (P5).
+            done) → vertical slice (P1, done) → compute reality (P2, done) →
+            trust plane (P3, done) → launch gates (P5, this) → mobile (P4,
+            next).
           </p>
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+            <a href="/help" className="text-muted-foreground hover:text-foreground hover:underline">Help</a>
+            <a href="/terms" className="text-muted-foreground hover:text-foreground hover:underline">Terms</a>
+            <a href="/privacy" className="text-muted-foreground hover:text-foreground hover:underline">Privacy</a>
+            <a href="/cookies" className="text-muted-foreground hover:text-foreground hover:underline">Cookies</a>
+            <a href="/refunds" className="text-muted-foreground hover:text-foreground hover:underline">Refunds</a>
+            <a href="/acceptable-use" className="text-muted-foreground hover:text-foreground hover:underline">Acceptable use</a>
+            <a href="/copyright" className="text-muted-foreground hover:text-foreground hover:underline">Copyright</a>
+            <a href="/accessibility" className="text-muted-foreground hover:text-foreground hover:underline">Accessibility</a>
+            <a href="/voice-rights" className="text-muted-foreground hover:text-foreground hover:underline">Voice &amp; likeness</a>
+            <a href="/abuse" className="text-muted-foreground hover:text-foreground hover:underline">Abuse</a>
+          </nav>
         </div>
       </footer>
     </div>

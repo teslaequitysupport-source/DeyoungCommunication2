@@ -14,9 +14,11 @@
  *   2.5 orphaned-job re-router — QUEUED types with no awake capacity wake
  *       their best sleeping capable worker (spec §7 step 6 safety net),
  *   3. session expiry — sessions still waiting when their TTL passes are
- *      EXPIRED (their queued job is cancelled), never left hanging.
+ *      EXPIRED (their queued job is cancelled + refunded), never left hanging.
  *   4. sleep sweep (spec §45) — IDLE workers past the idle timeout with no
  *      in-flight work go SLEEPING; a later job wakes them (cold start).
+ *   5. retention sweep (spec §35) — throttled to ~daily; deletes media and
+ *      records past their retention windows and audits the run.
  *
  * Every action is observable in the jobs/live_sessions/workers tables and
  * the audit log — no silent state changes.
@@ -29,6 +31,14 @@ import { markWorkerUnhealthy } from "@/lib/workers/registry";
 import { sleepIdleWorkers, requestWorkerWake } from "@/lib/workers/sleep";
 import { rerouteRequeuedJobs } from "@/lib/workers/recovery";
 import { selectWorkerForJobType } from "@/lib/workers/selection";
+import { refundJobCredits } from "@/lib/credits";
+import {
+  retentionSweep,
+  type RetentionPolicy,
+  type RetentionSweepResult,
+} from "@/lib/privacy/retention";
+import { getStorage } from "@/lib/storage";
+import { recordAudit } from "@/lib/audit";
 
 export interface SchedulerTickResult {
   ranAt: string;
@@ -42,6 +52,8 @@ export interface SchedulerTickResult {
   /** Spec §7.6 safety net: sleeping workers woken for QUEUED job types
    *  that have no awake capacity (orphaned jobs). */
   orphanWakes: string[];
+  /** Spec §35: retention pass — null when the daily throttle held it back. */
+  retention: RetentionSweepResult | null;
 }
 
 export const WORKER_HEARTBEAT_TIMEOUT_MS = 20_000;
@@ -51,10 +63,17 @@ export const SESSION_WAIT_TTL_MS = 5 * 60_000;
 export const STOPPING_GRACE_MS = 60_000;
 /** READY/LOADING with no publisher/worker progress — abandoned session. */
 export const SESSION_ABANDONED_MS = 5 * 60_000;
+/** Retention sweep cadence — a sweep more often than daily serves nobody. */
+export const RETENTION_SWEEP_INTERVAL_MS = 23 * 60 * 60 * 1000;
 
 export async function schedulerTick(
   db: PlatformDatabase,
-  options?: { heartbeatTimeoutMs?: number; idleSleepMs?: number },
+  options?: {
+    heartbeatTimeoutMs?: number;
+    idleSleepMs?: number;
+    retentionIntervalMs?: number;
+    retentionPolicy?: RetentionPolicy;
+  },
 ): Promise<SchedulerTickResult> {
   const heartbeatTimeout = options?.heartbeatTimeoutMs ?? WORKER_HEARTBEAT_TIMEOUT_MS;
   const result: SchedulerTickResult = {
@@ -66,6 +85,7 @@ export async function schedulerTick(
     staleAbandonedSessions: [],
     sleptWorkers: [],
     orphanWakes: [],
+    retention: null,
   };
 
   // 1. Heartbeat monitor.
@@ -98,7 +118,7 @@ export async function schedulerTick(
   }
 
   // 2. Reservation sweeper — claimed but never started.
-  const requeued = await db.execute<{ id: string }>(sql`
+  const requeued = await db.execute<{ id: string; status: string }>(sql`
     UPDATE jobs SET
       status = CASE WHEN retry_count < 3 THEN 'QUEUED'::job_status ELSE 'EXPIRED'::job_status END,
       worker_id = NULL,
@@ -106,9 +126,15 @@ export async function schedulerTick(
       failure_info = ${JSON.stringify({ reason: "reservation_expired" })}
     WHERE status = 'RESERVED'
       AND updated_at < now() - (${RESERVATION_TTL_MS} || ' milliseconds')::interval
-    RETURNING id
+    RETURNING id, status
   `);
   result.requeuedReservations = requeued.rows.map((r) => r.id);
+  for (const row of requeued.rows) {
+    if (row.status === "EXPIRED") {
+      // Retries exhausted without delivered work → refund the spend.
+      await refundJobCredits(db, { jobId: row.id });
+    }
+  }
 
   // Spec §7 step 6 — reassignment: a job whose claiming worker vanished
   // between RESERVE and START is re-routed like any other requeued job, so
@@ -160,10 +186,14 @@ export async function schedulerTick(
       result.expiredSessions.map((sid) => sql`${sid}`),
       sql`, `,
     );
-    await db.execute(sql`
+    const cancelled = await db.execute<{ id: string }>(sql`
       UPDATE jobs SET status = 'CANCELLED', completed_at = now()
       WHERE live_session_id IN (${sessionList}) AND status = 'QUEUED'
+      RETURNING id
     `);
+    for (const row of cancelled.rows) {
+      await refundJobCredits(db, { jobId: row.id });
+    }
   }
 
   // 4. STOPPING sessions whose worker already finalized (or vanished) —
@@ -198,18 +228,56 @@ export async function schedulerTick(
       result.staleAbandonedSessions.map((sid) => sql`${sid}`),
       sql`, `,
     );
-    await db.execute(sql`
+    const abandonedJobs = await db.execute<{ id: string }>(sql`
       UPDATE jobs SET status = 'EXPIRED', completed_at = now(),
         failure_info = ${JSON.stringify({ reason: "session_abandoned" })}
       WHERE live_session_id IN (${abandonedList})
         AND status IN ('QUEUED','RESERVED','RUNNING')
+      RETURNING id
     `);
+    for (const row of abandonedJobs.rows) {
+      await refundJobCredits(db, { jobId: row.id });
+    }
   }
 
-  // 6. Sleep sweep (spec §45): idle workers past the timeout go to sleep.
+  // 7. Sleep sweep (spec §45): idle workers past the timeout go to sleep.
   //    Claims race safely against this sweep (NOT EXISTS guard in the SQL).
   const slept = await sleepIdleWorkers(db, { idleMs: options?.idleSleepMs });
   result.sleptWorkers = slept.sleptWorkers;
+
+  // 8. Retention sweep (spec §35) — throttled to ~daily via the last
+  //    recorded sweep, so a 20s tick cadence does not mean 20s retention
+  //    checks. The sweep itself is env-configured; the run is audited.
+  const lastSweep = await db.execute<{ created_at: string }>(sql`
+    SELECT created_at FROM audit_log
+    WHERE action = 'privacy.retention_sweep'
+    ORDER BY created_at DESC LIMIT 1
+  `);
+  const lastAt = lastSweep.rows[0]?.created_at
+    ? new Date(lastSweep.rows[0].created_at).getTime()
+    : 0;
+  const interval = options?.retentionIntervalMs ?? RETENTION_SWEEP_INTERVAL_MS;
+  if (Date.now() - lastAt >= interval) {
+    const retention = await retentionSweep(db, getStorage(), {
+      policy: options?.retentionPolicy,
+    });
+    result.retention = retention;
+    await recordAudit(db, {
+      action: "privacy.retention_sweep",
+      targetType: "system",
+      outcome: "SUCCESS",
+      metadata: {
+        deletedAssets: retention.deletedAssets,
+        deletedObjects: retention.deletedObjects,
+        deletedLiveSessions: retention.deletedLiveSessions,
+        deletedJobs: retention.deletedJobs,
+        deletedReports: retention.deletedReports,
+        deletedAuditRows: retention.deletedAuditRows,
+        deletedExpiredSessions: retention.deletedExpiredSessions,
+        deletedExpiredVerifications: retention.deletedExpiredVerifications,
+      },
+    });
+  }
 
   return result;
 }

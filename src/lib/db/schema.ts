@@ -150,6 +150,14 @@ export const reportActionEnum = pgEnum("report_action", [
   "CONTENT_REMOVAL",
 ]);
 
+/** Credit ledger entry kinds (spec §41 — manual credits in this phase). */
+export const creditKindEnum = pgEnum("credit_kind", [
+  "SIGNUP_BONUS",
+  "ADMIN_GRANT",
+  "JOB_SPEND",
+  "JOB_REFUND",
+]);
+
 const createdAt = () =>
   timestamp("created_at", { withTimezone: true, mode: "date" })
     .notNull()
@@ -404,9 +412,9 @@ export const consentRecords = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    /** What the consent is scoped to; null for account-level consent. */
+    /** What the consent is scoped to; null once the covered asset is deleted (retention: consent evidence outlives media, spec §35). */
     assetId: uuid("asset_id").references(() => assets.id, {
-      onDelete: "cascade",
+      onDelete: "set null",
     }),
     /** Purpose string, e.g. "face.transform.live", "voice.transform.live". */
     purpose: text("purpose").notNull(),
@@ -617,4 +625,45 @@ export const rateLimitHits = pgTable(
     count: integer("count").notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.key, t.windowStart] })],
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Credit ledger (spec §41 CONSUMER, §59) — append-only, idempotent
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * One row per credit movement. The balance is never a mutable column — it
+ * is always `SUM(delta)` over the user's entries, and `balance_after` is
+ * written inside the same transaction for human-readable history. The
+ * unique idempotency key makes grants/spends/refunds exactly-once even
+ * when a caller retries (approved decision: manual credits, no payment
+ * provider in this phase — refunds of money are therefore N/A by design
+ * and the /refunds policy says so plainly).
+ */
+export const creditLedger = pgTable(
+  "credit_ledger",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    /** Signed amount: grants/refunds positive, spends negative. */
+    delta: integer("delta").notNull(),
+    /** Running balance after this entry (audit-friendly history column). */
+    balanceAfter: integer("balance_after").notNull(),
+    kind: creditKindEnum("kind").notNull(),
+    /** The job a spend/refund belongs to; grants carry null. */
+    jobId: uuid("job_id").references(() => jobs.id, { onDelete: "set null" }),
+    /** Admin who granted (ADMIN_GRANT only). */
+    grantedById: text("granted_by_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    reason: text("reason"),
+    idempotencyKey: text("idempotency_key").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex("credit_ledger_idempotency_key_unique").on(t.idempotencyKey),
+    index("credit_ledger_user_created_idx").on(t.userId, t.createdAt),
+  ],
 );

@@ -164,5 +164,17 @@ export function createR2Storage(config: R2Config): StorageAdapter {
         throw new Error(`R2 PUT failed: ${res.status}`);
       }
     },
+
+    async deleteObject(key: string): Promise<void> {
+      const signed = await client.sign(
+        new Request(objectUrl(key), { method: "DELETE" }),
+        { aws: { signQuery: true } },
+      );
+      const res = await fetch(signed.url);
+      // 204 = deleted; 404 = already gone (fine — idempotent delete).
+      if (!res.ok && res.status !== 404) {
+        throw new Error(`R2 DELETE failed: ${res.status}`);
+      }
+    },
   };
 }

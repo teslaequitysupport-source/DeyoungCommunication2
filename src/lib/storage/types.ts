@@ -63,4 +63,10 @@ export interface StorageAdapter {
   headObject(key: string): Promise<{ size: number } | null>;
   /** Server-side object write (worker results). */
   putObject(key: string, bytes: Uint8Array, mimeType: string): Promise<void>;
+  /**
+   * Server-side object delete (spec §14 "deletion support"; used by account
+   * deletion and the retention sweep). Missing objects are NOT an error —
+   * callers pass keys from metadata rows that may already be gone.
+   */
+  deleteObject(key: string): Promise<void>;
 }

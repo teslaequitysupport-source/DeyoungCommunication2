@@ -14,11 +14,33 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Live Character Platform — Phase 0",
+  title: {
+    default: "AI Live Character Platform",
+    template: "%s · AI Live Character Platform",
+  },
   description:
-    "Control-plane foundations for the consent-based, real-time AI character platform: Postgres schema, Better Auth with RBAC, append-only audit log.",
+    "Create characters, grant explicit consent for face and voice transforms, stream live transformed video, and keep control of your data — export or delete it any time.",
+  applicationName: "AI Live Character Platform",
+  openGraph: {
+    type: "website",
+    siteName: "AI Live Character Platform",
+    title: "AI Live Character Platform",
+    description:
+      "Consent-first live character transformation: real workers, real job system, honest status. Credits with automatic refunds for undelivered work.",
+  },
+  twitter: {
+    card: "summary",
+    title: "AI Live Character Platform",
+    description:
+      "Consent-first live character transformation: real workers, real job system, honest status.",
+  },
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: [
+      {
+        url: "/icon.svg",
+        type: "image/svg+xml",
+      },
+    ],
   },
 };
 
