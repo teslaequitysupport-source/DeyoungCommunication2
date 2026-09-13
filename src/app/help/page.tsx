@@ -21,7 +21,7 @@ const SECTIONS: Array<{
           Sign up with a display name, email address, and password. You start
           with a welcome balance of credits (the free tier), which is what
           jobs cost. Two-factor authentication can be enabled from Settings →
-          Security — we recommend it, and it is required before anyone (you
+          Security, we recommend it, and it is required before anyone (you
           included) is granted a staff role.
         </p>
       </>
@@ -40,7 +40,7 @@ const SECTIONS: Array<{
         </p>
         <p>
           If you want a character based on a real person&apos;s face or
-          voice, you must have that person&apos;s consent — see the consent
+          voice, you must have that person&apos;s consent, see the consent
           section below and the Voice &amp; Likeness Rights policy.
         </p>
       </>
@@ -55,7 +55,7 @@ const SECTIONS: Array<{
           Face and voice media are sensitive. Before the platform will
           transform either, you grant consent per asset and per purpose
           (live session, video generation, …) in the Media &amp; Consent tab.
-          Withdrawal is one click and stops new work immediately — the
+          Withdrawal is one click and stops new work immediately, the
           system checks consent at execution time, not just at upload.
         </p>
         <p>
@@ -80,7 +80,7 @@ const SECTIONS: Array<{
           which transforms the stream and returns it.
         </p>
         <p>
-          Every state you see is the real server-side state — if the worker
+          Every state you see is the real server-side state, if the worker
           goes unhealthy, the session degrades and the system attempts
           recovery automatically rather than showing you a frozen
           &quot;live&quot; indicator that means nothing.
@@ -99,7 +99,7 @@ const SECTIONS: Array<{
           our face in a third-party video call&quot; is not possible as an
           app feature. The honest path is physical: one phone runs this
           platform and shows your transformed self fullscreen; the second
-          phone — the one in the actual call — points at that screen.
+          phone, the one in the actual call, points at that screen.
         </p>
         <p>
           Fullscreen output (below) is built for exactly this setup. It is
@@ -118,7 +118,7 @@ const SECTIONS: Array<{
           During a live session, the transformed output can be expanded
           fullscreen in the Live Studio. Fullscreen is what you share with
           the second phone in phone-to-phone mode. The control is a standard
-          button — keyboard operable, announced to screen readers.
+          button, keyboard operable, announced to screen readers.
         </p>
       </>
     ),
@@ -146,7 +146,7 @@ const SECTIONS: Array<{
         <p>
           The mobile app for Android is in active development (it ships
           after the web platform stabilizes). Today, the web application
-          runs on Android browsers — including camera and microphone use in
+          runs on Android browsers, including camera and microphone use in
           live sessions where the browser grants those permissions. When the
           Android app is available, this section will describe installation
           and permissions in detail.
@@ -175,11 +175,11 @@ const SECTIONS: Array<{
     body: (
       <>
         <ul className="list-disc space-y-1 pl-6">
-          <li>Current transformations in the dev worker are CPU color grades — real AI model faces/voices arrive through verified provider APIs and are clearly labeled when they do.</li>
+          <li>Current transformations in the dev worker are CPU color grades, real AI model faces/voices arrive through verified provider APIs and are clearly labeled when they do.</li>
           <li>Video generation (H3) requires an external provider credential; until one is configured, such jobs wait for a capable worker instead of pretending to run.</li>
           <li>GPU capacity is finite: workers sleep when idle and take time to wake (cold starts are shown as cold starts).</li>
           <li>Live media is not recorded by default; there are no recordings to manage in this build.</li>
-          <li>Payments are not integrated — credits are granted manually in this phase, per the Refund Policy.</li>
+          <li>Payments are not integrated, credits are granted manually in this phase, per the Refund Policy.</li>
         </ul>
       </>
     ),
@@ -204,12 +204,12 @@ const SECTIONS: Array<{
     body: (
       <>
         <ul className="list-disc space-y-1 pl-6">
-          <li><strong>Job stuck QUEUED:</strong> no awake worker has the capability yet — the Jobs tab shows honest routing state (including cold starts in progress).</li>
+          <li><strong>Job stuck QUEUED:</strong> no awake worker has the capability yet, the Jobs tab shows honest routing state (including cold starts in progress).</li>
           <li><strong>Job FAILED:</strong> your credits were automatically refunded; the failure reason is on the job record.</li>
-          <li><strong>402 on submit:</strong> insufficient credits — your balance is shown in Settings → Credits.</li>
+          <li><strong>402 on submit:</strong> insufficient credits, your balance is shown in Settings → Credits.</li>
           <li><strong>Session DEGRADED:</strong> the worker went unhealthy; the system attempts recovery. If recovery fails the session ends honestly (no zombie streams).</li>
-          <li><strong>Upload rejected:</strong> the declared MIME/size must match the actual file — re-check the file type and the 200 MB cap.</li>
-          <li><strong>Still stuck:</strong> contact the operator (address on every legal page) — include what you clicked and what you saw.</li>
+          <li><strong>Upload rejected:</strong> the declared MIME/size must match the actual file, re-check the file type and the 200 MB cap.</li>
+          <li><strong>Still stuck:</strong> contact the operator (address on every legal page), include what you clicked and what you saw.</li>
         </ul>
       </>
     ),
@@ -222,9 +222,9 @@ const SECTIONS: Array<{
         <p>
           Settings → Privacy is the control room: export all your data
           (JSON, with media links), and delete your account (password +
-          typed confirmation — final and real). Consent withdrawal lives in
-          Media &amp; Consent. The full data inventory — every category,
-          purpose, retention window, and deletion path — is published in the{" "}
+          typed confirmation, final and real). Consent withdrawal lives in
+          Media &amp; Consent. The full data inventory, every category,
+          purpose, retention window, and deletion path, is published in the{" "}
           <Link href="/privacy" className="text-primary underline">Privacy Policy</Link>{" "}
           and generated from the platform&apos;s actual data map.
         </p>
@@ -240,7 +240,7 @@ const SECTIONS: Array<{
           Settings → Privacy → Delete account. Deletion removes your profile,
           characters, media (including the stored objects), sessions, jobs,
           and credit history. Abuse reports and audit entries survive
-          de-linked, so decisions remain accountable — the Privacy Policy
+          de-linked, so decisions remain accountable, the Privacy Policy
           explains exactly what outlives the account and why. There is also
           a scheduled retention sweep that removes old media and records
           automatically (windows in the Privacy Policy).
@@ -255,7 +255,7 @@ const SECTIONS: Array<{
       <>
         <p>
           Report any content via its context menu (ten categories) or email.
-          The full process — review, decisions, enforcement — is described in
+          The full process, review, decisions, enforcement, is described in
           the{" "}
           <Link href="/abuse" className="text-primary underline">Abuse &amp; Reporting</Link>{" "}
           policy.
@@ -283,7 +283,7 @@ const SECTIONS: Array<{
       <>
         <p>
           Credits for undelivered work are refunded automatically. The full
-          policy — including what happens when payments are introduced — is
+          policy, including what happens when payments are introduced, is
           the{" "}
           <Link href="/refunds" className="text-primary underline">Refund Policy</Link>.
         </p>

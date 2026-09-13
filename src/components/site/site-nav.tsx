@@ -9,7 +9,7 @@ const LINKS = [
   { href: "#product", label: "The studio" },
   { href: "#how", label: "How it works" },
   { href: "#faq", label: "FAQ" },
-  { href: "/help", label: "Help" },
+  { href: "/support", label: "Support" },
 ];
 
 /**
@@ -38,7 +38,7 @@ export function SiteNav({ brandName, tagline }: { brandName: string; tagline: st
         <a
           href="#top"
           className="flex items-center gap-2.5 rounded-md outline-offset-4"
-          aria-label={`${brandName} — back to top`}
+          aria-label={`${brandName}, back to top`}
         >
           <BrandMark size={26} />
           <span className="font-display text-lg font-semibold tracking-tight">

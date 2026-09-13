@@ -11,6 +11,7 @@ import { ArrowRight, Clapperboard, HardDrive, Images, ShieldCheck, Users } from 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AssetRecord, CharacterRecord, JobView, SessionView } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Props {
   refreshKey: number;
@@ -68,28 +69,28 @@ export function OverviewView({ refreshKey, onNavigate }: Props) {
     {
       icon: Users,
       label: "Characters",
-      value: characters === null ? "…" : characters.length,
+      value: characters === null ? (<Skeleton className="h-8 w-12" aria-label="loading" />) : characters.length,
       cta: "Create a character",
       view: "characters",
     },
     {
       icon: Images,
       label: "Media assets",
-      value: assets === null ? "…" : assets.length,
+      value: assets === null ? (<Skeleton className="h-8 w-12" aria-label="loading" />) : assets.length,
       cta: "Manage media",
       view: "media",
     },
     {
       icon: Clapperboard,
       label: "Renders completed",
-      value: jobs === null ? "…" : jobs.length === 0 ? "0" : `${succeededJobs}/${jobs.length}`,
+      value: jobs === null ? (<Skeleton className="h-8 w-16" aria-label="loading" />) : jobs.length === 0 ? "0" : `${succeededJobs}/${jobs.length}`,
       cta: "View renders",
       view: "jobs",
     },
     {
       icon: ShieldCheck,
       label: "Studio sessions",
-      value: sessions === null ? "…" : sessions.length,
+      value: sessions === null ? (<Skeleton className="h-8 w-12" aria-label="loading" />) : sessions.length,
       cta: "Open live studio",
       view: "studio",
     },
@@ -102,7 +103,7 @@ export function OverviewView({ refreshKey, onNavigate }: Props) {
       : Object.keys(compute.byStatus).length === 0
         ? { tone: "quiet" as const, text: "Render capacity registers when a session needs it." }
         : (compute.byStatus["UNHEALTHY"] ?? 0) > 0
-          ? { tone: "attention" as const, text: "Some render capacity is recovering — live sessions may take a moment longer to start." }
+          ? { tone: "attention" as const, text: "Some render capacity is recovering, live sessions may take a moment longer to start." }
           : compute.wakePending > 0
             ? { tone: "warm" as const, text: "Warming up render capacity for your next session…" }
             : { tone: "ready" as const, text: "All systems operational." };
@@ -213,7 +214,7 @@ export function OverviewView({ refreshKey, onNavigate }: Props) {
           <CardTitle className="text-base">Your studio, your rules</CardTitle>
           <CardDescription>
             Every render is priced before it runs and refunded automatically
-            if it can't be delivered. Your media stays yours — export or
+            if it can't be delivered. Your media stays yours, export or
             delete it any time from Settings.
           </CardDescription>
         </CardHeader>

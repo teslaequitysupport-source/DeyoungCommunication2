@@ -3,14 +3,14 @@ import { LegalPage } from "@/components/legal/legal-page";
 
 export const metadata: Metadata = {
   title: "Voice & Likeness Rights",
-  description: "Face and voice data are sensitive. This platform only transforms them under explicit, withdrawable, per-purpose consent — here is exactly how that works.",
+  description: "Face and voice data are sensitive. This platform only transforms them under explicit, withdrawable, per-purpose consent, here is exactly how that works.",
 };
 
 export default function VoiceRightsPage() {
   return (
     <LegalPage
       title="Voice & Likeness Rights"
-      intro="A face or a voice belongs to the person it depicts. Using it without their consent is prohibited — technically, in the product flow, not just in the prose."
+      intro="A face or a voice belongs to the person it depicts. Using it without their consent is prohibited, technically, in the product flow, not just in the prose."
     >
       <h2>The rule</h2>
       <p>
@@ -25,7 +25,7 @@ export default function VoiceRightsPage() {
 
       <h2>What consent means here</h2>
       <ul>
-        <li><strong>Specific:</strong> tied to one asset and one purpose — consent to use a face in a live session never implies consent to generate videos.</li>
+        <li><strong>Specific:</strong> tied to one asset and one purpose, consent to use a face in a live session never implies consent to generate videos.</li>
         <li><strong>Time-bounded:</strong> consents may carry an expiry; expired consent behaves like withdrawn consent.</li>
         <li><strong>Withdrawable:</strong> one click, effective immediately for new work. The job and session paths check consent state at execution time, not at upload time.</li>
         <li><strong>Versioned:</strong> the policy version at grant time is recorded, so a consent always means what it meant when given.</li>

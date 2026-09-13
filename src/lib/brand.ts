@@ -10,11 +10,12 @@ export const BRAND = {
   shortName: "DY",
   tagline: "Live characters. Rendered in real time.",
   description:
-    "Create a character, grant consent once, and see your live camera transform in real time — with credits you control and data you can export or delete any time.",
+    "Create a character, grant consent once, and see your live camera transform in real time. Credits you control, data you can export or delete any time.",
 } as const;
 
 export const LEGAL_LINKS: { href: string; label: string }[] = [
   { href: "/help", label: "Help" },
+  { href: "/support", label: "Support" },
   { href: "/terms", label: "Terms" },
   { href: "/privacy", label: "Privacy" },
   { href: "/cookies", label: "Cookies" },

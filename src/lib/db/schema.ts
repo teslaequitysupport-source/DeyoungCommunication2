@@ -667,3 +667,50 @@ export const creditLedger = pgTable(
     index("credit_ledger_user_created_idx").on(t.userId, t.createdAt),
   ],
 );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Support tickets — the contact form's real backing store (support page).
+// Pre-auth by design: users can reach support without an account, so
+// userId is optional linkage, never ownership.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Intake topics shown on the support form. */
+export const supportTopicEnum = pgEnum("support_topic", [
+  "ACCOUNT",
+  "BILLING_CREDITS",
+  "STUDIO_RENDERS",
+  "CONSENT_PRIVACY",
+  "REPORT_PROBLEM",
+  "OTHER",
+]);
+
+/** Ticket lifecycle for the admin view (Phase 2 console). */
+export const supportStatusEnum = pgEnum("support_status", [
+  "OPEN",
+  "IN_PROGRESS",
+  "RESOLVED",
+  "CLOSED",
+]);
+
+export const supportTickets = pgTable(
+  "support_tickets",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    /** Set when the submitter is signed in; null for pre-auth contact. */
+    userId: text("user_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    topic: supportTopicEnum("topic").notNull(),
+    /** Bounded plain text; the API trims before insert. */
+    message: text("message").notNull(),
+    status: supportStatusEnum("status").notNull().default("OPEN"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    index("support_tickets_status_created_idx").on(t.status, t.createdAt),
+    index("support_tickets_email_idx").on(t.email),
+  ],
+);

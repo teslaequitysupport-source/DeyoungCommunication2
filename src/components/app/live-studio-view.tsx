@@ -234,7 +234,7 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
         setCameraError(
           e instanceof Error && e.name === "NotAllowedError"
             ? "Camera permission was denied. Allow camera access, or transform a still image instead (Media view → Transform)."
-            : "No camera is available in this browser. Your session stays safe — but a live camera is needed for live transforms. You can still transform still images from the Media view.",
+            : "No camera is available in this browser. Your session stays safe, but a live camera is needed for live transforms. You can still transform still images from the Media view.",
         );
       }
 
@@ -431,7 +431,7 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
         <p className="text-sm text-muted-foreground mt-1 max-w-3xl">
           Your camera streams into the studio, your character&apos;s look is
           applied in real time, and the transformed frames come back to you
-          live. What you see below is exactly what&apos;s happening — if the
+          live. What you see below is exactly what&apos;s happening, if the
           render layer is warming up, you&apos;ll see that too.
         </p>
       </div>
@@ -547,7 +547,7 @@ export function LiveStudioView({ onChanged, onNavigate }: Props) {
                 {relayState === "connected" ? (
                   <span className="text-primary">connected</span>
                 ) : relayState === "offline" ? (
-                  <span className="text-primary">offline — reconnecting</span>
+                  <span className="text-primary">offline, reconnecting</span>
                 ) : (
                   relayState
                 )}

@@ -121,10 +121,9 @@ export function StudioStage() {
                 <div className="grid grid-cols-2 gap-3">
                   {/* Camera input — the raw frame */}
                   <figure className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border bg-black">
-                    { }
                     <img
                       src="/studio/camera-input.jpg"
-                      alt="Camera input — sample frame of the performer"
+                      alt="Camera input, sample frame of the performer"
                       className="h-full w-full object-cover"
                       loading="lazy"
                     />
@@ -133,7 +132,7 @@ export function StudioStage() {
                         className="on-air-dot size-1.5 rounded-full bg-white/50"
                         aria-hidden="true"
                       />
-                      Camera — live input
+                      Camera · live input
                     </figcaption>
                   </figure>
 
@@ -142,14 +141,14 @@ export function StudioStage() {
                     <TransformCanvas
                       cameraSrc="/studio/camera-input.jpg"
                       characterSrc="/studio/character-output.jpg"
-                      alt="Character render output — the live transform, shown as a looping sample"
+                      alt="Character render output, the live transform, shown as a looping sample"
                     />
                     <figcaption className="absolute bottom-2 left-2 inline-flex items-center gap-1.5 rounded-md border border-primary/40 bg-black/70 px-2 py-1 text-[10px] font-medium text-white/70">
                       <span
                         className="on-air-dot size-1.5 rounded-full bg-primary"
                         aria-hidden="true"
                       />
-                      Character — render
+                      Character · render
                     </figcaption>
                     <span className="absolute bottom-2 right-2 rounded-md border border-border bg-black/70 px-2 py-1 text-[10px] font-medium text-white/60">
                       24 fps
@@ -173,10 +172,9 @@ export function StudioStage() {
               <div className="hidden space-y-3 sm:block">
                 <div className="rounded-lg border border-border bg-black/30 p-3">
                   <div className="flex items-center gap-2.5">
-                    { }
                     <img
                       src="/studio/character-avatar.jpg"
-                      alt="Ada — sample live character"
+                      alt="Ada, sample live character"
                       className="size-9 shrink-0 rounded-full border border-primary/50 object-cover"
                       loading="lazy"
                     />
@@ -205,7 +203,7 @@ export function StudioStage() {
                     Camera transform
                   </p>
                   <p className="mt-1.5 text-[11px] leading-relaxed text-white/55">
-                    Consent granted — withdraw any time.
+                    Consent granted, withdraw any time.
                   </p>
                 </div>
 
@@ -222,7 +220,7 @@ export function StudioStage() {
       </motion.div>
 
       <p className="mt-4 text-center text-xs text-white/45">
-        The Live Studio — sample session.
+        The Live Studio, shown with a sample session.
       </p>
     </div>
   );

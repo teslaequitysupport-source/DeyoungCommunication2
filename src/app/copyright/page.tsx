@@ -10,7 +10,7 @@ export default function CopyrightPage() {
   return (
     <LegalPage
       title="Copyright Policy"
-      intro="Uploading or transforming material you do not have the rights to is prohibited. Here is how to complain — and how complaints are handled."
+      intro="Uploading or transforming material you do not have the rights to is prohibited. Here is how to complain, and how complaints are handled."
     >
       <h2>Copyright on this platform</h2>
       <p>

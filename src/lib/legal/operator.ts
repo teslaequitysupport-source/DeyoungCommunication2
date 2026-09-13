@@ -17,17 +17,17 @@ export interface OperatorInfo {
   configured: boolean;
 }
 
-const UNCONFIGURED = "[not yet configured — set LEGAL_OPERATOR_NAME]";
+const UNCONFIGURED = "[not yet configured, set LEGAL_OPERATOR_NAME]";
 
 export function operatorInfo(): OperatorInfo {
   const name = process.env.LEGAL_OPERATOR_NAME?.trim() || UNCONFIGURED;
   const contactEmail =
     process.env.LEGAL_CONTACT_EMAIL?.trim() ||
     process.env.LEGAL_OPERATOR_EMAIL?.trim() ||
-    "[not yet configured — set LEGAL_CONTACT_EMAIL]";
+    "[not yet configured, set LEGAL_CONTACT_EMAIL]";
   const jurisdiction =
     process.env.LEGAL_JURISDICTION?.trim() ||
-    "[not yet configured — set LEGAL_JURISDICTION]";
+    "[not yet configured, set LEGAL_JURISDICTION]";
   return {
     name,
     contactEmail,

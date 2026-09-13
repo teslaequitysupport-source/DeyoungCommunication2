@@ -365,7 +365,7 @@ export function AdminView({ selfRole, mfaEnabled }: { selfRole: string; mfaEnabl
         <TabsContent value="moderation" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Moderation queue — OPEN</CardTitle>
+              <CardTitle>Moderation queue, OPEN</CardTitle>
               <CardDescription>
                 Abuse reports (spec §33). Resolving with an action documents the
                 decision and enforces it through the same audited path as admin

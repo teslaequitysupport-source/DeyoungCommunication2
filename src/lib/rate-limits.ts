@@ -43,6 +43,8 @@ export const RATE_LIMIT_POLICIES = {
   export: { name: "export", limit: 3, windowMs: 60 * 60 * 1000 },
   /** Account deletion attempts: strict — wrong passwords must not be free. */
   accountDelete: { name: "accountDelete", limit: 5, windowMs: 60 * 60 * 1000 },
+  /** Support contact form: pre-auth surface, keyed by IP. */
+  support: { name: "support", limit: 5, windowMs: 60 * 60 * 1000 },
 } as const satisfies Record<string, RateLimitPolicy>;
 
 export type RateLimitPolicyName = keyof typeof RATE_LIMIT_POLICIES;

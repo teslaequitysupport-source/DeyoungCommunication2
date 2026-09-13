@@ -99,7 +99,7 @@ export function JobsView({ refreshKey, onChanged, onNavigate }: Props) {
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl">
         Every render is tracked from the moment you start it to the moment
-        it's delivered — safely resumable, never billed twice. Renders are
+        it's delivered, safely resumable, never billed twice. Renders are
         started from the Live Studio (live sessions) and the Media view
         (image transformations).
       </p>
@@ -117,7 +117,7 @@ export function JobsView({ refreshKey, onChanged, onNavigate }: Props) {
             {jobs === null
               ? "Loading…"
               : jobs.length === 0
-                ? "No jobs yet — start a live session or transform an image from the Media view."
+                ? "No jobs yet, start a live session or transform an image from the Media view."
                 : "Latest 50 jobs"}
           </CardDescription>
         </CardHeader>

@@ -13,7 +13,7 @@ export default function TermsPage() {
   return (
     <LegalPage
       title="Terms of Service"
-      intro="These terms govern your use of this platform. Plain language, no tricks — read them alongside the Privacy Policy."
+      intro="These terms govern your use of this platform. Plain language, no tricks, read them alongside the Privacy Policy."
     >
       <h2>1. What this platform is</h2>
       <p>
@@ -22,7 +22,7 @@ export default function TermsPage() {
         running on platform workers, and stream live transformed video. The
         service is provided by {op.name}, operating from {op.jurisdiction}.
         Because face and voice data are sensitive, the service is built
-        around explicit, withdrawable consent — see Voice &amp; Likeness
+        around explicit, withdrawable consent, see Voice &amp; Likeness
         Rights.
       </p>
 
@@ -39,7 +39,7 @@ export default function TermsPage() {
         The platform uses a credit system. In the current phase, credits are
         granted at sign-up and by platform staff; there is no automated
         payment integration yet. When payments are introduced, the Refund
-        Policy will be updated in the same change — it always describes the
+        Policy will be updated in the same change, it always describes the
         actual billing system, never an aspirational one.
       </p>
       <ul>
@@ -54,7 +54,7 @@ export default function TermsPage() {
         create. You grant the platform the limited technical right to store
         and process that content strictly to operate the service for you
         (running the transformations you request, showing you your results).
-        You must only upload media you have the right to use — especially
+        You must only upload media you have the right to use, especially
         faces and voices, which require the depicted person&apos;s consent
         under our Voice &amp; Likeness Rights policy and applicable law.
       </p>
@@ -79,7 +79,7 @@ export default function TermsPage() {
 
       <h2>7. Termination</h2>
       <ul>
-        <li>You may delete your account at any time from Settings — the deletion is real and removes your content (see the Privacy Policy for what survives and why).</li>
+        <li>You may delete your account at any time from Settings, the deletion is real and removes your content (see the Privacy Policy for what survives and why).</li>
         <li>We may suspend or ban accounts for violations, with the decision documented through our moderation process.</li>
         <li>On termination, any refundable credits remaining are handled per the Refund Policy.</li>
       </ul>

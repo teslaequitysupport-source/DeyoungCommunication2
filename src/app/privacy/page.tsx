@@ -5,14 +5,14 @@ import { DATA_MAP } from "@/lib/privacy/data-map";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "What this platform collects, why, where it lives, how long it is kept, and how to export or delete it — rendered from the platform's real data map.",
+    "What this platform collects, why, where it lives, how long it is kept, and how to export or delete it, rendered from the platform's real data map.",
 };
 
 export default function PrivacyPage() {
   return (
     <LegalPage
       title="Privacy Policy"
-      intro="This policy is generated from the platform's real internal data map — every category below describes what the code actually stores, not what a template promised."
+      intro="This policy is generated from the platform's real internal data map, every category below describes what the code actually stores, not what a template promised."
     >
       <h2>How to read this policy</h2>
       <p>
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
         Your controls are real: export everything (Settings → Privacy), or
         delete your account entirely (Settings → Privacy → Delete account).
         A scheduled retention sweep also removes old media and records on
-        the windows shown below — data does not live here forever by default.
+        the windows shown below, data does not live here forever by default.
       </p>
 
       <h2>Complete data inventory</h2>
@@ -94,7 +94,7 @@ export default function PrivacyPage() {
         data minimization, storage limitation, security, and accountability.
         Face and voice data are treated as sensitive data requiring explicit
         consent, with withdrawal as easy as granting. We do not claim legal
-        compliance merely because this page exists — areas that require
+        compliance merely because this page exists, areas that require
         professional legal review (DPIA sign-off, NDPC registration status,
         cross-border transfer assessments for a production deployment) are
         tracked in the platform&apos;s launch checklist and are the

@@ -82,13 +82,49 @@ function AuthForms() {
 
   const [signIn, setSignIn] = useState({ email: "", password: "" });
   const [signUp, setSignUp] = useState({ name: "", email: "", password: "" });
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const emailOk = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+
+  const signInErrors = {
+    email: !emailOk(signIn.email) ? "Enter a valid email address." : null,
+    password:
+      signIn.password.length < 1 ? "Enter your password." : null,
+  };
+  const signUpErrors = {
+    name:
+      signUp.name.trim().length < 2 || signUp.name.trim().length > 80
+        ? "Enter your name (2 to 80 characters)."
+        : null,
+    email: !emailOk(signUp.email) ? "Enter a valid email address." : null,
+    password:
+      signUp.password.length < 8
+        ? "Use at least 8 characters."
+        : signUp.password.length > 128
+          ? "Passwords top out at 128 characters."
+          : null,
+  };
+
+  const signInValid =
+    !signInErrors.email && !signInErrors.password;
+  const signUpValid =
+    !signUpErrors.name && !signUpErrors.email && !signUpErrors.password;
+
+  const fieldError = (key: string, msg: string | null) =>
+    touched[key] && msg ? (
+      <p role="alert" className="text-xs text-primary">
+        {msg}
+      </p>
+    ) : null;
 
   async function handleSignIn(event: React.FormEvent) {
     event.preventDefault();
+    setTouched({ "signin-email": true, "signin-password": true });
+    if (!signInValid) return;
     setError(null);
     setNotice(null);
     const { data, error } = await authClient.signIn.email({
-      email: signIn.email,
+      email: signIn.email.trim(),
       password: signIn.password,
     });
     if (error) {
@@ -101,11 +137,17 @@ function AuthForms() {
 
   async function handleSignUp(event: React.FormEvent) {
     event.preventDefault();
+    setTouched({
+      "signup-name": true,
+      "signup-email": true,
+      "signup-password": true,
+    });
+    if (!signUpValid) return;
     setError(null);
     setNotice(null);
     const { data, error } = await authClient.signUp.email({
-      name: signUp.name,
-      email: signUp.email,
+      name: signUp.name.trim(),
+      email: signUp.email.trim(),
       password: signUp.password,
     });
     if (error) {
@@ -140,8 +182,11 @@ function AuthForms() {
               required
               value={signIn.email}
               onChange={(e) => setSignIn((s) => ({ ...s, email: e.target.value }))}
+              onBlur={() => setTouched((t) => ({ ...t, "signin-email": true }))}
+              aria-invalid={Boolean(touched["signin-email"] && signInErrors.email)}
               placeholder="you@example.com"
             />
+            {fieldError("signin-email", signInErrors.email)}
           </div>
           <div className="space-y-2">
             <Label htmlFor="signin-password">Password</Label>
@@ -152,8 +197,11 @@ function AuthForms() {
               required
               value={signIn.password}
               onChange={(e) => setSignIn((s) => ({ ...s, password: e.target.value }))}
+              onBlur={() => setTouched((t) => ({ ...t, "signin-password": true }))}
+              aria-invalid={Boolean(touched["signin-password"] && signInErrors.password)}
               placeholder="Your password"
             />
+            {fieldError("signin-password", signInErrors.password)}
           </div>
           <Button type="submit" variant="default" size="lg" className="w-full" disabled={isPending} loading={isPending}>
             Sign in
@@ -171,8 +219,11 @@ function AuthForms() {
               required
               value={signUp.name}
               onChange={(e) => setSignUp((s) => ({ ...s, name: e.target.value }))}
+              onBlur={() => setTouched((t) => ({ ...t, "signup-name": true }))}
+              aria-invalid={Boolean(touched["signup-name"] && signUpErrors.name)}
               placeholder="Your name"
             />
+            {fieldError("signup-name", signUpErrors.name)}
           </div>
           <div className="space-y-2">
             <Label htmlFor="signup-email">Email</Label>
@@ -183,8 +234,11 @@ function AuthForms() {
               required
               value={signUp.email}
               onChange={(e) => setSignUp((s) => ({ ...s, email: e.target.value }))}
+              onBlur={() => setTouched((t) => ({ ...t, "signup-email": true }))}
+              aria-invalid={Boolean(touched["signup-email"] && signUpErrors.email)}
               placeholder="you@example.com"
             />
+            {fieldError("signup-email", signUpErrors.email)}
           </div>
           <div className="space-y-2">
             <Label htmlFor="signup-password">Password</Label>
@@ -196,14 +250,17 @@ function AuthForms() {
               minLength={8}
               value={signUp.password}
               onChange={(e) => setSignUp((s) => ({ ...s, password: e.target.value }))}
+              onBlur={() => setTouched((t) => ({ ...t, "signup-password": true }))}
+              aria-invalid={Boolean(touched["signup-password"] && signUpErrors.password)}
               placeholder="At least 8 characters"
             />
+            {fieldError("signup-password", signUpErrors.password)}
           </div>
-          <Button type="submit" variant="default" size="lg" className="w-full" disabled={isPending} loading={isPending}>
+          <Button type="submit" variant="default" size="lg" className="w-full" disabled={isPending || !signUpValid} loading={isPending}>
             Create account
           </Button>
           <p className="text-center text-xs text-white/40">
-            Free to start — includes welcome credits.
+            Free to start, and it includes welcome credits.
           </p>
         </form>
       </TabsContent>
@@ -232,7 +289,7 @@ export function AuthPanel({ user }: { user: ConsoleUser | null }) {
         <CardDescription>
           {user
             ? "You're signed in with a secure session."
-            : "Sign in or create your account — it takes less than a minute."}
+            : "Sign in or create your account. It takes less than a minute."}
         </CardDescription>
       </CardHeader>
       <CardContent>{user ? <SessionCard user={user} /> : <AuthForms />}</CardContent>

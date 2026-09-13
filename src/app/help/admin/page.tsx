@@ -25,12 +25,12 @@ const SECTIONS: Array<{ id: string; title: string; body: React.ReactNode }> = [
         </p>
         <p>
           Environment-bound, stated honestly: live frames currently ride
-          the socket.io relay (WebRTC/LiveKit arrives at deploy time — a
+          the socket.io relay (WebRTC/LiveKit arrives at deploy time, a
           configuration change, not an application rewrite); R2 uploads wait
           for the R2_* credential block (running on the local-dev object
           store); the H3 video-generation path is implemented against the
           official API and waits for an external credential. No payments are
-          integrated — credits are manual, per the approved decision. No
+          integrated, credits are manual, per the approved decision. No
           simulated metrics exist anywhere in the build.
         </p>
       </>
@@ -78,7 +78,7 @@ const SECTIONS: Array<{ id: string; title: string; body: React.ReactNode }> = [
           stored) and announce capabilities (e.g. transform.image,
           transform.live, video.h3) plus a model manifest. The console lists
           the fleet with status, heartbeat latency, and load. Idle workers
-          sleep after a timeout; jobs wake them (cold start — shown as
+          sleep after a timeout; jobs wake them (cold start, shown as
           such). Heartbeat loss marks a worker UNHEALTHY: its jobs requeue
           (or fail with refunds), its live sessions degrade, and recovery
           reassignment routes work to awake capacity. Drain (stop accepting
@@ -97,7 +97,7 @@ const SECTIONS: Array<{ id: string; title: string; body: React.ReactNode }> = [
           the H3 official-API path requires H3_API_BASE_URL + H3_API_KEY
           (both, or jobs wait for a capable worker); storage switches to R2
           with the R2_* block. The capability a provider unlocks is only
-          announced by workers that actually hold the credential — the
+          announced by workers that actually hold the credential, the
           platform never claims a provider it cannot reach.
         </p>
       </>
@@ -112,7 +112,7 @@ const SECTIONS: Array<{ id: string; title: string; body: React.ReactNode }> = [
           Today the &quot;brain&quot; is the deterministic scheduling layer:
           capability-based selection, priority + FIFO ordering, retry
           budgets per job type, cold-start economics, and failure
-          reassignment. It is deliberately not an LLM with tools yet — that
+          reassignment. It is deliberately not an LLM with tools yet, that
           arrives as a bounded orchestrator over the same job API, with
           schema-validated tool calls and no shell access, per the
           architecture plan. Nothing in the current system pretends
@@ -209,7 +209,7 @@ const SECTIONS: Array<{ id: string; title: string; body: React.ReactNode }> = [
           draining stops new assignments fleet-wide while in-flight work
           drains naturally. Sign-in gate enforcement (suspend) blocks a
           compromised account immediately. SUPER_ADMIN holds roles:assign
-          and unbans — separation that survives an account compromise.
+          and unbans, separation that survives an account compromise.
         </p>
       </>
     ),
@@ -277,7 +277,7 @@ const SECTIONS: Array<{ id: string; title: string; body: React.ReactNode }> = [
           the database strategy, object storage durability is the media
           strategy, and environment (secrets, config) is restorable from
           the deployment repository. A restore drill is on the launch
-          checklist — backups that have never been restored are hopes, not
+          checklist, backups that have never been restored are hopes, not
           backups.
         </p>
       </>
@@ -322,7 +322,7 @@ export default async function AdminHelpPage() {
             Administrator Documentation
           </h1>
           <p className="mt-3 text-muted-foreground">
-            Operating the platform — written for staff, kept honest about
+            Operating the platform, written for staff, kept honest about
             what exists and what does not.
           </p>
         </div>

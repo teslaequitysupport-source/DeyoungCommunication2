@@ -95,12 +95,12 @@ export function SettingsView({
       });
       if (exportRes.status === 429) {
         setError(
-          "Export rate limit reached — try again within the hour (the limit is per window).",
+          "Export rate limit reached, try again within the hour (the limit is per window).",
         );
         return;
       }
       if (!exportRes.ok) {
-        setError("Export failed — please try again.");
+        setError("Export failed, please try again.");
         return;
       }
       const blob = await exportRes.blob();
@@ -112,7 +112,7 @@ export function SettingsView({
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-      setNotice("Export downloaded — it includes everything we hold about your account.");
+      setNotice("Export downloaded, it includes everything we hold about your account.");
     } finally {
       setExporting(false);
     }
@@ -202,7 +202,7 @@ export function SettingsView({
             How billing works today: credits are granted at sign-up and by
             staff; every job type has a published cost; jobs that end without
             delivering work are refunded automatically. No payment provider is
-            integrated in this phase — the{" "}
+            integrated in this phase, the{" "}
             <Link href="/refunds" className="text-primary underline">
               Refund Policy
             </Link>{" "}
@@ -263,7 +263,7 @@ export function SettingsView({
                                 ? "Granted by staff"
                                 : h.kind === "JOB_SPEND"
                                   ? "Job submitted"
-                                  : "Refund — work not delivered"}
+                                  : "Refund, work not delivered"}
                           </div>
                           <div className="truncate text-xs text-muted-foreground">
                             {new Date(h.createdAt).toLocaleString()}

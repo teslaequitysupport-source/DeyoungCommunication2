@@ -15,21 +15,21 @@ const jobs: Array<{
   fit: "cover";
 }> = [
   {
-    in: "var/gen-cam.png",
+    in: "var/gen-man.png",
     out: "public/studio/camera-input.jpg",
     w: 640,
     h: 480,
     fit: "cover",
   },
   {
-    in: "var/gen-char.png",
+    in: "var/gen-woman.png",
     out: "public/studio/character-output.jpg",
     w: 640,
     h: 480,
     fit: "cover",
   },
   {
-    in: "var/gen-char.png",
+    in: "var/gen-woman.png",
     out: "public/studio/character-avatar.jpg",
     w: 160,
     h: 160,

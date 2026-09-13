@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 /**
@@ -159,6 +160,7 @@ export function TransformCanvas({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [failed, setFailed] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -252,6 +254,7 @@ export function TransformCanvas({
     ])
       .then(() => {
         if (disposed) return;
+        setReady(true);
         if (reduced) {
           raf = requestAnimationFrame(frame); // single held frame
           return;
@@ -282,9 +285,8 @@ export function TransformCanvas({
   }, [cameraSrc, characterSrc]);
 
   if (failed) {
-    // Static fallback — the character frame, simply
+    // Static fallback: the character frame, simply
     return (
-       
       <img
         src={characterSrc}
         alt={alt}
@@ -294,11 +296,20 @@ export function TransformCanvas({
   }
 
   return (
-    <canvas
-      ref={canvasRef}
-      role="img"
-      aria-label={alt}
-      className={cn("h-full w-full", className)}
-    />
+    <div className={cn("relative h-full w-full", className)}>
+      {/* Skeleton until the first frame is drawn */}
+      {!ready && (
+        <Skeleton
+          className="absolute inset-0 h-full w-full rounded-none"
+          aria-hidden="true"
+        />
+      )}
+      <canvas
+        ref={canvasRef}
+        role="img"
+        aria-label={alt}
+        className="h-full w-full"
+      />
+    </div>
   );
 }

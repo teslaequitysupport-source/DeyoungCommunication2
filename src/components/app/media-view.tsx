@@ -187,7 +187,7 @@ export function MediaView({ onChanged, onNavigate }: Props) {
         <p className="text-sm text-muted-foreground mt-1 max-w-3xl">
           Uploads are validated (declared type must match the file content) and
           stored in the active object store. Processing only runs with the
-          matching consent granted — withdrawal takes effect immediately.
+          matching consent granted, withdrawal takes effect immediately.
         </p>
       </div>
 
@@ -265,7 +265,7 @@ export function MediaView({ onChanged, onNavigate }: Props) {
               <ShieldCheck className="h-4 w-4" aria-hidden="true" /> Consent records
             </CardTitle>
             <CardDescription>
-              Purpose-scoped and withdrawable — not a generic terms checkbox.
+              Purpose-scoped and withdrawable, not a generic terms checkbox.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -332,7 +332,7 @@ export function MediaView({ onChanged, onNavigate }: Props) {
         <CardHeader>
           <CardTitle className="text-base">Asset library</CardTitle>
           <CardDescription>
-            {assets === null ? "Loading…" : `${assets.length} items — private to you`}
+            {assets === null ? "Loading…" : `${assets.length} items, private to you`}
           </CardDescription>
         </CardHeader>
         <CardContent>

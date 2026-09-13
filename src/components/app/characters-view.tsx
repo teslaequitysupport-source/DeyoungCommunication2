@@ -152,7 +152,7 @@ export function CharactersView({ onChanged }: Props) {
         </Button>
       </div>
       <p className="text-sm text-muted-foreground max-w-3xl">
-        A character carries the look you want on screen — a color grade
+        A character carries the look you want on screen, a color grade
         (hue, saturation) and an optional vignette, applied to your live
         camera and image renders. More appearance powers arrive as they
         clear our quality bar.
@@ -171,7 +171,7 @@ export function CharactersView({ onChanged }: Props) {
       ) : characters.length === 0 ? (
         <Card>
           <CardContent className="py-10 text-center text-sm text-muted-foreground">
-            No characters yet — create the first one to start transforming.
+            No characters yet, create the first one to start transforming.
           </CardContent>
         </Card>
       ) : (
@@ -250,7 +250,7 @@ export function CharactersView({ onChanged }: Props) {
           <DialogHeader>
             <DialogTitle>New character</DialogTitle>
             <DialogDescription>
-              Set the look — it's applied to your camera and renders in
+              Set the look, it's applied to your camera and renders in
               real time.
             </DialogDescription>
           </DialogHeader>

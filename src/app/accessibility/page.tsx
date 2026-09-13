@@ -32,7 +32,7 @@ export default function AccessibilityPage() {
 
       <h2>Known limitations</h2>
       <ul>
-        <li>A formal third-party assistive-technology audit (screen readers on multiple browser/OS combos) has not yet been performed — internal testing to date is manual and tooling-assisted.</li>
+        <li>A formal third-party assistive-technology audit (screen readers on multiple browser/OS combos) has not yet been performed, internal testing to date is manual and tooling-assisted.</li>
         <li>Live video surfaces (camera preview, transformed output) are inherently visual; captions and audio descriptions for live streams are not yet available.</li>
         <li>Documentation pages are text-first and accessible; downloadable exports are JSON only in this phase.</li>
       </ul>
