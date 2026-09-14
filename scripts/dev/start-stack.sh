@@ -52,7 +52,13 @@ svc() { # svc <name> <port-or-empty> <dir> <cmd...>
     echo "✓ $name already running"
     return 0
   fi
-  ( cd "$ROOT/$dir" && script -q "$LOGS/$name.log" -c "setsid $*" >/dev/null 2>&1 & )
+  # 2026-09-14: the reaper now kills pty-stdio services nondeterministically;
+  # every service needs the next-dev shape (stdin on pty, stdout/stderr to a
+  # real log file). Batching several launches in one invocation also fails —
+  # start services ONE PER tool invocation (use recover-dev-env.sh).
+  ( cd "$ROOT/$dir" && script -q /dev/null \
+      -c "setsid sh -c 'sleep 1; exec $* >> $LOGS/$name.log 2>&1'" \
+      >/dev/null 2>&1 & )
   echo "→ started $name"
 }
 

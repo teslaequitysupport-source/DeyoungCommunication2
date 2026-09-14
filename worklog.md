@@ -290,3 +290,21 @@ Stage Summary:
 - Tests fully green: 165/165, 16/16 files (baseline was 104/150)
 - Known intermittent: auth-hook teardown race can emit one unhandled rejection after suite completes (no test impact, pre-existing family)
 - Committed as "Premium multi-page architecture"
+
+---
+Task ID: 15
+Agent: main (Super Z)
+Task: "not showing" — site completely unreachable; diagnose and restore
+
+Work Log:
+- Diagnosed: dev stack dead (HTTP 000 on :3000, no listeners on :3000/:6543). Root cause chain: sandbox reset at 13:56 on 2026-09-14 (a) overwrote the untracked dev .env with a 50-byte stub (DATABASE_URL=file:... only — all secrets gone), (b) wiped the untracked db/ directory (PGlite data), (c) auto-restarted services with the stub env so media-relay/worker ran secretless and pglite hung on ENOENT mkdir db/platform-dev.
+- Recreated db/ parent dir, restarted pglite, applied all drizzle migrations to the fresh database, re-provisioned dev-worker-1 (sha-256 credential row).
+- Built scripts/dev/recover-dev-env.sh (committed): env|stop|start X|migrate|status subcommands; generates secrets once into var/dev-secrets.env (chmod 600, gitignored), writes root .env + per-service .env for media-relay/control-scheduler/worker-dev with MATCHING shared secrets.
+- Discovered reaper behavior change (2026-09-14): old "typescript-to-log" launch shape (script -q LOG -c "setsid bun ...") now gets services killed nondeterministically, and batching multiple launches in ONE tool invocation kills them ALL. Robust pattern (now in recover script + start-stack.sh): script -q /dev/null -c "setsid sh -c 'sleep 1; exec bun ... >> REALLOG 2>&1'" launched ONE SERVICE PER tool invocation.
+- Full stack restored and verified: next-dev :3000 (GET / 200 in 0.2s), pglite-db :6543, media-relay :3031, control-scheduler ticking (POST /api/internal/scheduler/tick 200), worker-dev registered + claiming (POST /api/worker/claim 200), /api/auth/ok 200, /api/health 200.
+- Route sweep all 200: / /support /help /app /privacy /terms /cookies /refunds /acceptable-use /accessibility /copyright /voice-rights /abuse. Screenshot + VLM audit of home: premium dark/red editorial, hero + studio mockup + cookie banner all rendering correctly.
+
+Stage Summary:
+- Stack fully recovered from sandbox reset; zero code changes needed — the multi-page architecture and all content were intact (commits 931c3e5..f11bcc0).
+- New ops knowledge persisted: recover-dev-env.sh is the canonical post-reset procedure; start-stack.sh hardened with the file-redirect launch pattern.
+- Dev data loss (users/sessions) accepted — dev-only DB, fresh secrets are safe.
