@@ -266,3 +266,27 @@ Stage Summary:
 - Committed as 5c29dc0 "Ultrarealistic imagery and premium app preview: image-to-image gender transform pair, photoreal device frames, paper-white store badges, cookie banner dual persistence"
 - Key learning: identity-preserving edits need short, surgical, identity-anchored prompts; long descriptive prompts drift the subject entirely
 - Open items unchanged: 47 pre-existing test failures (Brain/LLM harness), GitHub push, Railway readiness
+
+---
+Task ID: 14
+Agent: Super Z (main)
+Task: Restructure the mega one-pager into a premium multi-page site ("why is everything just on one page")
+
+Work Log:
+- Read current state: home had 13 blocks (hero, ticker, problem, product, OBS, social, how, app, data, trust, FAQ, CTA, auth, footer) on one route
+- Created shared components: site-footer.tsx (product + legal link groups), section-mark.tsx (extracted from page.tsx)
+- Rewrote src/app/page.tsx: home trimmed to hero, ticker, problem (01), product (02), how-it-works paper (03), new "Go deeper" 3-card router section (04), red CTA, auth panel, footer
+- Created /live route: header + "Works with" stages card, OBS 3-step guide, paper social cards section, red CTA
+- Created /app route: coming-soon header with drawn store badges, paper section with PhoneMockups, web-on-mobile-today strip, red CTA
+- Updated /support: FAQ accordion moved from home ("Answers first"), form, expectations, shared footer added
+- SiteNav: links now The studio / How it works / Go live / The app / Support; usePathname active states; anchor links resolve to /#anchor off-home; next/link client-side routing
+- Cookie consent dismiss button: 36px to 44px touch target
+- Fixed pre-existing schema test: expected list missed support_tickets (16 tables now, 165/165 green, verified twice)
+- QA: typecheck + lint clean; 14+ desktop screenshots and 4 mobile shots; VLM audits (hero A+, sections verified via DOM inspection + crop re-read after two false "ghost card" reports); mobile scrollWidth 390=390 on all routes; cross-page anchor and mobile menu verified; no console errors
+- Dev ops: sandbox kills background processes at tool-call boundary (nohup/setsid both die), so QA runs server+screenshots in single calls; watch-dev.sh watchdog + NODE_OPTIONS heap cap (1024MB) added for interactive use; next-server OOM-killed once at ~2.5GB RSS
+
+Stage Summary:
+- Site is now a proper multi-page architecture: / (story), /live (streaming guide), /app (mobile coming soon), /support (FAQ + contact), /help + legal centre
+- Tests fully green: 165/165, 16/16 files (baseline was 104/150)
+- Known intermittent: auth-hook teardown race can emit one unhandled rejection after suite completes (no test impact, pre-existing family)
+- Committed as "Premium multi-page architecture"
