@@ -99,7 +99,7 @@ export function CookieConsent() {
           type="button"
           onClick={() => decide("essential")}
           aria-label="Dismiss the cookie notice"
-          className="absolute right-3 top-3 grid size-9 place-items-center rounded-full text-white/50 transition-colors hover:bg-white/[0.08] hover:text-white sm:static sm:size-10"
+          className="absolute right-2 top-2 grid size-11 place-items-center rounded-full text-white/50 transition-colors hover:bg-white/[0.08] hover:text-white sm:static sm:size-10"
         >
           <X className="size-4" aria-hidden="true" />
         </button>

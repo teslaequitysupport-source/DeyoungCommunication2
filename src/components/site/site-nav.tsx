@@ -1,26 +1,50 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { BrandMark } from "@/components/fx/brand-mark";
 import { cn } from "@/lib/utils";
 
-const LINKS = [
-  { href: "#product", label: "The studio" },
-  { href: "#how", label: "How it works" },
-  { href: "#faq", label: "FAQ" },
-  { href: "/support", label: "Support" },
+/**
+ * The navigation model:
+ *  - anchor links (The studio / How it works) resolve to "#…" on the
+ *    home page and "/#…" everywhere else
+ *  - page links (Go live / The app / Support) get an active treatment
+ *    when their route is open
+ */
+type NavLink = {
+  label: string;
+  anchor?: string;
+  page?: string;
+};
+
+const LINKS: NavLink[] = [
+  { label: "The studio", anchor: "product" },
+  { label: "How it works", anchor: "how" },
+  { label: "Go live", page: "/live" },
+  { label: "The app", page: "/app" },
+  { label: "Support", page: "/support" },
 ];
 
 /**
- * SiteNav — the landing header.
+ * SiteNav — the shared marketing header.
  *
  * Solid surface, hairline bottom border. On mobile the links fold
  * into a disclosure panel; the primary action never leaves the bar.
  */
-export function SiteNav({ brandName, tagline }: { brandName: string; tagline: string }) {
+export function SiteNav({
+  brandName,
+  tagline,
+}: {
+  brandName: string;
+  tagline: string;
+}) {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   // Close on Escape; return focus to the toggle.
   useEffect(() => {
@@ -32,11 +56,19 @@ export function SiteNav({ brandName, tagline }: { brandName: string; tagline: st
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
+  const hrefFor = (link: NavLink) => {
+    if (link.page) return link.page;
+    return isHome ? `#${link.anchor}` : `/#${link.anchor}`;
+  };
+  const isActive = (link: NavLink) =>
+    Boolean(link.page) && pathname === link.page;
+  const startHref = isHome ? "#start" : "/#start";
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-black">
       <div className="container-x flex h-16 items-center gap-3 px-4 sm:px-6">
-        <a
-          href="#top"
+        <Link
+          href="/"
           className="flex items-center gap-2.5 rounded-md outline-offset-4"
           aria-label={`${brandName}, back to top`}
         >
@@ -44,7 +76,7 @@ export function SiteNav({ brandName, tagline }: { brandName: string; tagline: st
           <span className="font-display text-lg font-semibold tracking-tight">
             {brandName}
           </span>
-        </a>
+        </Link>
         <span className="ml-2 hidden text-xs text-white/55 lg:inline">
           {tagline}
         </span>
@@ -54,22 +86,31 @@ export function SiteNav({ brandName, tagline }: { brandName: string; tagline: st
           className="ml-auto hidden items-center gap-7 text-sm text-white/70 md:flex"
         >
           {LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="rounded-sm underline-offset-4 transition-colors hover:text-white focus-visible:underline"
+            <Link
+              key={link.label}
+              href={hrefFor(link)}
+              className={cn(
+                "rounded-sm underline-offset-4 transition-colors hover:text-white focus-visible:underline",
+                isActive(link) && "font-semibold text-white"
+              )}
             >
               {link.label}
-            </a>
+              {isActive(link) && (
+                <span
+                  className="mx-auto mt-1 block h-px w-5 bg-primary"
+                  aria-hidden="true"
+                />
+              )}
+            </Link>
           ))}
         </nav>
 
-        <a
-          href="#start"
+        <Link
+          href={startHref}
           className="ml-auto inline-flex h-11 items-center rounded-xl bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-red-dark)] active:translate-y-px md:ml-7"
         >
           Get started
-        </a>
+        </Link>
 
         {/* Mobile disclosure */}
         <button
@@ -99,25 +140,26 @@ export function SiteNav({ brandName, tagline }: { brandName: string; tagline: st
           className="container-x flex flex-col gap-1 px-4 py-4 sm:px-6"
         >
           {LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
+            <Link
+              key={link.label}
+              href={hrefFor(link)}
               onClick={() => setOpen(false)}
               className={cn(
                 "flex h-11 items-center rounded-lg px-3 text-[15px] text-white/75",
-                "transition-colors hover:bg-white/[0.06] hover:text-white"
+                "transition-colors hover:bg-white/[0.06] hover:text-white",
+                isActive(link) && "bg-white/[0.06] font-semibold text-white"
               )}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
-          <a
-            href="#start"
+          <Link
+            href={startHref}
             onClick={() => setOpen(false)}
             className="mt-2 flex h-11 items-center justify-center rounded-lg bg-primary text-[15px] font-semibold text-white"
           >
             Get started
-          </a>
+          </Link>
         </nav>
       </div>
     </header>

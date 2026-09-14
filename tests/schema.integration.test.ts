@@ -38,7 +38,7 @@ async function insertTestUser(id: string, email: string) {
 }
 
 describe("migration shape", () => {
-  it("creates all fifteen tables", async () => {
+  it("creates all sixteen tables", async () => {
     const result = await stack.db.execute<{ table_name: string }>(
       sql`select table_name from information_schema.tables where table_schema = 'public' order by table_name`,
     );
@@ -55,6 +55,7 @@ describe("migration shape", () => {
       "rate_limit_hits",
       "reports",
       "sessions",
+      "support_tickets",
       "twofactor",
       "users",
       "verifications",

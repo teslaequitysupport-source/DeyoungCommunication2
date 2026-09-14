@@ -5,26 +5,25 @@
  *   signed in  → the app shell (characters / media & consent /
  *                live studio / renders)
  *
- * The story speaks the user's language only. Build-phase detail,
- * transport internals and provider notes live on the staff help page.
+ * The home page carries the story, not the whole catalogue. Deep
+ * dives live on their own routes: /live (streaming and social),
+ * /app (the mobile app), /support (answers and contact), plus the
+ * legal centre.
  *
  * Register rhythm: black (hero) → red (ticker) → black (problem,
- * product) → paper (how it works) → black (fine print, questions)
- * → red (the call) → black (start, footer). Flat blocks, hairline
- * rules, film grain — editorial, never decorated.
+ * product) → paper (how it works) → black (explore) → red (the
+ * call) → black (start, footer). Flat blocks, hairline rules, film
+ * grain — editorial, never decorated.
  */
 
 import { headers } from "next/headers";
+import Link from "next/link";
 import {
   ArrowRight,
-  Camera,
   Clapperboard,
   Coins,
   Database,
-  Download,
-  Monitor,
   Radio,
-  ScreenShare,
   ShieldCheck,
   Smartphone,
   Wand2,
@@ -33,17 +32,12 @@ import { auth } from "@/lib/auth";
 import { AuthPanel, type ConsoleUser } from "@/components/console/auth-panel";
 import { AppShell } from "@/components/app/app-shell";
 import { SiteNav } from "@/components/site/site-nav";
-import { PhoneMockups } from "@/components/site/phone-mockups";
+import { SiteFooter } from "@/components/site/site-footer";
 import { StudioStage } from "@/components/fx/studio-stage";
 import { Reveal, RevealItem } from "@/components/fx/reveal";
 import { BrandMark } from "@/components/fx/brand-mark";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { BRAND, LEGAL_LINKS } from "@/lib/brand";
+import { SectionMark } from "@/components/site/section-mark";
+import { BRAND } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -102,65 +96,6 @@ const STEPS = [
   },
 ];
 
-const OBS_STEPS = [
-  {
-    icon: Radio,
-    title: "Start a live session",
-    body: "Open the studio, pick your character and go live. Your camera feeds the render; the character faces your audience.",
-  },
-  {
-    icon: Monitor,
-    title: "Add the studio to OBS",
-    body: "In OBS, add the studio as a browser source, or use it as your virtual camera. Your character arrives as a clean video feed, ready to mix.",
-  },
-  {
-    icon: ScreenShare,
-    title: "Stream as your character",
-    body: "Scenes, overlays and alerts work exactly as they do today. Go live on YouTube, Twitch or Kick with the character instead of your face.",
-  },
-];
-
-const SOCIAL_POINTS = [
-  {
-    icon: Camera,
-    title: "Record in the studio",
-    body: "Every session can be recorded as it runs, and saved renders land in your media library, ready to post.",
-  },
-  {
-    icon: Smartphone,
-    title: "Create from your phone",
-    body: "The studio runs in mobile web. Film, transform and post from the same device with nothing to download.",
-  },
-  {
-    icon: Clapperboard,
-    title: "Post as the character",
-    body: "Clips for TikTok, Reels, Shorts and status updates carry the character, not your face, unless you choose otherwise.",
-  },
-];
-
-const DATA_STEPS = [
-  {
-    icon: Camera,
-    title: "Captured",
-    body: "Camera and voice data exist only while a live session runs. Ending the session stops all processing at once.",
-  },
-  {
-    icon: Wand2,
-    title: "Transformed",
-    body: "Frames are used to drive your character's performance. That is the entire purpose, and the consent grant says so.",
-  },
-  {
-    icon: Database,
-    title: "Stored, scoped",
-    body: "What is kept is stored encrypted, tied to your account, and covered by the published NDPR data map.",
-  },
-  {
-    icon: Download,
-    title: "Yours",
-    body: "Export everything or delete your account in one action. Deletion removes your media, not just the links to it.",
-  },
-];
-
 const TRUST_CHIPS = [
   "Consent-first by design",
   "Automatic refunds",
@@ -184,79 +119,32 @@ const ACCOUNT_BENEFITS = [
   "Export or delete your data whenever you choose",
 ];
 
-const TRUST_PAGES = [
+const DEEP_DIVES = [
   {
+    icon: Radio,
+    n: "01",
+    title: "Take it live",
+    body: "OBS, Twitch, YouTube, TikTok: how the character plugs into the stages you already broadcast on.",
+    href: "/live",
+    cta: "The streaming guide",
+  },
+  {
+    icon: Smartphone,
+    n: "02",
+    title: "The app",
+    body: "The same studio, built for the phone in your pocket. Coming soon to both stores, honest about it.",
+    href: "/app",
+    cta: "See the app",
+  },
+  {
+    icon: Database,
+    n: "03",
+    title: "Your data",
+    body: "Captured, transformed, stored, returned. The full lifecycle is published, not paraphrased.",
     href: "/privacy",
-    title: "Privacy & the NDPR data map",
-    body: "Every category of data we hold, what it's used for, and how long it stays, published in full.",
-  },
-  {
-    href: "/refunds",
-    title: "Refunds",
-    body: "How credit refunds happen automatically when a render can't be delivered.",
-  },
-  {
-    href: "/voice-rights",
-    title: "Voice & likeness rights",
-    body: "The rules for faces and voices on this platform, and how to report misuse.",
-  },
-  {
-    href: "/accessibility",
-    title: "Accessibility",
-    body: "Our accessibility commitment, and how to reach us if something gets in your way.",
+    cta: "The data map",
   },
 ];
-
-const FAQS = [
-  {
-    q: "What does it cost?",
-    a: "Creating an account is free and comes with welcome credits. Every render is priced in credits before it runs, and if a job can't be delivered, the credits return to your balance automatically. The full policy is on the refunds page.",
-  },
-  {
-    q: "What do I need to use it?",
-    a: "A modern browser and a camera. The studio runs on desktop and mobile web with nothing to download, and it adapts to slow connections by pacing frame quality.",
-  },
-  {
-    q: "Whose face can I use?",
-    a: "Only a face you have the right to use, which in practice means your own. Every face asset requires an explicit, recorded consent grant scoped to one purpose, and withdrawing consent stops new sessions immediately.",
-  },
-  {
-    q: "What happens to my face and voice data?",
-    a: "They're treated as sensitive data under Nigeria's NDPR. You can export everything from Settings at any time, and account deletion removes your media. The exact data map is published on the privacy page.",
-  },
-  {
-    q: "Do credits expire?",
-    a: "No. Your balance and full history are visible in Settings, and every spend and refund is listed there.",
-  },
-  {
-    q: "Can I stop mid-session?",
-    a: "Yes. Ending a session stops all processing at once; live transforms only run while a session is active.",
-  },
-];
-
-/** Editorial section marker — index, rule, label. */
-function SectionMark({ n, label, ink = false }: { n: string; label: string; ink?: boolean }) {
-  return (
-    <div className="flex items-center gap-3">
-      <span className="font-display text-sm font-bold tracking-widest text-primary">
-        {n}
-      </span>
-      <span
-        className="h-px w-10"
-        style={{ background: ink ? "rgba(10,10,13,0.25)" : "rgba(255,255,255,0.2)" }}
-        aria-hidden="true"
-      />
-      <span
-        className={
-          "text-xs font-medium uppercase tracking-[0.18em] " +
-          (ink ? "text-black/60" : "text-white/50")
-        }
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
 
 export default async function Home() {
   const user = await getSessionUser();
@@ -472,101 +360,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── Take it live — OBS and social ────────────────────── */}
-      <section id="live" className="border-b border-border">
-        <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
-          <Reveal className="mb-14 max-w-2xl space-y-5">
-            <RevealItem>
-              <SectionMark n="03" label="Take it live" />
-            </RevealItem>
-            <RevealItem>
-              <h2 className="display-1">One studio, every stage.</h2>
-            </RevealItem>
-            <RevealItem>
-              <p className="text-white/68">
-                A live character is only useful if it goes where your
-                audience already is. Here is how it fits the tools you
-                stream and post with today.
-              </p>
-            </RevealItem>
-          </Reveal>
-
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-            {/* OBS — the streamer's path */}
-            <div>
-              <Reveal>
-                <RevealItem>
-                  <h3 className="font-display text-sm font-bold uppercase tracking-[0.18em] text-primary">
-                    Streaming with OBS
-                  </h3>
-                </RevealItem>
-              </Reveal>
-              <div className="mt-6 space-y-8">
-                {OBS_STEPS.map(({ icon: Icon, title, body }, i) => (
-                  <RevealItem key={title}>
-                    <div className="group flex gap-5">
-                      <div className="flex flex-col items-center">
-                        <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-border bg-card text-primary transition-colors group-hover:border-primary/50">
-                          <Icon className="size-5" aria-hidden="true" />
-                        </span>
-                        {i < OBS_STEPS.length - 1 && (
-                          <span className="mt-3 w-px flex-1 bg-border" aria-hidden="true" />
-                        )}
-                      </div>
-                      <div className="pb-2">
-                        <p className="font-display text-lg font-semibold tracking-tight">
-                          {title}
-                        </p>
-                        <p className="mt-2 max-w-md text-sm leading-relaxed text-white/68">
-                          {body}
-                        </p>
-                      </div>
-                    </div>
-                  </RevealItem>
-                ))}
-              </div>
-            </div>
-
-            {/* Social — the creator's path */}
-            <div>
-              <Reveal>
-                <RevealItem>
-                  <h3 className="font-display text-sm font-bold uppercase tracking-[0.18em] text-primary">
-                    Creating for social
-                  </h3>
-                </RevealItem>
-              </Reveal>
-              <div className="mt-6 grid gap-5">
-                {SOCIAL_POINTS.map(({ icon: Icon, title, body }) => (
-                  <RevealItem key={title}>
-                    <article className="group h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-white/28">
-                      <div className="flex items-center gap-3">
-                        <Icon
-                          className="size-5 text-white/35 transition-colors group-hover:text-primary"
-                          aria-hidden="true"
-                        />
-                        <h4 className="font-display text-base font-semibold tracking-tight">
-                          {title}
-                        </h4>
-                      </div>
-                      <p className="mt-3 text-sm leading-relaxed text-white/68">
-                        {body}
-                      </p>
-                    </article>
-                  </RevealItem>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ─── How it works — the paper register ──────────────────────── */}
       <section id="how" className="paper border-b border-black/10">
         <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
           <Reveal className="mb-14 max-w-2xl space-y-5">
             <RevealItem>
-              <SectionMark n="04" label="How it works" ink />
+              <SectionMark n="03" label="How it works" ink />
             </RevealItem>
             <RevealItem>
               <h2 className="display-1 text-black">Three steps. That's all.</h2>
@@ -618,240 +417,56 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── The app — coming soon, previewed honestly ────────── */}
-      <section id="app" className="border-b border-border">
-        <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
-          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-            <div>
-              <Reveal className="space-y-5">
-                <RevealItem>
-                  <SectionMark n="05" label="The app" />
-                </RevealItem>
-                <RevealItem>
-                  <h2 className="display-1">
-                    The studio goes
-                    <br />
-                    pocket.
-                  </h2>
-                </RevealItem>
-                <RevealItem>
-                  <p className="max-w-lg text-white/68">
-                    The same characters, consent and credits, built for the
-                    phone you create on. The app is in the works for both
-                    stores, and the web studio already runs on mobile today.
-                  </p>
-                </RevealItem>
-                <RevealItem>
-                  <div className="grid max-w-md gap-3.5 pt-2 sm:flex sm:flex-wrap sm:gap-4">
-                    {/* Store lockups — drawn, not lifted, honest about availability */}
-                    <span
-                      title="Coming soon"
-                      aria-label="Coming soon on Google Play"
-                      className="group inline-flex h-[56px] cursor-default items-center gap-3.5 rounded-[14px] border border-black/10 bg-[#f4f4f0] pl-[18px] pr-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_30px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[inset_0_1px_0_rgba(255,255,255,1),0_14px_36px_-12px_rgba(0,0,0,0.85)]"
-                    >
-                      <svg viewBox="0 0 24 24" className="size-[28px] shrink-0 -translate-y-px" fill="none" aria-hidden="true">
-                        {/* Play triangle — the wedge and its fold, two inks */}
-                        <path
-                          d="M5 2.8c.3-.45.9-.55 1.35-.22l12.65 8.05c.6.38.6 1.31 0 1.69L6.35 20.42c-.45.33-1.05.23-1.35-.22-.12-.2-.19-.42-.19-.65V3.45c0-.23.07-.45.19-.65z"
-                          fill="currentColor"
-                          className="text-black"
-                        />
-                        <path
-                          d="M5.8 2.7l8.6 8.6-2.55 2.55L5.5 7.5V3.45c0-.3.1-.55.3-.75z"
-                          fill="currentColor"
-                          className="text-primary"
-                        />
-                      </svg>
-                      <span className="text-left leading-tight">
-                        <span className="block text-[10px] font-normal uppercase tracking-[0.18em] text-black/55">
-                          Coming soon on
-                        </span>
-                        <span className="block text-[17px] font-semibold tracking-tight text-black">
-                          Google Play
-                        </span>
-                      </span>
-                    </span>
-                    <span
-                      title="Coming soon"
-                      aria-label="Coming soon on the App Store"
-                      className="group inline-flex h-[56px] cursor-default items-center gap-3.5 rounded-[14px] border border-black/10 bg-[#f4f4f0] pl-[18px] pr-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_30px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[inset_0_1px_0_rgba(255,255,255,1),0_14px_36px_-12px_rgba(0,0,0,0.85)]"
-                    >
-                      <svg viewBox="0 0 24 24" className="size-[28px] shrink-0" fill="currentColor" aria-hidden="true">
-                        {/* The apple — silhouette with leaf */}
-                        <path
-                          d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08z"
-                          className="text-black"
-                        />
-                        <path
-                          d="M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"
-                          className="text-primary"
-                        />
-                      </svg>
-                      <span className="text-left leading-tight">
-                        <span className="block text-[10px] font-normal uppercase tracking-[0.18em] text-black/55">
-                          Coming soon on
-                        </span>
-                        <span className="block text-[17px] font-semibold tracking-tight text-black">
-                          App Store
-                        </span>
-                      </span>
-                    </span>
-                  </div>
-                </RevealItem>
-                <RevealItem>
-                  <p className="text-xs text-white/55">
-                    Previews shown are the app layout in development. Not a
-                    live store listing.
-                  </p>
-                </RevealItem>
-              </Reveal>
-            </div>
-            <Reveal>
-              <RevealItem>
-                <PhoneMockups />
-              </RevealItem>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Your data — the paper receipt ──────────────────────── */}
-      <section id="data" className="paper border-b border-black/10">
+      {/* ─── Go deeper — the routes beyond the fold ─────────────────── */}
+      <section className="border-b border-border">
         <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
           <Reveal className="mb-14 max-w-2xl space-y-5">
             <RevealItem>
-              <SectionMark n="06" label="Your data" ink />
+              <SectionMark n="04" label="Go deeper" />
             </RevealItem>
             <RevealItem>
-              <h2 className="display-1 text-black">
-                Where your data goes.
-              </h2>
-            </RevealItem>
-            <RevealItem>
-              <p className="text-black/70">
-                Face and voice data is sensitive data under Nigeria's NDPR,
-                so the whole lifecycle is published, not paraphrased. Four
-                stages, nothing hidden between them.
-              </p>
-            </RevealItem>
-          </Reveal>
-
-          <div className="grid gap-12 md:grid-cols-2 md:gap-8">
-            {DATA_STEPS.map(({ icon: Icon, title, body }) => (
-              <RevealItem key={title}>
-                <div className="h-full border-t-2 border-black pt-6">
-                  <div className="flex items-center gap-3">
-                    <Icon className="size-5 text-black" aria-hidden="true" />
-                    <h3 className="font-display text-xl font-semibold tracking-tight text-black">
-                      {title}
-                    </h3>
-                  </div>
-                  <p className="mt-3 max-w-md text-sm leading-relaxed text-black/70">
-                    {body}
-                  </p>
-                </div>
-              </RevealItem>
-            ))}
-          </div>
-
-          <Reveal className="mt-14">
-            <RevealItem>
-              <a
-                href="/privacy"
-                className="group inline-flex h-12 items-center gap-2 rounded-xl bg-black px-7 text-[0.95rem] font-semibold text-white transition-transform active:translate-y-px"
-              >
-                Read the full data map
-                <ArrowRight
-                  className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
-                  aria-hidden="true"
-                />
-              </a>
-            </RevealItem>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ─── Trust — the real pages ─────────────────────────────────── */}
-      <section className="border-b border-border">
-        <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
-          <Reveal className="mb-12 max-w-2xl space-y-5">
-            <RevealItem>
-              <SectionMark n="07" label="The fine print" />
-            </RevealItem>
-            <RevealItem>
-              <h2 className="display-1">Plain sight, not small print</h2>
+              <h2 className="display-1">Past the fold.</h2>
             </RevealItem>
             <RevealItem>
               <p className="text-white/68">
-                These aren't links to nowhere. Every page below is a real
-                document on this platform.
+                The story above is the short version. These pages carry
+                the rest, each in its own place.
               </p>
             </RevealItem>
           </Reveal>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            {TRUST_PAGES.map((page) => (
-              <RevealItem key={page.href}>
-                <a
-                  href={page.href}
-                  className="group flex h-full flex-col gap-2 rounded-xl border border-border bg-card p-6 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-white/28"
+          <div className="grid gap-5 md:grid-cols-3">
+            {DEEP_DIVES.map(({ icon: Icon, n, title, body, href, cta }) => (
+              <RevealItem key={href}>
+                <Link
+                  href={href}
+                  className="group flex h-full flex-col gap-2 rounded-xl border border-border bg-card p-7 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-white/28"
                 >
-                  <h3 className="font-display text-lg font-semibold tracking-tight">
-                    {page.title}
+                  <div className="flex items-baseline justify-between">
+                    <span className="font-display text-sm font-bold tracking-widest text-primary">
+                      {n}
+                    </span>
+                    <Icon
+                      className="size-5 text-white/35 transition-colors group-hover:text-primary"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <h3 className="mt-2 font-display text-xl font-semibold tracking-tight">
+                    {title}
                   </h3>
                   <p className="text-sm leading-relaxed text-white/68">
-                    {page.body}
+                    {body}
                   </p>
-                  <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium text-primary underline-offset-4 group-hover:underline">
-                    Read
+                  <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-medium text-primary underline-offset-4 group-hover:underline">
+                    {cta}
                     <ArrowRight
                       className="size-4 transition-transform group-hover:translate-x-0.5"
                       aria-hidden="true"
                     />
                   </span>
-                </a>
+                </Link>
               </RevealItem>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── FAQ — the honest answers ───────────────────────────────── */}
-      <section id="faq" className="border-b border-border">
-        <div className="container-x grid gap-10 px-4 py-20 sm:px-6 lg:grid-cols-5 lg:py-28">
-          <Reveal className="lg:col-span-2">
-            <RevealItem className="mb-6">
-              <SectionMark n="08" label="Questions" />
-            </RevealItem>
-            <RevealItem>
-              <h2 className="display-1">Questions, answered</h2>
-            </RevealItem>
-            <RevealItem>
-              <p className="mt-4 text-white/68">
-                Anything else?{" "}
-                <a
-                  href="/help"
-                  className="font-medium text-primary underline-offset-4 hover:underline"
-                >
-                  The help centre
-                </a>{" "}
-                has the full guide.
-              </p>
-            </RevealItem>
-          </Reveal>
-          <div className="lg:col-span-3">
-            <Accordion type="single" collapsible className="w-full">
-              {FAQS.map((faq, i) => (
-                <AccordionItem key={faq.q} value={`q-${i}`}>
-                  <AccordionTrigger className="text-left font-display text-base font-semibold tracking-tight hover:text-white [&>svg]:text-primary">
-                    {faq.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="leading-relaxed text-white/68">
-                    {faq.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
           </div>
         </div>
       </section>
@@ -930,44 +545,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── Footer ─────────────────────────────────────────────────── */}
-      <footer className="mt-auto border-t border-border bg-black">
-        <div className="container-x px-4 py-12 sm:px-6">
-          <div className="flex flex-col items-start justify-between gap-8 md:flex-row">
-            <div className="flex items-center gap-3">
-              <BrandMark size={26} />
-              <div>
-                <p className="font-display font-semibold tracking-tight">
-                  {BRAND.name}
-                </p>
-                <p className="text-xs text-white/50">
-                  Live characters, rendered responsibly.
-                </p>
-              </div>
-            </div>
-            <nav
-              aria-label="Legal"
-              className="flex max-w-xl flex-wrap gap-x-6 gap-y-2 text-xs"
-            >
-              {LEGAL_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="inline-block py-0.5 text-white/50 underline-offset-4 transition-colors hover:text-white hover:underline"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-          </div>
-          <div className="mt-10 border-t border-border pt-6">
-            <p className="text-xs text-white/40">
-              © {new Date().getFullYear()} {BRAND.name}. Your face, your
-              voice, your rules.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
