@@ -1,0 +1,974 @@
+     1→/**
+     2→ * The landing surface — one route (sandbox constraint), two states:
+     3→ *
+     4→ *   signed out → the product story + real auth panel
+     5→ *   signed in  → the app shell (characters / media & consent /
+     6→ *                live studio / renders)
+     7→ *
+     8→ * The story speaks the user's language only. Build-phase detail,
+     9→ * transport internals and provider notes live on the staff help page.
+    10→ *
+    11→ * Register rhythm: black (hero) → red (ticker) → black (problem,
+    12→ * product) → paper (how it works) → black (fine print, questions)
+    13→ * → red (the call) → black (start, footer). Flat blocks, hairline
+    14→ * rules, film grain — editorial, never decorated.
+    15→ */
+    16→
+    17→import { headers } from "next/headers";
+    18→import {
+    19→  ArrowRight,
+    20→  Camera,
+    21→  Clapperboard,
+    22→  Coins,
+    23→  Database,
+    24→  Download,
+    25→  Monitor,
+    26→  Radio,
+    27→  ScreenShare,
+    28→  ShieldCheck,
+    29→  Smartphone,
+    30→  Wand2,
+    31→} from "lucide-react";
+    32→import { auth } from "@/lib/auth";
+    33→import { AuthPanel, type ConsoleUser } from "@/components/console/auth-panel";
+    34→import { AppShell } from "@/components/app/app-shell";
+    35→import { SiteNav } from "@/components/site/site-nav";
+    36→import { PhoneMockups } from "@/components/site/phone-mockups";
+    37→import { StudioStage } from "@/components/fx/studio-stage";
+    38→import { Reveal, RevealItem } from "@/components/fx/reveal";
+    39→import { BrandMark } from "@/components/fx/brand-mark";
+    40→import {
+    41→  Accordion,
+    42→  AccordionContent,
+    43→  AccordionItem,
+    44→  AccordionTrigger,
+    45→} from "@/components/ui/accordion";
+    46→import { BRAND, LEGAL_LINKS } from "@/lib/brand";
+    47→
+    48→export const dynamic = "force-dynamic";
+    49→
+    50→async function getSessionUser(): Promise<ConsoleUser | null> {
+    51→  const session = await auth.api.getSession({ headers: await headers() });
+    52→  if (!session?.user) return null;
+    53→  return {
+    54→    id: session.user.id,
+    55→    name: session.user.name,
+    56→    email: session.user.email,
+    57→    role: String(session.user.role ?? "USER"),
+    58→    status: String(session.user.status ?? "ACTIVE"),
+    59→    emailVerified: Boolean(session.user.emailVerified),
+    60→    twoFactorEnabled: Boolean(session.user.twoFactorEnabled),
+    61→  };
+    62→}
+    63→
+    64→const VALUE_PROPS = [
+    65→  {
+    66→    icon: ShieldCheck,
+    67→    title: "Consent you control",
+    68→    body: "One explicit grant, scoped to a purpose. Withdraw it any time and new sessions stop instantly. No support ticket, no delay.",
+    69→  },
+    70→  {
+    71→    icon: Clapperboard,
+    72→    title: "Real-time transforms",
+    73→    body: "Your camera frames stream to the render layer and come back transformed: live, on screen, in the moment you're in.",
+    74→  },
+    75→  {
+    76→    icon: Coins,
+    77→    title: "Credits that stay honest",
+    78→    body: "Every job is priced before it runs and refunded automatically if it can't be delivered. You never pay for what you don't get.",
+    79→  },
+    80→  {
+    81→    icon: Wand2,
+    82→    title: "Your data, your call",
+    83→    body: "Export everything or delete your account in one action. Built to NDPR standards. Your face and voice belong to you.",
+    84→  },
+    85→];
+    86→
+    87→const STEPS = [
+    88→  {
+    89→    n: "01",
+    90→    title: "Create your character",
+    91→    body: "Bring the identity you want on screen: name, look, presence. It's yours, and only yours.",
+    92→  },
+    93→  {
+    94→    n: "02",
+    95→    title: "Grant consent once",
+    96→    body: "Approve exactly what your face and voice are used for. The platform enforces the scope you set.",
+    97→  },
+    98→  {
+    99→    n: "03",
+   100→    title: "Go live",
+   101→    body: "Open the studio and see yourself transformed in real time. End the session whenever you like.",
+   102→  },
+   103→];
+   104→
+   105→const OBS_STEPS = [
+   106→  {
+   107→    icon: Radio,
+   108→    title: "Start a live session",
+   109→    body: "Open the studio, pick your character and go live. Your camera feeds the render; the character faces your audience.",
+   110→  },
+   111→  {
+   112→    icon: Monitor,
+   113→    title: "Add the studio to OBS",
+   114→    body: "In OBS, add the studio as a browser source, or use it as your virtual camera. Your character arrives as a clean video feed, ready to mix.",
+   115→  },
+   116→  {
+   117→    icon: ScreenShare,
+   118→    title: "Stream as your character",
+   119→    body: "Scenes, overlays and alerts work exactly as they do today. Go live on YouTube, Twitch or Kick with the character instead of your face.",
+   120→  },
+   121→];
+   122→
+   123→const SOCIAL_POINTS = [
+   124→  {
+   125→    icon: Camera,
+   126→    title: "Record in the studio",
+   127→    body: "Every session can be recorded as it runs, and saved renders land in your media library, ready to post.",
+   128→  },
+   129→  {
+   130→    icon: Smartphone,
+   131→    title: "Create from your phone",
+   132→    body: "The studio runs in mobile web. Film, transform and post from the same device with nothing to download.",
+   133→  },
+   134→  {
+   135→    icon: Clapperboard,
+   136→    title: "Post as the character",
+   137→    body: "Clips for TikTok, Reels, Shorts and status updates carry the character, not your face, unless you choose otherwise.",
+   138→  },
+   139→];
+   140→
+   141→const DATA_STEPS = [
+   142→  {
+   143→    icon: Camera,
+   144→    title: "Captured",
+   145→    body: "Camera and voice data exist only while a live session runs. Ending the session stops all processing at once.",
+   146→  },
+   147→  {
+   148→    icon: Wand2,
+   149→    title: "Transformed",
+   150→    body: "Frames are used to drive your character's performance. That is the entire purpose, and the consent grant says so.",
+   151→  },
+   152→  {
+   153→    icon: Database,
+   154→    title: "Stored, scoped",
+   155→    body: "What is kept is stored encrypted, tied to your account, and covered by the published NDPR data map.",
+   156→  },
+   157→  {
+   158→    icon: Download,
+   159→    title: "Yours",
+   160→    body: "Export everything or delete your account in one action. Deletion removes your media, not just the links to it.",
+   161→  },
+   162→];
+   163→
+   164→const TRUST_CHIPS = [
+   165→  "Consent-first by design",
+   166→  "Automatic refunds",
+   167→  "One-tap data export",
+   168→  "Built for NDPR",
+   169→];
+   170→
+   171→const TICKER_ITEMS = [
+   172→  "Live characters",
+   173→  "Real-time render",
+   174→  "Consent-first",
+   175→  "Priced per render",
+   176→  "Built for NDPR",
+   177→  "Your face, your rules",
+   178→];
+   179→
+   180→const ACCOUNT_BENEFITS = [
+   181→  "Welcome credits to run your first renders",
+   182→  "Characters, media and consent in one place",
+   183→  "Live studio for real-time sessions",
+   184→  "Export or delete your data whenever you choose",
+   185→];
+   186→
+   187→const TRUST_PAGES = [
+   188→  {
+   189→    href: "/privacy",
+   190→    title: "Privacy & the NDPR data map",
+   191→    body: "Every category of data we hold, what it's used for, and how long it stays, published in full.",
+   192→  },
+   193→  {
+   194→    href: "/refunds",
+   195→    title: "Refunds",
+   196→    body: "How credit refunds happen automatically when a render can't be delivered.",
+   197→  },
+   198→  {
+   199→    href: "/voice-rights",
+   200→    title: "Voice & likeness rights",
+   201→    body: "The rules for faces and voices on this platform, and how to report misuse.",
+   202→  },
+   203→  {
+   204→    href: "/accessibility",
+   205→    title: "Accessibility",
+   206→    body: "Our accessibility commitment, and how to reach us if something gets in your way.",
+   207→  },
+   208→];
+   209→
+   210→const FAQS = [
+   211→  {
+   212→    q: "What does it cost?",
+   213→    a: "Creating an account is free and comes with welcome credits. Every render is priced in credits before it runs, and if a job can't be delivered, the credits return to your balance automatically. The full policy is on the refunds page.",
+   214→  },
+   215→  {
+   216→    q: "What do I need to use it?",
+   217→    a: "A modern browser and a camera. The studio runs on desktop and mobile web with nothing to download, and it adapts to slow connections by pacing frame quality.",
+   218→  },
+   219→  {
+   220→    q: "Whose face can I use?",
+   221→    a: "Only a face you have the right to use, which in practice means your own. Every face asset requires an explicit, recorded consent grant scoped to one purpose, and withdrawing consent stops new sessions immediately.",
+   222→  },
+   223→  {
+   224→    q: "What happens to my face and voice data?",
+   225→    a: "They're treated as sensitive data under Nigeria's NDPR. You can export everything from Settings at any time, and account deletion removes your media. The exact data map is published on the privacy page.",
+   226→  },
+   227→  {
+   228→    q: "Do credits expire?",
+   229→    a: "No. Your balance and full history are visible in Settings, and every spend and refund is listed there.",
+   230→  },
+   231→  {
+   232→    q: "Can I stop mid-session?",
+   233→    a: "Yes. Ending a session stops all processing at once; live transforms only run while a session is active.",
+   234→  },
+   235→];
+   236→
+   237→/** Editorial section marker — index, rule, label. */
+   238→function SectionMark({ n, label, ink = false }: { n: string; label: string; ink?: boolean }) {
+   239→  return (
+   240→    <div className="flex items-center gap-3">
+   241→      <span className="font-display text-sm font-bold tracking-widest text-primary">
+   242→        {n}
+   243→      </span>
+   244→      <span
+   245→        className="h-px w-10"
+   246→        style={{ background: ink ? "rgba(10,10,13,0.25)" : "rgba(255,255,255,0.2)" }}
+   247→        aria-hidden="true"
+   248→      />
+   249→      <span
+   250→        className={
+   251→          "text-xs font-medium uppercase tracking-[0.18em] " +
+   252→          (ink ? "text-black/60" : "text-white/50")
+   253→        }
+   254→      >
+   255→        {label}
+   256→      </span>
+   257→    </div>
+   258→  );
+   259→}
+   260→
+   261→export default async function Home() {
+   262→  const user = await getSessionUser();
+   263→
+   264→  if (user) {
+   265→    return (
+   266→      <AppShell
+   267→        user={{
+   268→          id: user.id,
+   269→          name: user.name,
+   270→          email: user.email,
+   271→          role: user.role,
+   272→          twoFactorEnabled: user.twoFactorEnabled,
+   273→        }}
+   274→      />
+   275→    );
+   276→  }
+   277→
+   278→  return (
+   279→    <div
+   280→      id="top"
+   281→      className="relative flex min-h-screen flex-col bg-background text-foreground"
+   282→    >
+   283→      <SiteNav brandName={BRAND.name} tagline={BRAND.tagline} />
+   284→
+   285→      {/* ─── Hero — the promise and the product ─────────────────────── */}
+   286→      <section className="relative overflow-hidden">
+   287→        {/* Editorial column hairlines — structure, barely there */}
+   288→        <div
+   289→          className="pointer-events-none absolute inset-0 mx-auto hidden max-w-[var(--container-width)] grid-cols-4 lg:grid"
+   290→          aria-hidden="true"
+   291→        >
+   292→          {[0, 1, 2, 3].map((i) => (
+   293→            <div key={i} className="border-l border-white/[0.05]" />
+   294→          ))}
+   295→        </div>
+   296→
+   297→        <div className="container-x relative px-4 pb-20 pt-14 sm:px-6 lg:pb-28 lg:pt-20">
+   298→          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+   299→            <div className="space-y-8">
+   300→              <Reveal className="space-y-8">
+   301→                <RevealItem>
+   302→                  <p className="inline-flex items-center gap-2.5 rounded-full border border-primary/50 bg-primary/[0.08] px-3.5 py-1.5 text-xs font-semibold tracking-[0.08em] text-white/80">
+   303→                    <span
+   304→                      className="on-air-dot size-1.5 rounded-full bg-primary"
+   305→                      aria-hidden="true"
+   306→                    />
+   307→                    OPEN BETA · FREE TO START
+   308→                  </p>
+   309→                </RevealItem>
+   310→
+   311→                <RevealItem>
+   312→                  <h1 className="display-hero">
+   313→                    Your camera.
+   314→                    <br />
+   315→                    Your character.
+   316→                    <br />
+   317→                    <span className="text-primary">Live.</span>
+   318→                  </h1>
+   319→                </RevealItem>
+   320→
+   321→                <RevealItem>
+   322→                  <p className="measure text-lg leading-relaxed text-white/68">
+   323→                    Deyoung Live turns your live video into the
+   324→                    character you created, while you stream, call and
+   325→                    record. Consent-first. Priced per render. Built for
+   326→                    Nigeria.
+   327→                  </p>
+   328→                </RevealItem>
+   329→
+   330→                <RevealItem>
+   331→                  <div className="flex flex-wrap items-center gap-4">
+   332→                    <a
+   333→                      href="#start"
+   334→                      className="group inline-flex h-12 items-center gap-2 rounded-xl bg-primary px-8 text-[0.95rem] font-semibold text-white transition-colors hover:bg-[var(--color-red-dark)] active:translate-y-px"
+   335→                    >
+   336→                      Create free account
+   337→                      <ArrowRight
+   338→                        className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+   339→                        aria-hidden="true"
+   340→                      />
+   341→                    </a>
+   342→                    <a
+   343→                      href="#how"
+   344→                      className="inline-flex h-12 items-center rounded-xl border border-white/20 bg-white/[0.06] px-7 text-[0.95rem] font-medium text-white/85 transition-colors hover:border-white/35 hover:bg-white/[0.1] active:translate-y-px"
+   345→                    >
+   346→                      See how it works
+   347→                    </a>
+   348→                  </div>
+   349→                </RevealItem>
+   350→
+   351→                <RevealItem>
+   352→                  <ul className="flex flex-wrap items-center gap-x-2 gap-y-2 text-[13px] text-white/50">
+   353→                    {TRUST_CHIPS.map((chip, i) => (
+   354→                      <li key={chip} className="flex items-center gap-2">
+   355→                        {i > 0 && (
+   356→                          <span className="text-primary/70" aria-hidden="true">
+   357→                            /
+   358→                          </span>
+   359→                        )}
+   360→                        {chip}
+   361→                      </li>
+   362→                    ))}
+   363→                  </ul>
+   364→                </RevealItem>
+   365→              </Reveal>
+   366→            </div>
+   367→
+   368→            <StudioStage />
+   369→          </div>
+   370→        </div>
+   371→      </section>
+   372→
+   373→      {/* ─── The broadcast ticker ────────────────────────────────────── */}
+   374→      <div
+   375→        className="band overflow-hidden border-y border-black/25 py-3.5"
+   376→        aria-hidden="true"
+   377→      >
+   378→        <div className="ticker-track">
+   379→          {[0, 1].map((dup) => (
+   380→            <div
+   381→              key={dup}
+   382→              className="flex shrink-0 items-center"
+   383→              style={{ minWidth: "100%" }}
+   384→            >
+   385→              {TICKER_ITEMS.map((item) => (
+   386→                <span
+   387→                  key={`${dup}-${item}`}
+   388→                  className="flex items-center font-display text-[0.8rem] font-medium uppercase tracking-[0.22em] text-black"
+   389→                >
+   390→                  <span className="px-6">{item}</span>
+   391→                  <span className="text-black/40">/</span>
+   392→                </span>
+   393→              ))}
+   394→            </div>
+   395→          ))}
+   396→        </div>
+   397→      </div>
+   398→
+   399→      {/* ─── The problem — why this exists ───────────────────────────── */}
+   400→      <section className="border-b border-border">
+   401→        <div className="container-x grid gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-28">
+   402→          <Reveal>
+   403→            <RevealItem className="mb-6">
+   404→              <SectionMark n="01" label="The problem" />
+   405→            </RevealItem>
+   406→            <RevealItem>
+   407→              <h2 className="display-1">On camera, you get you.</h2>
+   408→            </RevealItem>
+   409→          </Reveal>
+   410→          <Reveal className="space-y-5 text-white/68 sm:mt-2 lg:mt-14">
+   411→            <RevealItem>
+   412→              <p className="leading-relaxed">
+   413→                Streaming or calling as yourself every day means your actual
+   414→                face travels to strangers, recorded and forwarded without
+   415→                your say. The alternative, pre-recorded clips, loses the
+   416→                one thing that makes live video worth watching: it's live.
+   417→              </p>
+   418→            </RevealItem>
+   419→            <RevealItem>
+   420→              <p className="leading-relaxed">
+   421→                Deyoung Live is the third option. You perform; the character
+   422→                renders in real time. Your face powers the performance
+   423→                without being the performance.
+   424→              </p>
+   425→            </RevealItem>
+   426→          </Reveal>
+   427→        </div>
+   428→      </section>
+   429→
+   430→      {/* ─── Features — what you get ────────────────────────────────── */}
+   431→      <section id="product" className="border-b border-border">
+   432→        <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
+   433→          <Reveal className="mb-14 max-w-2xl space-y-5">
+   434→            <RevealItem>
+   435→              <SectionMark n="02" label="The product" />
+   436→            </RevealItem>
+   437→            <RevealItem>
+   438→              <h2 className="display-1">Made for live. Built for trust.</h2>
+   439→            </RevealItem>
+   440→            <RevealItem>
+   441→              <p className="text-white/68">
+   442→                Four things this platform will not compromise on, because
+   443→                a live character is only worth running if it's worth
+   444→                trusting.
+   445→              </p>
+   446→            </RevealItem>
+   447→          </Reveal>
+   448→
+   449→          <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2">
+   450→            {VALUE_PROPS.map(({ icon: Icon, title, body }, i) => (
+   451→              <RevealItem key={title}>
+   452→                <article className="group h-full border-t border-border pt-6 transition-colors hover:border-primary/60">
+   453→                  <div className="flex items-baseline justify-between gap-4">
+   454→                    <span className="font-display text-sm font-bold tracking-widest text-primary">
+   455→                      {String(i + 1).padStart(2, "0")}
+   456→                    </span>
+   457→                    <Icon
+   458→                      className="size-5 text-white/35 transition-colors group-hover:text-primary"
+   459→                      aria-hidden="true"
+   460→                    />
+   461→                  </div>
+   462→                  <h3 className="mt-4 font-display text-xl font-semibold tracking-tight">
+   463→                    {title}
+   464→                  </h3>
+   465→                  <p className="mt-3 max-w-md text-sm leading-relaxed text-white/68">
+   466→                    {body}
+   467→                  </p>
+   468→                </article>
+   469→              </RevealItem>
+   470→            ))}
+   471→          </div>
+   472→        </div>
+   473→      </section>
+   474→
+   475→      {/* ─── Take it live — OBS and social ────────────────────── */}
+   476→      <section id="live" className="border-b border-border">
+   477→        <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
+   478→          <Reveal className="mb-14 max-w-2xl space-y-5">
+   479→            <RevealItem>
+   480→              <SectionMark n="03" label="Take it live" />
+   481→            </RevealItem>
+   482→            <RevealItem>
+   483→              <h2 className="display-1">One studio, every stage.</h2>
+   484→            </RevealItem>
+   485→            <RevealItem>
+   486→              <p className="text-white/68">
+   487→                A live character is only useful if it goes where your
+   488→                audience already is. Here is how it fits the tools you
+   489→                stream and post with today.
+   490→              </p>
+   491→            </RevealItem>
+   492→          </Reveal>
+   493→
+   494→          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+   495→            {/* OBS — the streamer's path */}
+   496→            <div>
+   497→              <Reveal>
+   498→                <RevealItem>
+   499→                  <h3 className="font-display text-sm font-bold uppercase tracking-[0.18em] text-primary">
+   500→                    Streaming with OBS
+   501→                  </h3>
+   502→                </RevealItem>
+   503→              </Reveal>
+   504→              <div className="mt-6 space-y-8">
+   505→                {OBS_STEPS.map(({ icon: Icon, title, body }, i) => (
+   506→                  <RevealItem key={title}>
+   507→                    <div className="group flex gap-5">
+   508→                      <div className="flex flex-col items-center">
+   509→                        <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-border bg-card text-primary transition-colors group-hover:border-primary/50">
+   510→                          <Icon className="size-5" aria-hidden="true" />
+   511→                        </span>
+   512→                        {i < OBS_STEPS.length - 1 && (
+   513→                          <span className="mt-3 w-px flex-1 bg-border" aria-hidden="true" />
+   514→                        )}
+   515→                      </div>
+   516→                      <div className="pb-2">
+   517→                        <p className="font-display text-lg font-semibold tracking-tight">
+   518→                          {title}
+   519→                        </p>
+   520→                        <p className="mt-2 max-w-md text-sm leading-relaxed text-white/68">
+   521→                          {body}
+   522→                        </p>
+   523→                      </div>
+   524→                    </div>
+   525→                  </RevealItem>
+   526→                ))}
+   527→              </div>
+   528→            </div>
+   529→
+   530→            {/* Social — the creator's path */}
+   531→            <div>
+   532→              <Reveal>
+   533→                <RevealItem>
+   534→                  <h3 className="font-display text-sm font-bold uppercase tracking-[0.18em] text-primary">
+   535→                    Creating for social
+   536→                  </h3>
+   537→                </RevealItem>
+   538→              </Reveal>
+   539→              <div className="mt-6 grid gap-5">
+   540→                {SOCIAL_POINTS.map(({ icon: Icon, title, body }) => (
+   541→                  <RevealItem key={title}>
+   542→                    <article className="group h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-white/28">
+   543→                      <div className="flex items-center gap-3">
+   544→                        <Icon
+   545→                          className="size-5 text-white/35 transition-colors group-hover:text-primary"
+   546→                          aria-hidden="true"
+   547→                        />
+   548→                        <h4 className="font-display text-base font-semibold tracking-tight">
+   549→                          {title}
+   550→                        </h4>
+   551→                      </div>
+   552→                      <p className="mt-3 text-sm leading-relaxed text-white/68">
+   553→                        {body}
+   554→                      </p>
+   555→                    </article>
+   556→                  </RevealItem>
+   557→                ))}
+   558→              </div>
+   559→            </div>
+   560→          </div>
+   561→        </div>
+   562→      </section>
+   563→
+   564→      {/* ─── How it works — the paper register ──────────────────────── */}
+   565→      <section id="how" className="paper border-b border-black/10">
+   566→        <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
+   567→          <Reveal className="mb-14 max-w-2xl space-y-5">
+   568→            <RevealItem>
+   569→              <SectionMark n="04" label="How it works" ink />
+   570→            </RevealItem>
+   571→            <RevealItem>
+   572→              <h2 className="display-1 text-black">Three steps. That's all.</h2>
+   573→            </RevealItem>
+   574→            <RevealItem>
+   575→              <p className="text-black/70">
+   576→                No setup marathons, no settings mazes. The only decisions
+   577→                you make are the ones that matter to you.
+   578→              </p>
+   579→            </RevealItem>
+   580→          </Reveal>
+   581→
+   582→          <div className="grid gap-12 md:grid-cols-3 md:gap-8">
+   583→            {STEPS.map(({ n, title, body }) => (
+   584→              <RevealItem key={n}>
+   585→                <div className="space-y-5 border-t-2 border-black pt-6">
+   586→                  <span className="text-outline-ink block font-display text-[5.5rem] font-bold leading-none">
+   587→                    {n}
+   588→                  </span>
+   589→                  <h3 className="font-display text-xl font-semibold tracking-tight text-black">
+   590→                    {title}
+   591→                  </h3>
+   592→                  <p className="max-w-xs text-sm leading-relaxed text-black/70">
+   593→                    {body}
+   594→                  </p>
+   595→                </div>
+   596→              </RevealItem>
+   597→            ))}
+   598→          </div>
+   599→
+   600→          {/* The closing row — statement left, action right */}
+   601→          <Reveal className="mt-16">
+   602→            <div className="flex flex-col gap-6 border-t-2 border-black pt-6 sm:flex-row sm:items-center sm:justify-between">
+   603→              <p className="max-w-sm font-display text-xl font-semibold tracking-tight text-black">
+   604→                Your first render is on us.
+   605→              </p>
+   606→              <a
+   607→                href="#start"
+   608→                className="group inline-flex h-12 shrink-0 items-center gap-2 rounded-xl bg-black px-7 text-[0.95rem] font-semibold text-white transition-transform active:translate-y-px"
+   609→              >
+   610→                Start with free credits
+   611→                <ArrowRight
+   612→                  className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+   613→                  aria-hidden="true"
+   614→                />
+   615→              </a>
+   616→            </div>
+   617→          </Reveal>
+   618→        </div>
+   619→      </section>
+   620→
+   621→      {/* ─── The app — coming soon, previewed honestly ────────── */}
+   622→      <section id="app" className="border-b border-border">
+   623→        <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
+   624→          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+   625→            <div>
+   626→              <Reveal className="space-y-5">
+   627→                <RevealItem>
+   628→                  <SectionMark n="05" label="The app" />
+   629→                </RevealItem>
+   630→                <RevealItem>
+   631→                  <h2 className="display-1">
+   632→                    The studio goes
+   633→                    <br />
+   634→                    pocket.
+   635→                  </h2>
+   636→                </RevealItem>
+   637→                <RevealItem>
+   638→                  <p className="max-w-lg text-white/68">
+   639→                    The same characters, consent and credits, built for the
+   640→                    phone you create on. The app is in the works for both
+   641→                    stores, and the web studio already runs on mobile today.
+   642→                  </p>
+   643→                </RevealItem>
+   644→                <RevealItem>
+   645→                  <div className="grid max-w-md gap-3.5 pt-2 sm:flex sm:flex-wrap sm:gap-4">
+   646→                    {/* Store lockups — drawn, not lifted, honest about availability */}
+   647→                    <span
+   648→                      title="Coming soon"
+   649→                      aria-label="Coming soon on Google Play"
+   650→                      className="group inline-flex h-[56px] cursor-default items-center gap-3.5 rounded-[14px] border border-black/10 bg-[#f4f4f0] pl-[18px] pr-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_30px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[inset_0_1px_0_rgba(255,255,255,1),0_14px_36px_-12px_rgba(0,0,0,0.85)]"
+   651→                    >
+   652→                      <svg viewBox="0 0 24 24" className="size-[28px] shrink-0 -translate-y-px" fill="none" aria-hidden="true">
+   653→                        {/* Play triangle — the wedge and its fold, two inks */}
+   654→                        <path
+   655→                          d="M5 2.8c.3-.45.9-.55 1.35-.22l12.65 8.05c.6.38.6 1.31 0 1.69L6.35 20.42c-.45.33-1.05.23-1.35-.22-.12-.2-.19-.42-.19-.65V3.45c0-.23.07-.45.19-.65z"
+   656→                          fill="currentColor"
+   657→                          className="text-black"
+   658→                        />
+   659→                        <path
+   660→                          d="M5.8 2.7l8.6 8.6-2.55 2.55L5.5 7.5V3.45c0-.3.1-.55.3-.75z"
+   661→                          fill="currentColor"
+   662→                          className="text-primary"
+   663→                        />
+   664→                      </svg>
+   665→                      <span className="text-left leading-tight">
+   666→                        <span className="block text-[10px] font-normal uppercase tracking-[0.18em] text-black/55">
+   667→                          Coming soon on
+   668→                        </span>
+   669→                        <span className="block text-[17px] font-semibold tracking-tight text-black">
+   670→                          Google Play
+   671→                        </span>
+   672→                      </span>
+   673→                    </span>
+   674→                    <span
+   675→                      title="Coming soon"
+   676→                      aria-label="Coming soon on the App Store"
+   677→                      className="group inline-flex h-[56px] cursor-default items-center gap-3.5 rounded-[14px] border border-black/10 bg-[#f4f4f0] pl-[18px] pr-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_30px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[inset_0_1px_0_rgba(255,255,255,1),0_14px_36px_-12px_rgba(0,0,0,0.85)]"
+   678→                    >
+   679→                      <svg viewBox="0 0 24 24" className="size-[28px] shrink-0" fill="currentColor" aria-hidden="true">
+   680→                        {/* The apple — silhouette with leaf */}
+   681→                        <path
+   682→                          d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08z"
+   683→                          className="text-black"
+   684→                        />
+   685→                        <path
+   686→                          d="M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"
+   687→                          className="text-primary"
+   688→                        />
+   689→                      </svg>
+   690→                      <span className="text-left leading-tight">
+   691→                        <span className="block text-[10px] font-normal uppercase tracking-[0.18em] text-black/55">
+   692→                          Coming soon on
+   693→                        </span>
+   694→                        <span className="block text-[17px] font-semibold tracking-tight text-black">
+   695→                          App Store
+   696→                        </span>
+   697→                      </span>
+   698→                    </span>
+   699→                  </div>
+   700→                </RevealItem>
+   701→                <RevealItem>
+   702→                  <p className="text-xs text-white/55">
+   703→                    Previews shown are the app layout in development. Not a
+   704→                    live store listing.
+   705→                  </p>
+   706→                </RevealItem>
+   707→              </Reveal>
+   708→            </div>
+   709→            <Reveal>
+   710→              <RevealItem>
+   711→                <PhoneMockups />
+   712→              </RevealItem>
+   713→            </Reveal>
+   714→          </div>
+   715→        </div>
+   716→      </section>
+   717→
+   718→      {/* ─── Your data — the paper receipt ──────────────────────── */}
+   719→      <section id="data" className="paper border-b border-black/10">
+   720→        <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
+   721→          <Reveal className="mb-14 max-w-2xl space-y-5">
+   722→            <RevealItem>
+   723→              <SectionMark n="06" label="Your data" ink />
+   724→            </RevealItem>
+   725→            <RevealItem>
+   726→              <h2 className="display-1 text-black">
+   727→                Where your data goes.
+   728→              </h2>
+   729→            </RevealItem>
+   730→            <RevealItem>
+   731→              <p className="text-black/70">
+   732→                Face and voice data is sensitive data under Nigeria's NDPR,
+   733→                so the whole lifecycle is published, not paraphrased. Four
+   734→                stages, nothing hidden between them.
+   735→              </p>
+   736→            </RevealItem>
+   737→          </Reveal>
+   738→
+   739→          <div className="grid gap-12 md:grid-cols-2 md:gap-8">
+   740→            {DATA_STEPS.map(({ icon: Icon, title, body }) => (
+   741→              <RevealItem key={title}>
+   742→                <div className="h-full border-t-2 border-black pt-6">
+   743→                  <div className="flex items-center gap-3">
+   744→                    <Icon className="size-5 text-black" aria-hidden="true" />
+   745→                    <h3 className="font-display text-xl font-semibold tracking-tight text-black">
+   746→                      {title}
+   747→                    </h3>
+   748→                  </div>
+   749→                  <p className="mt-3 max-w-md text-sm leading-relaxed text-black/70">
+   750→                    {body}
+   751→                  </p>
+   752→                </div>
+   753→              </RevealItem>
+   754→            ))}
+   755→          </div>
+   756→
+   757→          <Reveal className="mt-14">
+   758→            <RevealItem>
+   759→              <a
+   760→                href="/privacy"
+   761→                className="group inline-flex h-12 items-center gap-2 rounded-xl bg-black px-7 text-[0.95rem] font-semibold text-white transition-transform active:translate-y-px"
+   762→              >
+   763→                Read the full data map
+   764→                <ArrowRight
+   765→                  className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+   766→                  aria-hidden="true"
+   767→                />
+   768→              </a>
+   769→            </RevealItem>
+   770→          </Reveal>
+   771→        </div>
+   772→      </section>
+   773→
+   774→      {/* ─── Trust — the real pages ─────────────────────────────────── */}
+   775→      <section className="border-b border-border">
+   776→        <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
+   777→          <Reveal className="mb-12 max-w-2xl space-y-5">
+   778→            <RevealItem>
+   779→              <SectionMark n="07" label="The fine print" />
+   780→            </RevealItem>
+   781→            <RevealItem>
+   782→              <h2 className="display-1">Plain sight, not small print</h2>
+   783→            </RevealItem>
+   784→            <RevealItem>
+   785→              <p className="text-white/68">
+   786→                These aren't links to nowhere. Every page below is a real
+   787→                document on this platform.
+   788→              </p>
+   789→            </RevealItem>
+   790→          </Reveal>
+   791→
+   792→          <div className="grid gap-5 sm:grid-cols-2">
+   793→            {TRUST_PAGES.map((page) => (
+   794→              <RevealItem key={page.href}>
+   795→                <a
+   796→                  href={page.href}
+   797→                  className="group flex h-full flex-col gap-2 rounded-xl border border-border bg-card p-6 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-white/28"
+   798→                >
+   799→                  <h3 className="font-display text-lg font-semibold tracking-tight">
+   800→                    {page.title}
+   801→                  </h3>
+   802→                  <p className="text-sm leading-relaxed text-white/68">
+   803→                    {page.body}
+   804→                  </p>
+   805→                  <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-medium text-primary underline-offset-4 group-hover:underline">
+   806→                    Read
+   807→                    <ArrowRight
+   808→                      className="size-4 transition-transform group-hover:translate-x-0.5"
+   809→                      aria-hidden="true"
+   810→                    />
+   811→                  </span>
+   812→                </a>
+   813→              </RevealItem>
+   814→            ))}
+   815→          </div>
+   816→        </div>
+   817→      </section>
+   818→
+   819→      {/* ─── FAQ — the honest answers ───────────────────────────────── */}
+   820→      <section id="faq" className="border-b border-border">
+   821→        <div className="container-x grid gap-10 px-4 py-20 sm:px-6 lg:grid-cols-5 lg:py-28">
+   822→          <Reveal className="lg:col-span-2">
+   823→            <RevealItem className="mb-6">
+   824→              <SectionMark n="08" label="Questions" />
+   825→            </RevealItem>
+   826→            <RevealItem>
+   827→              <h2 className="display-1">Questions, answered</h2>
+   828→            </RevealItem>
+   829→            <RevealItem>
+   830→              <p className="mt-4 text-white/68">
+   831→                Anything else?{" "}
+   832→                <a
+   833→                  href="/help"
+   834→                  className="font-medium text-primary underline-offset-4 hover:underline"
+   835→                >
+   836→                  The help centre
+   837→                </a>{" "}
+   838→                has the full guide.
+   839→              </p>
+   840→            </RevealItem>
+   841→          </Reveal>
+   842→          <div className="lg:col-span-3">
+   843→            <Accordion type="single" collapsible className="w-full">
+   844→              {FAQS.map((faq, i) => (
+   845→                <AccordionItem key={faq.q} value={`q-${i}`}>
+   846→                  <AccordionTrigger className="text-left font-display text-base font-semibold tracking-tight hover:text-white [&>svg]:text-primary">
+   847→                    {faq.q}
+   848→                  </AccordionTrigger>
+   849→                  <AccordionContent className="leading-relaxed text-white/68">
+   850→                    {faq.a}
+   851→                  </AccordionContent>
+   852→                </AccordionItem>
+   853→              ))}
+   854→            </Accordion>
+   855→          </div>
+   856→        </div>
+   857→      </section>
+   858→
+   859→      {/* ─── The call — the one red shout ───────────────────────────── */}
+   860→      <section className="band border-y border-black/25">
+   861→        <div className="container-x px-4 py-20 sm:px-6 lg:py-28">
+   862→          <Reveal className="mx-auto max-w-3xl space-y-8 text-center">
+   863→            <RevealItem>
+   864→              <h2 className="display-hero text-black">
+   865→                Your character<br />is waiting.
+   866→              </h2>
+   867→            </RevealItem>
+   868→            <RevealItem>
+   869→              <p className="mx-auto max-w-xl text-[1.05rem] leading-relaxed text-black/80">
+   870→                Create a free account, grant your first consent, and watch
+   871→                your camera transform. No card, no commitment, and welcome
+   872→                credits included.
+   873→              </p>
+   874→            </RevealItem>
+   875→            <RevealItem>
+   876→              <a
+   877→                href="#start"
+   878→                className="group inline-flex h-12 items-center gap-2 rounded-xl bg-black px-8 text-[0.95rem] font-semibold text-white transition-transform active:translate-y-px"
+   879→              >
+   880→                Create free account
+   881→                <ArrowRight
+   882→                  className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+   883→                  aria-hidden="true"
+   884→                />
+   885→              </a>
+   886→            </RevealItem>
+   887→          </Reveal>
+   888→        </div>
+   889→      </section>
+   890→
+   891→      {/* ─── Get started — the auth panel ───────────────────────────── */}
+   892→      <section id="start">
+   893→        <div className="container-x grid gap-10 px-4 py-20 sm:px-6 lg:grid-cols-5 lg:gap-16 lg:py-28">
+   894→          <div className="lg:col-span-2">
+   895→            <AuthPanel user={null} />
+   896→          </div>
+   897→          <div className="lg:col-span-3">
+   898→            <Reveal className="space-y-6">
+   899→              <RevealItem>
+   900→                <BrandMark size={40} />
+   901→              </RevealItem>
+   902→              <RevealItem>
+   903→                <h2 className="display-1">Every render, on the record.</h2>
+   904→              </RevealItem>
+   905→              <RevealItem>
+   906→                <p className="measure text-white/68">
+   907→                  Your account keeps characters, consent grants, credit
+   908→                  history and renders in one place: each one auditable by
+   909→                  you, deletable by you.
+   910→                </p>
+   911→              </RevealItem>
+   912→              <RevealItem>
+   913→                <ul className="space-y-3">
+   914→                  {ACCOUNT_BENEFITS.map((benefit) => (
+   915→                    <li
+   916→                      key={benefit}
+   917→                      className="flex items-start gap-3 text-sm text-white/75"
+   918→                    >
+   919→                      <span
+   920→                        className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary"
+   921→                        aria-hidden="true"
+   922→                      />
+   923→                      {benefit}
+   924→                    </li>
+   925→                  ))}
+   926→                </ul>
+   927→              </RevealItem>
+   928→            </Reveal>
+   929→          </div>
+   930→        </div>
+   931→      </section>
+   932→
+   933→      {/* ─── Footer ─────────────────────────────────────────────────── */}
+   934→      <footer className="mt-auto border-t border-border bg-black">
+   935→        <div className="container-x px-4 py-12 sm:px-6">
+   936→          <div className="flex flex-col items-start justify-between gap-8 md:flex-row">
+   937→            <div className="flex items-center gap-3">
+   938→              <BrandMark size={26} />
+   939→              <div>
+   940→                <p className="font-display font-semibold tracking-tight">
+   941→                  {BRAND.name}
+   942→                </p>
+   943→                <p className="text-xs text-white/50">
+   944→                  Live characters, rendered responsibly.
+   945→                </p>
+   946→              </div>
+   947→            </div>
+   948→            <nav
+   949→              aria-label="Legal"
+   950→              className="flex max-w-xl flex-wrap gap-x-6 gap-y-2 text-xs"
+   951→            >
+   952→              {LEGAL_LINKS.map((link) => (
+   953→                <a
+   954→                  key={link.href}
+   955→                  href={link.href}
+   956→                  className="inline-block py-0.5 text-white/50 underline-offset-4 transition-colors hover:text-white hover:underline"
+   957→                >
+   958→                  {link.label}
+   959→                </a>
+   960→              ))}
+   961→            </nav>
+   962→          </div>
+   963→          <div className="mt-10 border-t border-border pt-6">
+   964→            <p className="text-xs text-white/40">
+   965→              © {new Date().getFullYear()} {BRAND.name}. Your face, your
+   966→              voice, your rules.
+   967→            </p>
+   968→          </div>
+   969→        </div>
+   970→      </footer>
+   971→    </div>
+   972→  );
+   973→}
+   974→
